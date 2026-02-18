@@ -1,0 +1,32 @@
+# --- NÚCLEO: API Y SERVIDOR (Backend) ---
+fastapi==0.109.0
+uvicorn==0.27.0
+pydantic==2.6.0
+requests==2.31.0
+python-multipart==0.0.9
+
+# --- INTERFAZ DE USUARIO (Frontend) ---
+streamlit==1.31.0
+matplotlib==3.8.2
+
+# --- CIENCIA DE DATOS Y MATEMÁTICAS ---
+pandas==2.2.0
+numpy==1.26.4
+joblib==1.3.2
+
+# --- INTELIGENCIA ARTIFICIAL Y NLP ---
+scikit-learn==1.4.0
+nltk==3.8.1
+spacy==3.7.2
+deep-translator==1.11.4
+
+# --- VISIÓN POR COMPUTADOR (Imágenes) ---
+Pillow==10.2.0
+pytesseract==0.3.10
+
+# ===================================================================
+# NOTAS DE INSTALACIÓN
+# ===================================================================
+# 
+# 1. Instalar dependencias básicas:
+#    pip install -r requirements.txt
