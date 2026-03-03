@@ -3,7 +3,7 @@ import requests
 
 API_URL = "http://127.0.0.1:8000/api/traducir"
 
-# -------- Título (Se está Votando...) --------
+# -------- Título (Se está Votando Ahora...) --------
 
 st.set_page_config(page_title="fAIr Job", page_icon="🚦")
 
