@@ -108,4 +108,5 @@ if st.button("Analizar anuncio"):
         st.write(response.status_code)
         st.write(response.text)
         
-#Ejecución:  streamlit run frontend/app.py
+#Ejecución del streamlit: streamlit run frontend/app.py
+#Ejecución del archivo si en la otra terminal se está ejecutando el uvicorn de traduccion.py: python frontend/app.py
