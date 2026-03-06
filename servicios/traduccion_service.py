@@ -66,4 +66,4 @@ async def translate_content(target_lang: TargetLanguage = Form(...), file: Uploa
         "target_language": target_lang.value
     }
 
-#Ejecución (solo este archivo): uvicorn traduccion_service:app --reload
+#Ejecución (solo este archivo): uvicorn servicios.traduccion_service:app --reload
