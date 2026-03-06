@@ -4,11 +4,16 @@ from typing import Optional, List
 import pytesseract
 from PIL import Image
 import os
+import sys
+# --- Ajuste de path para poder ejecutar tanto como script como uvicorn ---
+root_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if root_path not in sys.path:
+    sys.path.append(root_path)
 import requests
 import sqlite3
 from collections import Counter
 from deep_translator import GoogleTranslator #Traduccion automática
-from traduccion_service import traducir_contenido, TargetLanguage    #Archivo desde se hace la traducción automática
+from servicios.traduccion_service import traducir_contenido, TargetLanguage    #Archivo desde se hace la traducción automática
 
 
 app = FastAPI(title="fAIr Job", version="1.0")   #Inicialización de la API
@@ -75,4 +80,4 @@ print("\nConectando con la API...")
 #PASO 1: COMANDO CON EL REQUIREMENTS
 #requirements:  pip install -r requirements.txt
 
-# Ejecución: uvicorn traduccion:app --reload + en otra terminal el streamlit de web.py o web_estadisticas.py
+# Ejecución: uvicorn api.routes.traduccion:app --reload + en otra terminal el streamlit de app.py
