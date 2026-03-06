@@ -108,4 +108,4 @@ if st.button("Analizar anuncio"):
         st.write(response.status_code)
         st.write(response.text)
         
-#Ejecución:  streamlit run app.py
+#Ejecución:  streamlit run frontend/app.py
