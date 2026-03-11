@@ -5,16 +5,17 @@ import pytesseract
 from PIL import Image
 import os
 import sys
-import requests
-import sqlite3
-from collections import Counter
-from deep_translator import GoogleTranslator #Traduccion automática
-from servicios.traduccion_service import traducir_contenido, TargetLanguage    #Archivo desde se hace la traducción automática
-
 # --- Ajuste de path para poder ejecutar tanto como script como uvicorn ---
 root_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 if root_path not in sys.path:
     sys.path.append(root_path)
+import requests
+import sqlite3
+from collections import Counter
+from deep_translator import GoogleTranslator #Traduccion automática
+from servicios.traduccion_service import traducir_contenido, TargetLanguage    #Archivo desde donde se hace la traducción automática
+
+
 
 app = FastAPI(title="fAIr Job", version="1.0")   #Inicialización de la API
 
