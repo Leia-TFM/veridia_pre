@@ -4,11 +4,13 @@ from typing import Optional, List
 import pytesseract
 from PIL import Image
 import os
+
 import sys
-# --- Ajuste de path para poder ejecutar tanto como script como uvicorn ---
+# --- Ajuste de path para poder ejecutar tanto script como uvicorn (inamovible de esta posición) ---
 root_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 if root_path not in sys.path:
     sys.path.append(root_path)
+
 import requests
 import sqlite3
 from collections import Counter
