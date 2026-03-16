@@ -6,15 +6,15 @@ from enum import Enum
 
 #Modelo de datos para el semáforo
 class NivelSeguridad(str, Enum):
-    VERDE = "verde" #Anuncio seguro
-    AMARILLO = "amarillo" #Requiere atención        
-    ROJO = "rojo" #Poco seguro
+    VERDE = bool
+    AMARILLO = bool   
+    ROJO = bool
 
 #Modelo para determinar la clase de entrada del usuario
 class TipoEntrada(str, Enum):
-    TEXTO = "texto"
-    IMAGEN = "imagen"
-    ENLACE = "enlace"
+    TEXTO = bool
+    IMAGEN = bool
+    ENLACE = bool
 #Modelo de datos para la entrada del mensaje del usuario
 class AnuncioEntrada(BaseModel):
     tipo : TipoEntrada
@@ -50,6 +50,7 @@ class EstadisticasGenerales(BaseModel):
 #Modelo para la entrada del texto a detectar
 class TextoDetectar(BaseModel):
     texto: str
+    idioma: Optional[str] = "es"  # Idioma del texto, por defecto español
 
 #Modelo para la respuesta de la detección de idioma
 class ResultadoDeteccion(BaseModel):
