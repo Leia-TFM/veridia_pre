@@ -1,112 +1,361 @@
 import streamlit as st
 import requests
 
-API_URL = "http://127.0.0.1:8000/api/traducir"
+API_DETECTAR_IDIOMA = "http://127.0.0.1:8000/api/detectar_idioma"
+API_ANALIZAR = "http://127.0.0.1:8000/api/analizar"
 
-# -------- Título (Se está Votando Ahora...) --------
+# ---------- CONFIG ----------
+st.set_page_config(                 #Define el título de la página y su icono en la pestaña del navegador (modificable)
+    page_title="Proyecto Verid.IA",
+    page_icon="✔",
+    layout="wide"
+)
 
-st.set_page_config(page_title="fAIr Job", page_icon="🚦")
+# ---------- CSS ----------  
+# Código encargado del diseño (colores, tipo de celda, botones, área de texto) de la web en ese orden, formato html
+st.markdown("""     
+<style>
 
-st.title("🚦 fAIr Job - Detector de Riesgo")
-
-# -------- Idiomas --------
-languages = {
-    "Inglés": "en",
-    "Español": "es",
-    "Francés": "fr",
-    "Alemán": "de",
-    "Italiano": "it",
-    "Portugués": "pt",
-    "Ruso": "ru",
-    "Árabe": "ar"
+.main {
+    background-color: #ebe2d3;  # crema, si no gusta se puede cambiar a blanco
 }
 
-UI_TEXTS = {
-    "es": {
-        "result": "🚦 Resultado del análisis",
-        "low": "🟢 Riesgo bajo",
-        "medium": "🟡 Riesgo medio",
-        "high": "🔴 Riesgo alto",
-        "score": "Puntuación de riesgo",
-        "message": "Mensaje",
-        "motives": "Motivos detectados"
+.block-container {
+    padding-top: 2rem;
+}
+
+.stButton>button {
+    background-color: #c3a5c1; # morado
+    color:white;
+    border-radius:10px;
+    padding:10px 20px;
+    font-weight:bold;
+}
+
+textarea {
+    border-radius:10px !important;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+# ---------- FUNCIÓN API ----------
+def llamar_api(endpoint, data, files=None):
+    try:
+        response = requests.post(endpoint, data=data, files=files)
+        return response
+    except requests.exceptions.RequestException as e:
+        st.error(f"❌ Error de conexión: {e}")
+        return None
+
+# ---------- IDIOMAS ----------
+languages = {       #Los idiomas seleccionables en el desplegable
+    "🇪🇸 Español": "es",
+    "🇬🇧 English": "en",
+    "🇫🇷 Français": "fr",
+    "🇩🇪 Deutsch": "de",
+    "🇮🇹 Italiano": "it",
+    "🇵🇹 Português": "pt",
+    "🇷🇺 Русский": "ru",
+    "🇸🇦 العربية": "ar",
+    "🇷🇴 Română": "ro"
+}
+
+languages_input = {     #La traducción de todos los elementos visibles por pantalla a los demás idiomas (faltan idiomas)
+    "Español": {
+        "text_label": "Texto del anuncio",
+        "url_label": "URL del anuncio",
+        "imagen_label": "Imagen del anuncio",
+        "anuncio_label": "Analizar anuncio",
+        "file_label": "Sube una imagen del anuncio",
+        "func_label": "Introduce un anuncio para detectar posibles fraudes.",
+        "info_label": "Detecta anuncios de trabajo potencialmente fraudulentos. Puede elegir una de las siguientes tres opciones (Copiar Texto / Copiar URL / Subir una imagen) para comprobarlo.",
+        "info_anuncio_label": "Información del anuncio",
+        "previa_label": "Vista previa",
+        "info_imagen_label": "Sube una imagen para verla aquí",
+        "borrar_texto_label": "Borrar texto",
+        "borrar_url_label": "Borrar URL",
+        "spinner_label": "Analizando anuncio..."
+
     },
-    "en": {
-        "result": "🚦 Analysis Result",
-        "low": "🟢 Low Risk",
-        "medium": "🟡 Medium Risk",
-        "high": "🔴 High Risk",
-        "score": "Risk Score",
-        "message": "Message",
-        "motives": "Detected Reasons"
+    "English": {
+        "text_label": "Job advertisement text",
+        "url_label": "Advertisement URL",
+        "imagen_label": "Advertisement image",
+        "anuncio_label": "Analyse advertisement",
+        "file_label": "Upload image of advertisement to view it here",
+        "func_label": "Insert an advertisement to detect potential fraud.",
+        "info_label": "Detects potentially fraudulent job postings. You may select one of the following three options (Copy Text / Copy URL / Upload an image) to verify this.",
+        "info_anuncio_label": "Advertisement´s information",
+        "previa_label": "Preview",
+        "info_imagen_label": "Upload an image to view it here",
+        "borrar_texto_label": "Erase text",
+        "borrar_url_label": "Erase URL",
+        "spinner_label": "Analysing advertisement..."
+
     },
-    "fr": {
-        "result": "🚦 Résultat de l'analyse",
-        "low": "🟢 Risque faible",
-        "medium": "🟡 Risque moyen",
-        "high": "🔴 Risque élevé",
-        "score": "Score de risque",
-        "message": "Message",
-        "motives": "Motifs détectés"
+    "Français": {
+        "text_label": "Texte de l'annonce",
+        "url_label": "URL de l'annonce",
+        "imagen_label": "Image de l'annonce",
+        "anuncio_label": "Analyser l'annonce",
+        "file_label": "Télécharger image de l'annonce pour la voir ici",
+        "func_label": "Insérer un annonce pour détecter les fraudes potentielles.",
+        "info_label": "Détecte les offres d'emploi potentiellement frauduleuses. Vous pouvez choisir l'une des trois options suivantes (Copier le texte / Copier l'URL / Télécharger une image) pour le vérifier.",
+        "info_anuncio_label": "Information de l'annonce",
+        "previa_label": "Aperçu",
+        "info_imagen_label": "Téléchargez une image pour la voir ici",
+        "borrar_texto_label": "Effacer texte",
+        "borrar_url_label": "Effacer URL",
+        "spinner_label": "Analyse de l'annonce..."
+
     }
 }
 
-selected_name = st.selectbox("Idioma de respuesta:", list(languages.keys()))
-idioma = languages[selected_name]
-lang_ui = idioma
+# ---------- SIDEBAR ----------
+with st.sidebar:    #Aquí es donde se ve el desplegable de los idiomas en el lateral izquierdo
 
-# -------- Inputs --------
-text_input = st.text_area("Texto del anuncio:")
-url_input = st.text_input("URL del anuncio (opcional):")
+    st.header("⚙️ Configuración")       #Cabecera de configuración donde de momento solo están los idiomas (modificable)
 
-uploaded_file = st.file_uploader(
-    "O sube una imagen del anuncio",
-    type=["jpg", "jpeg", "png", "tiff"]
+    selected_name = st.selectbox(
+        "🌍 Idioma / Language",
+        list(languages.keys())
+    )
+
+    idioma_select = languages[selected_name]    #Variable que guarda el idioma seleccionado de todos los posibles
+    lang_ui = idioma_select                     #Variable que guarda el idioma seleccionado de todos los posibles
+    idioma_input = languages_input[selected_name.split(" ")[1]]     #Variable que guarda según el idioma seleccionado los elementos visibles por pantalla
+    lang_ui_input = idioma_input        #Variable que guarda según el idioma seleccionado los elementos visibles por pantalla
+    
+    st.info(            #Mensaje de funcionalidad
+        lang_ui_input["func_label"]
+    )
+
+
+
+# ---------- HEADER ----------
+with st.container():
+    #Este markdown hace de st.title()
+    st.markdown("<h1 style='text-align:center; color:#4CAF50;'>✔ Proyecto Verid.IA</h1>", unsafe_allow_html=True) #Título de la web en la cabecera (modificable) 
+    st.caption(lang_ui_input["info_label"])     #Mensaje informativo
+
+# ---------- MODO ----------        #Traducir también al idioma que se seleccione
+with st.container():
+    st.markdown("<h3 style='color:#2196F3;'>Selecciona un modo de uso</h3>", unsafe_allow_html=True)
+    modo = st.radio("Selecciona un modo", ["Analizar anuncio", "Detectar Idioma / Traducción"], horizontal=True, label_visibility="hidden")
+
+st.divider()    #Esto deja un espacio entre el desplegable de los idiomas y el mensaje de funcionalidad
+
+
+# ---------- CSS para botón pequeño ----------
+# Código encargado del diseño del botón de borrar de la web, formato html
+st.markdown("""
+<style>
+.small-btn button {
+    padding: 0.2rem 0.4rem;
+    font-size: 14px;
+    float: right;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# ---------- Layout ----------
+
+st.subheader(f"📄 {lang_ui_input["info_anuncio_label"]}")   #Subcabecera del comprobador de anuncios (modificable)
+
+# Inicializar session_state si no existe
+if "texto" not in st.session_state:
+    st.session_state["texto"] = ""
+if "url" not in st.session_state:
+    st.session_state["url"] = ""
+
+# ---------- TEXTO DEL ANUNCIO ----------
+col_text_label, col_text_btn = st.columns([9,1])    #Localización del botón de borrar de esa parte y del área del texto
+
+with col_text_label:    #Columna del área del texto
+    st.markdown(f"**{lang_ui_input['text_label']}**") #Mensaje del área del texto
+with col_text_btn:  #Columna del botón de borrar
+    if st.button("🧹", key="clear_text", help=lang_ui_input["borrar_texto_label"]):
+        st.session_state["texto"] = ""
+
+# Input
+text_input = st.text_area(
+    "Texto en español", 
+    key="texto",
+    height=150
 )
 
-# -------- Botón --------
-if st.button("Analizar anuncio"):
+# ---------- URL DEL ANUNCIO ----------
+#Mismo funcionamiento que el texto
+col_url_label, col_url_btn = st.columns([9,1])
 
-    data = {
+with col_url_label:
+    st.markdown(f"**{lang_ui_input['url_label']}**")
+with col_url_btn:
+    if st.button("🧹", key="clear_url", help=lang_ui_input["borrar_url_label"]):
+        st.session_state["url"] = ""
+
+# Input
+url_input = st.text_input(
+    "URL",  
+    key="url"
+)
+
+#Parte donde se podía subir la imagen
+st.markdown(f"**{lang_ui_input['imagen_label']}**")
+uploaded_file = st.file_uploader(
+        f"{lang_ui_input["file_label"]}",
+        key="imagen",
+        type=["jpg","jpeg","png","tiff"]
+)
+
+st.subheader(f"🖼 {lang_ui_input["previa_label"]}") #Si subes una imagen te muestra una vista previa de la misma
+
+if uploaded_file:   #Comprobador de la imagen
+    st.image(uploaded_file, use_column_width=True)
+else:
+    st.info(lang_ui_input["info_imagen_label"])
+
+
+# ---------- BOTÓN ----------
+st.divider()
+
+analyze = st.button(f"🔎 {lang_ui_input['anuncio_label']}") #Botón que analiza el anuncio (modificable su visualización)
+
+# ---------- TEXTOS RESULTADO ----------
+UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por pantalla dependiendo del idioma que haya seleccionado (falta rellenar más)
+    "es":{
+        "result":" ✔ Resultado del análisis",
+        "score":"Puntuación de riesgo",
+        "message":"Mensaje",
+        "motives":"Motivos detectados",
+        "spanish_only_error": "Solo se permiten anuncios en español. Inténtalo de nuevo."
+    },
+    "en":{
+        "result":" ✔ Analysis Result",
+        "score":"Risk Score",
+        "message":"Message",
+        "motives":"Detected reasons",
+        "spanish_only_error": "Only advertisements in Spanish are allowed. Try again."
+    },
+    "fr":{
+        "result":" ✔ Résultat de l'analyse",
+        "score":"Score de risque",
+        "message":"Message",
+        "motives":"Motifs détectés",
+        "spanish_only_error": "Seules les annonces en espagnol sont autorisées. Réessayez."
+    }
+}
+
+# ---------- ANÁLISIS ----------
+if analyze:
+
+    if not text_input and not url_input and not uploaded_file:
+        st.warning("⚠️ Introduce datos")   #Traducir también con otra variable del idioma seleccionado
+        st.stop()
+
+    if uploaded_file:
+        tipo = "IMAGEN"
+    elif url_input:
+        tipo = "ENLACE"
+    else:
+        tipo = "TEXTO"
+
+    data = {    #Datos recibidos
         "texto": text_input,
         "url": url_input,
-        "idioma": idioma
+        "idioma_destino": idioma_select,
+        "tipo": tipo
     }
 
     files = {}
 
-    if uploaded_file:
+    if uploaded_file: #Condición para las imágenes
         files["foto"] = (
             uploaded_file.name,
             uploaded_file,
             uploaded_file.type
         )
 
-    response = requests.post(API_URL, data=data, files=files)
+    endpoint = API_ANALIZAR if modo == "Analizar anuncio" else API_DETECTAR_IDIOMA
 
-    if response.status_code == 200:
+    with st.spinner(idioma_input["spinner_label"]):
+        response = llamar_api(endpoint, data, files)
+
+    if response.status_code == 200:  #Significa que está correcto
         result = response.json()
 
+        st.divider()
         st.subheader(UI_TEXTS[lang_ui]["result"])
 
-        if result["semaforo"] == "VERDE":
-            st.success(UI_TEXTS[lang_ui]["low"])
-        elif result["semaforo"] == "AMARILLO":
-            st.warning(UI_TEXTS[lang_ui]["medium"])
-        elif result["semaforo"] == "ROJO":
-            st.error(UI_TEXTS[lang_ui]["high"])
+       
+        # ---------- ANALIZAR ----------
+        if modo == "Analizar anuncio":
 
-        st.metric(UI_TEXTS[lang_ui]["score"], result["puntuacion"])
+            # idioma detectado
+            st.info(f"Idioma detectado: {result.get('idioma_detectado')}")
 
-        st.subheader(UI_TEXTS[lang_ui]["message"])
-        st.info(result["mensaje_usuario"])
+            nivel = result.get("nivel_seguridad")
 
-        st.subheader(UI_TEXTS[lang_ui]["motives"])
+            # SEMÁFORO
+            if nivel == "VERDE":
+                st.success("🟢 Riesgo bajo")
+            elif nivel == "AMARILLO":
+                st.warning("🟡 Riesgo medio")
+            elif nivel == "ROJO":
+                st.error("🔴 Riesgo alto")
 
-    else:
-        st.error("Error al conectar con la API")
+            # PUNTUACIÓN (0–1 → lo pasamos a %)
+            confianza = result.get("confianza_seguridad", 0)
+
+            st.metric("Confianza", f"{int(confianza * 100)}%")
+            st.progress(confianza)
+
+            # MENSAJE
+            st.subheader("Mensaje")
+            st.info(result.get("mensaje"))
+
+            # INDICADORES
+            st.subheader("Indicadores detectados")
+
+            indicadores = result.get("indicadores", [])
+            for ind in indicadores:
+                st.write("•", ind)
+
+        # ----------DETECTAR IDIOMA ----------
+        else:
+            st.subheader("🌍 Detectar Idioma / Traducción")
+
+            # idioma detectado
+            st.info(f"Idioma detectado: {result.get('idioma_detectado')}")
+
+            # mensaje
+            st.write(result.get("mensaje"))
+
+            # comprobación
+            if result.get("es_analizable"):
+                st.success("Texto válido para análisis")
+
+                # original
+                st.subheader("Texto original")
+                st.write(result.get("original"))
+
+                # traducido
+                st.subheader("Texto traducido")
+                st.success(result.get("traducido"))
+
+            else:
+                st.warning("⚠️ Texto no analizable")
+
+    elif response.status_code == 400:       #Significa que no se ha podido realizar el análisis porque el anuncio no estaba en español
+
+        error_msg = response.json()["detail"]
+        st.warning(UI_TEXTS[lang_ui]["spanish_only_error"])
+
+    else:       #Error de la API (no haría nada)
+        st.error("❌ Error al conectar con la API")
         st.write(response.status_code)
-        st.write(response.text)
         
+#Ejecución (local): streamlit run app.py
 #Ejecución del streamlit: streamlit run frontend/app.py
 #Ejecución del archivo si en la otra terminal se está ejecutando el uvicorn de traduccion.py: python frontend/app.py
