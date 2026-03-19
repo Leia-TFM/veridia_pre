@@ -345,7 +345,14 @@ if analyze:
                 st.success(result.get("traducido"))
 
             else:
-                st.warning("⚠️ Texto no analizable")
+                
+                # Mostrar igualmente el original si quieres
+                st.subheader("Texto original")
+                st.write(result.get("original"))
+
+                # Mostrar traducción vacía o lo que haya
+                st.subheader("Texto traducido")
+                st.write(result.get("traducido") or "No disponible")
 
     elif response.status_code == 400:       #Significa que no se ha podido realizar el análisis porque el anuncio no estaba en español
 
