@@ -18,5 +18,4 @@ app.include_router(traduccion.router, prefix="/api")
 async def health_check():
     return {"estado":"activo", "app":settings.APP_NAME}
 
-#Ejecución (local): uvicorn main:app --reload
-#Ejecución : uvicorn api.main:app --reload
+#Ejecución: uvicorn main:app --reload
