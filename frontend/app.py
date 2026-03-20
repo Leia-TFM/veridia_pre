@@ -141,7 +141,7 @@ with st.container():
 
 # ---------- MODO ----------        #Traducir también al idioma que se seleccione
 with st.container():
-    st.markdown("<h3 style='color:#91778f;'>Selecciona un modo de uso:</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color:#4B2C5E;'>Selecciona un modo de uso:</h3>", unsafe_allow_html=True)
     modo = st.radio("Selecciona un modo", ["Analizar anuncio", "Detectar Idioma / Traducción"], horizontal=True, label_visibility="hidden")
 
 st.divider()    #Esto deja un espacio entre el desplegable de los idiomas y el mensaje de funcionalidad
