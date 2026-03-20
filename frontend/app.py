@@ -17,7 +17,7 @@ st.markdown("""
 <style>
 
 .main {
-    background-color: #ebe2d3;  # crema, si no gusta se puede cambiar a blanco
+    background-color: #ebe2d3;  #crema, si no gusta se puede cambiar a blanco
 }
 
 .block-container {
@@ -25,7 +25,7 @@ st.markdown("""
 }
 
 .stButton>button {
-    background-color: #c3a5c1; # morado
+    background-color: #b6c35d; #botón verde
     color:white;
     border-radius:10px;
     padding:10px 20px;
@@ -114,8 +114,8 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
 
 # ---------- SIDEBAR ----------
 with st.sidebar:    #Aquí es donde se ve el desplegable de los idiomas en el lateral izquierdo
-
-    st.header("⚙️ Configuración")       #Cabecera de configuración donde de momento solo están los idiomas (modificable)
+    
+    st.header("⚙️ Configuración")      #Cabecera de configuración donde de momento solo están los idiomas (modificable)
 
     selected_name = st.selectbox(
         "🌍 Idioma / Language",
@@ -141,7 +141,7 @@ with st.container():
 
 # ---------- MODO ----------        #Traducir también al idioma que se seleccione
 with st.container():
-    st.markdown("<h3 style='color:#2196F3;'>Selecciona un modo de uso</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color:#91778f;'>Selecciona un modo de uso:</h3>", unsafe_allow_html=True)
     modo = st.radio("Selecciona un modo", ["Analizar anuncio", "Detectar Idioma / Traducción"], horizontal=True, label_visibility="hidden")
 
 st.divider()    #Esto deja un espacio entre el desplegable de los idiomas y el mensaje de funcionalidad
@@ -152,6 +152,7 @@ st.divider()    #Esto deja un espacio entre el desplegable de los idiomas y el m
 st.markdown("""
 <style>
 .small-btn button {
+    color: #c3a5c1      
     padding: 0.2rem 0.4rem;
     font-size: 14px;
     float: right;
