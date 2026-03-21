@@ -25,11 +25,12 @@ st.markdown("""
 }
 
 .stButton>button {
-    background-color: #b6c35d; #botón verde
-    color:white;
-    border-radius:10px;
-    padding:10px 20px;
-    font-weight:bold;
+    background-color: #b6c35d; /* botón verde */
+    color: #000000; 
+    border-radius: 10px;
+    padding: 10px 20px; /* más grande */
+    font-weight: bold;
+    font-size: 16px; /* aumenta tamaño del texto */
 }
 
 textarea {
@@ -127,8 +128,22 @@ with st.sidebar:    #Aquí es donde se ve el desplegable de los idiomas en el la
     idioma_input = languages_input[selected_name.split(" ")[1]]     #Variable que guarda según el idioma seleccionado los elementos visibles por pantalla
     lang_ui_input = idioma_input        #Variable que guarda según el idioma seleccionado los elementos visibles por pantalla
     
-    st.info(            #Mensaje de funcionalidad
-        lang_ui_input["func_label"]
+    st.markdown(
+    f"""
+    <div style="
+        background-color: rgba(40, 167, 69, 0.15);
+        color: #155724;
+        padding: 10px 20px;
+        border-radius: 8px;
+        border-left: 5px solid #28a745;
+        font-weight: 500;
+        z-index: 9999;
+        pointer-events: none;
+    ">
+        {lang_ui_input['func_label']}
+    </div>
+    """,
+    unsafe_allow_html=True
     )
 
 
@@ -141,7 +156,7 @@ with st.container():
 
 # ---------- MODO ----------        #Traducir también al idioma que se seleccione
 with st.container():
-    st.markdown("<h3 style='color:#4B2C5E;'>Selecciona un modo de uso:</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color:#6f4a8e;'>Selecciona un modo de uso:</h3>", unsafe_allow_html=True)
     modo = st.radio("Selecciona un modo", ["Analizar anuncio", "Detectar Idioma / Traducción"], horizontal=True, label_visibility="hidden")
 
 st.divider()    #Esto deja un espacio entre el desplegable de los idiomas y el mensaje de funcionalidad
@@ -215,7 +230,23 @@ st.subheader(f"🖼 {lang_ui_input["previa_label"]}") #Si subes una imagen te mu
 if uploaded_file:   #Comprobador de la imagen
     st.image(uploaded_file, use_column_width=True)
 else:
-    st.info(lang_ui_input["info_imagen_label"])
+    st.markdown(
+    f"""
+    <div style="
+        background-color: rgba(40, 167, 69, 0.15);
+        color: #155724;
+        padding: 10px 20px;
+        border-radius: 8px;
+        border-left: 5px solid #28a745;
+        font-weight: 500;
+        z-index: 9999;
+        pointer-events: none;
+    ">
+        {lang_ui_input['info_imagen_label']}
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 
 # ---------- BOTÓN ----------
