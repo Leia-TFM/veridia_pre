@@ -128,14 +128,14 @@ with st.sidebar:    #Aquí es donde se ve el desplegable de los idiomas en el la
     idioma_input = languages_input[selected_name.split(" ")[1]]     #Variable que guarda según el idioma seleccionado los elementos visibles por pantalla
     lang_ui_input = idioma_input        #Variable que guarda según el idioma seleccionado los elementos visibles por pantalla
     
-    st.markdown(
+    st.markdown(        #Lo podemos cambiar al naranja
     f"""
     <div style="
-        background-color: rgba(40, 167, 69, 0.15);
-        color: #155724;
+        background-color: #b6c35d;
+        color: #000000;
         padding: 10px 20px;
         border-radius: 8px;
-        border-left: 5px solid #28a745;
+        border-left: 5px solid #8f9e25;
         font-weight: 500;
         z-index: 9999;
         pointer-events: none;
@@ -230,14 +230,14 @@ st.subheader(f"🖼 {lang_ui_input["previa_label"]}") #Si subes una imagen te mu
 if uploaded_file:   #Comprobador de la imagen
     st.image(uploaded_file, use_column_width=True)
 else:
-    st.markdown(
+    st.markdown(        #Lo podemos cambiar al naranja
     f"""
     <div style="
-        background-color: rgba(40, 167, 69, 0.15);
-        color: #155724;
+        background-color: #b6c35d;
+        color: #000000;
         padding: 10px 20px;
         border-radius: 8px;
-        border-left: 5px solid #28a745;
+        border-left: 5px solid #b6c35d;
         font-weight: 500;
         z-index: 9999;
         pointer-events: none;
