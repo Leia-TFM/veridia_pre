@@ -151,7 +151,7 @@ with st.sidebar:    #Aquí es donde se ve el desplegable de los idiomas en el la
 # ---------- HEADER ----------
 with st.container():
     #Este markdown hace de st.title()
-    st.markdown("<h1 style='text-align:center; color:#8f9e25;'>✔ Proyecto Verid.IA</h1>", unsafe_allow_html=True) #Título de la web en la cabecera (modificable) 
+    st.markdown("<h1 style='text-align:center; color:#8f9e25; font-size:60px;'>✔ Proyecto Verid.IA</h1>",unsafe_allow_html=True) #Título de la web en la cabecera (modificable) 
     st.caption(lang_ui_input["info_label"])     #Mensaje informativo
 
 # ---------- MODO ----------        #Traducir también al idioma que se seleccione
