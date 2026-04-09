@@ -1,4 +1,4 @@
-# --- NÚCLEO: API Y SERVIDOR (Backend) ---
+# --- NUCLEO: API Y SERVIDOR (Backend) ---
 fastapi==0.109.0
 uvicorn==0.27.0
 pydantic==2.6.0
@@ -10,7 +10,7 @@ pydantic-settings==2.1.0
 streamlit==1.31.0
 matplotlib==3.8.2
 
-# --- CIENCIA DE DATOS Y MATEMÁTICAS ---
+# --- CIENCIA DE DATOS Y MATEMATICAS ---
 pandas==2.2.0
 numpy==1.26.4
 joblib==1.3.2
@@ -21,15 +21,15 @@ nltk==3.8.1
 spacy==3.7.2
 deep-translator==1.11.4
 
-# --- VISIÓN POR COMPUTADOR (Imágenes) ---
+# --- VISION POR COMPUTADOR (Imagenes) ---
 Pillow==10.2.0
 pytesseract==0.3.10
 langdetect==1.0.9
 
 # ===================================================================
-# NOTAS DE INSTALACIÓN
+# NOTAS DE INSTALACION
 # ===================================================================
 # 
-# 1. Instalar dependencias básicas:
+# 1. Instalar dependencias basicas:
 #    pip install -r requirements.txt
 
