@@ -49,3 +49,6 @@ async def analizar_anuncio(anuncio: AnuncioEntrada = Depends(AnuncioEntrada.as_f
         
     )
     return resultado
+
+
+#Este archivo le corresponde al grupo de Backend, esto es solo un archivo de prueba
