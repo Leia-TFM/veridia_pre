@@ -76,7 +76,10 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "info_imagen_label": "Sube una imagen para verla aquí",
         "borrar_texto_label": "Borrar texto",
         "borrar_url_label": "Borrar URL",
-        "spinner_label": "Analizando anuncio..."
+        "spinner_label": "Analizando anuncio...",
+        "mode_label": "Seleccione un modo de uso",
+        "mode_label_one": "Analizar anuncio",
+        "mode_label_two": "Detectar Idioma / Traducción"
 
     },
     "English": {
@@ -92,7 +95,10 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "info_imagen_label": "Upload an image to view it here",
         "borrar_texto_label": "Erase text",
         "borrar_url_label": "Erase URL",
-        "spinner_label": "Analysing advertisement..."
+        "spinner_label": "Analysing advertisement...",
+        "mode_label": "Select a usage mode",
+        "mode_label_one": "Anayse advertisement",
+        "mode_label_two": "Detect Language / Translation"
 
     },
     "Français": {
@@ -108,7 +114,10 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "info_imagen_label": "Téléchargez une image pour la voir ici",
         "borrar_texto_label": "Effacer texte",
         "borrar_url_label": "Effacer URL",
-        "spinner_label": "Analyse de l'annonce..."
+        "spinner_label": "Analyse de l'annonce...",
+        "mode_label": "Sélectionnez un mode d'utilisation",
+        "mode_label_one": "Analyser l'annonce",
+        "mode_label_two": "Détection de la langue / Traduction"
 
     }
 }
@@ -156,8 +165,8 @@ with st.container():
 
 # ---------- MODO ----------        #Traducir también al idioma que se seleccione
 with st.container():
-    st.markdown("<h3 style='color:#6f4a8e;'>Selecciona un modo de uso:</h3>", unsafe_allow_html=True)
-    modo = st.radio("Selecciona un modo", ["Analizar anuncio", "Detectar Idioma / Traducción"], horizontal=True, label_visibility="hidden")
+    st.markdown(f"<h3 style='color:#6f4a8e;'>{lang_ui_input["mode_label"]}:</h3>", unsafe_allow_html=True)
+    modo = st.radio("Selecciona un modo", [f"{lang_ui_input["mode_label_one"]}", f"{lang_ui_input["mode_label_two"]}"], horizontal=True, label_visibility="hidden")
 
 st.divider()    #Esto deja un espacio entre el desplegable de los idiomas y el mensaje de funcionalidad
 
@@ -196,7 +205,7 @@ with col_text_btn:  #Columna del botón de borrar
 
 # Input
 text_input = st.text_area(
-    "Texto en español", 
+    "Text", 
     key="texto",
     height=150
 )
