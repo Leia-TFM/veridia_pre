@@ -261,23 +261,58 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "score":"Puntuación de riesgo",
         "message":"Mensaje",
         "motives":"Motivos detectados",
-        "spanish_only_error": "Solo se permiten anuncios en español. Inténtalo de nuevo."
+        "spanish_only_error": "Solo se permiten anuncios en español. Inténtalo de nuevo.",
+        "mode": "Detectar Idioma / Traducción",
+        "lang_phrase": "Idioma detectado",
+        "valid_phrase": "Texto válido para análisis",
+        "original_phrase": "Texto original",
+        "translated_phrase": "Texto traducido"
+
     },
     "en":{
         "result":" ✔ Analysis Result",
         "score":"Risk Score",
         "message":"Message",
         "motives":"Detected reasons",
-        "spanish_only_error": "Only advertisements in Spanish are allowed. Try again."
+        "spanish_only_error": "Only advertisements in Spanish are allowed. Try again.",
+        "mode": "Detect Language / Translation",
+        "lang_phrase": "Language detected",
+        "valid_phrase": "Text suitable for analysis",
+        "original_phrase": "Original text",
+        "translated_phrase": "Translated text"
     },
     "fr":{
         "result":" ✔ Résultat de l'analyse",
         "score":"Score de risque",
         "message":"Message",
         "motives":"Motifs détectés",
-        "spanish_only_error": "Seules les annonces en espagnol sont autorisées. Réessayez."
+        "spanish_only_error": "Seules les annonces en espagnol sont autorisées. Réessayez.",
+        "mode": "Détection de la langue / Traduction",
+        "lang_phrase": "Langue détectée",
+        "valid_phrase": "Texte valable pour l'analyse",
+        "original_phrase": "Texte original",
+        "translated_phrase": "Texte traduit"
     }
 }
+translations = {  #Diccionario y funcion para traducir el mensaje desde el backend
+    "es": {
+        "valid": "El texto es en español ({idioma}) y es analizable.",
+        "invalid": "Idioma no soportado. El idioma detectado es ({idioma}). Solo se admite español (es)."
+    },
+    "en": {
+        "valid": "The text is in Spanish ({idioma}) and can be analyzed.",
+        "invalid": "Unsupported language. The detected language is ({idioma}). Only Spanish (es) is allowed."
+    },
+    "fr": {
+        "valid": "Le texte est en espagnol ({idioma}) et peut être analysé.",
+        "invalid": "Langue non prise en charge. La langue détectée est ({idioma}). Seul l'espagnol (es) est autorisé."
+    }
+}
+def traducir_mensaje(lang, idioma_detectado, es_analizable):
+    key = "valid" if es_analizable else "invalid"
+    
+    texto = translations.get(lang, translations["en"])[key]
+    return texto.format(idioma=idioma_detectado)
 
 # ---------- ANÁLISIS ----------
 if analyze:
@@ -325,7 +360,7 @@ if analyze:
         if modo == "Analizar anuncio":
 
             # idioma detectado
-            st.info(f"Idioma detectado: {result.get('idioma_detectado')}")
+            st.info(f"{UI_TEXTS[lang_ui]["lang_phrase"]}: {result.get('idioma_detectado')}")
 
             nivel = result.get("nivel_seguridad")
 
@@ -356,34 +391,39 @@ if analyze:
 
         # ----------DETECTAR IDIOMA ----------
         else:
-            st.subheader("🌍 Detectar Idioma / Traducción")
+            st.subheader(f"🌍 {UI_TEXTS[lang_ui]["mode"]}")
 
             # idioma detectado
-            st.info(f"Idioma detectado: {result.get('idioma_detectado')}")
+            st.info(f"{UI_TEXTS[lang_ui]["lang_phrase"]}: {result.get('idioma_detectado')}")
 
             # mensaje
-            st.write(result.get("mensaje"))
+            mensaje = traducir_mensaje(
+                lang_ui,
+                result["idioma_detectado"],
+                result["es_analizable"]
+            )
+            st.write(mensaje)
 
             # comprobación
             if result.get("es_analizable"):
-                st.success("Texto válido para análisis")
+                st.success(f"{UI_TEXTS[lang_ui]["valid_phrase"]}")
 
                 # original
-                st.subheader("Texto original")
+                st.subheader(f"{UI_TEXTS[lang_ui]["original_phrase"]}")
                 st.write(result.get("original"))
 
                 # traducido
-                st.subheader("Texto traducido")
+                st.subheader(f"{UI_TEXTS[lang_ui]["translated_phrase"]}")
                 st.success(result.get("traducido"))
 
             else:
                 
                 # Mostrar igualmente el original si quieres
-                st.subheader("Texto original")
+                st.subheader(f"{UI_TEXTS[lang_ui]["original_phrase"]}")
                 st.write(result.get("original"))
 
                 # Mostrar traducción vacía o lo que haya
-                st.subheader("Texto traducido")
+                st.subheader(f"{UI_TEXTS[lang_ui]["translated_phrase"]}")
                 st.write(result.get("traducido") or "No disponible")
 
     elif response.status_code == 400:       #Significa que no se ha podido realizar el análisis porque el anuncio no estaba en español
