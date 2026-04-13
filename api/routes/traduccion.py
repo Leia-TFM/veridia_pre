@@ -22,7 +22,7 @@ async def detectar_idioma(texto: TextoDetectar = Depends(TextoDetectar.as_form),
         return ResultadoDeteccion(
             idioma_detectado=idioma_detectado,
             es_analizable=False,
-            mensaje=f"Idioma no soportado. El idioma detectado es ({idioma_detectado}). Solo se admite español (es).",
+            mensaje="",
             original=original,
             traducido=""
         )
@@ -30,7 +30,7 @@ async def detectar_idioma(texto: TextoDetectar = Depends(TextoDetectar.as_form),
     resultado = ResultadoDeteccion(
         idioma_detectado=idioma_detectado,
         es_analizable=True,
-        mensaje="El texto es en español (es) y es analizable.",
+        mensaje="",
         original=original,
         traducido=translated
     )
