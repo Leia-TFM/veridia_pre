@@ -23,8 +23,8 @@ async def analizar_anuncio(anuncio: AnuncioEntrada = Depends(AnuncioEntrada.as_f
             tipo_entrada=anuncio.tipo,
             nivel_seguridad=NivelSeguridad.ROJO,
             confianza_seguridad=0.0,
-            mensaje=f"Idioma no soportado. El idioma detectado es ({idioma_detectado}). Solo se admite español.",
-            indicadores=["Idioma no soportado"],
+            mensaje="",
+            indicadores=[""],
             idioma_detectado=idioma_detectado
         )
     
@@ -43,7 +43,7 @@ async def analizar_anuncio(anuncio: AnuncioEntrada = Depends(AnuncioEntrada.as_f
         tipo_entrada=anuncio.tipo,
         nivel_seguridad=NivelSeguridad.AMARILLO,
         confianza_seguridad=0.75,
-        mensaje="El anuncio requiere atención debido a posibles riesgos.",
+        mensaje="",
         indicadores=["Uso de lenguaje ambiguo", "Falta de información clara"],
         idioma_detectado=idioma_detectado
         
