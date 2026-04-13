@@ -267,40 +267,50 @@ analyze = st.button(f"🔎 {lang_ui_input['anuncio_label']}") #Botón que analiz
 UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por pantalla dependiendo del idioma que haya seleccionado (falta rellenar más)
     "es":{
         "result":" ✔ Resultado del análisis",
-        "score":"Puntuación de riesgo",
-        "message":"Mensaje",
-        "motives":"Motivos detectados",
         "spanish_only_error": "Solo se permiten anuncios en español. Inténtalo de nuevo.",
         "mode": "Detectar Idioma / Traducción",
         "lang_phrase": "Idioma detectado",
         "valid_phrase": "Texto válido para análisis",
         "original_phrase": "Texto original",
-        "translated_phrase": "Texto traducido"
+        "translated_phrase": "Texto traducido",
+        "message": "Mensaje",
+        "indicator": "Indicadores detectados",
+        "trust": "Confianza",
+        "green": "Riesgo bajo",
+        "yellow": "Riesgo medio",
+        "red": "Riesgo alto",
+
 
     },
     "en":{
         "result":" ✔ Analysis Result",
-        "score":"Risk Score",
-        "message":"Message",
-        "motives":"Detected reasons",
         "spanish_only_error": "Only advertisements in Spanish are allowed. Try again.",
         "mode": "Detect Language / Translation",
         "lang_phrase": "Language detected",
         "valid_phrase": "Text suitable for analysis",
         "original_phrase": "Original text",
-        "translated_phrase": "Translated text"
+        "translated_phrase": "Translated text",
+        "message": "Message",
+        "indicator": "Indicators detected",
+        "trust": "Trust",
+        "green": "Low risk",
+        "yellow": "Medium risk",
+        "red": "High risk",
     },
     "fr":{
         "result":" ✔ Résultat de l'analyse",
-        "score":"Score de risque",
-        "message":"Message",
-        "motives":"Motifs détectés",
         "spanish_only_error": "Seules les annonces en espagnol sont autorisées. Réessayez.",
         "mode": "Détection de la langue / Traduction",
         "lang_phrase": "Langue détectée",
         "valid_phrase": "Texte valable pour l'analyse",
         "original_phrase": "Texte original",
-        "translated_phrase": "Texte traduit"
+        "translated_phrase": "Texte traduit",
+        "message": "Message",
+        "indicator": "Indicateurs détectés",
+        "trust": "Confiance",
+        "green": "Risque faible",
+        "yellow": "Risque moyen",
+        "red": "Risque élevé ",
     }
 }
 translations = {  #Diccionario y funcion para traducir el mensaje desde el backend
@@ -321,6 +331,26 @@ def traducir_mensaje(lang, idioma_detectado, es_analizable):
     key = "valid" if es_analizable else "invalid"
     
     texto = translations.get(lang, translations["en"])[key]
+    return texto.format(idioma=idioma_detectado)
+
+translations_analisis = {  #Diccionario y funcion para traducir el mensaje desde el backend
+    "es": {
+        "valid": "El anuncio requiere atención debido a posibles riesgos.",
+        "invalid": "Idioma no soportado. El idioma detectado es ({idioma}). Solo se admite español (es)."
+    },
+    "en": {
+        "valid": "This advertisement requires your attention due to potential risks.",
+        "invalid": "Unsupported language. The detected language is ({idioma}). Only Spanish (es) is allowed."
+    },
+    "fr": {
+        "valid": "Cette annonce mérite votre attention en raison des risques potentiels qu'elle comporte.",
+        "invalid": "Langue non prise en charge. La langue détectée est ({idioma}). Seul l'espagnol (es) est autorisé."
+    }
+}
+def traducir_mensaje_analisis(lang, idioma_detectado):
+    key = "invalid" if idioma_detectado != "es" else "valid"
+    
+    texto = translations_analisis.get(lang, translations_analisis["en"])[key]
     return texto.format(idioma=idioma_detectado)
 
 # ---------- ANÁLISIS ----------
@@ -353,7 +383,7 @@ if analyze:
             uploaded_file.type
         )
 
-    endpoint = API_ANALIZAR if modo == "Analizar anuncio" else API_DETECTAR_IDIOMA
+    endpoint = API_ANALIZAR if modo == f"{lang_ui_input["mode_label_one"]}" else API_DETECTAR_IDIOMA
 
     with st.spinner(idioma_input["spinner_label"]):
         response = llamar_api(endpoint, data, files)
@@ -366,37 +396,43 @@ if analyze:
 
        
         # ---------- ANALIZAR ----------
-        if modo == "Analizar anuncio":
+        if modo == f"{lang_ui_input["mode_label_one"]}":
 
             # idioma detectado
             st.info(f"{UI_TEXTS[lang_ui]["lang_phrase"]}: {result.get('idioma_detectado')}")
 
             nivel = result.get("nivel_seguridad")
 
-            # SEMÁFORO
-            if nivel == "VERDE":
-                st.success("🟢 Riesgo bajo")
-            elif nivel == "AMARILLO":
-                st.warning("🟡 Riesgo medio")
-            elif nivel == "ROJO":
-                st.error("🔴 Riesgo alto")
+            # SEMÁFORO   (a integrar)**************
+            if nivel == "verde":
+                st.success(f"🟢 {UI_TEXTS[lang_ui]["green"]}")
+            elif nivel == "amarillo":
+                st.warning(f"🟡 {UI_TEXTS[lang_ui]["yellow"]}")
+            elif nivel == "rojo":
+                st.error(f"🔴 {UI_TEXTS[lang_ui]["red"]}")
 
             # PUNTUACIÓN (0–1 → lo pasamos a %)
             confianza = result.get("confianza_seguridad", 0)
 
-            st.metric("Confianza", f"{int(confianza * 100)}%")
+            st.metric(f"{UI_TEXTS[lang_ui]["trust"]}", f"{int(confianza * 100)}%")
             st.progress(confianza)
 
             # MENSAJE
-            st.subheader("Mensaje")
-            st.info(result.get("mensaje"))
+            st.subheader(f"{UI_TEXTS[lang_ui]["message"]}")
+            mensaje = traducir_mensaje_analisis(
+                lang_ui,
+                result["idioma_detectado"]
+
+            )
+            st.write(mensaje)
 
             # INDICADORES
-            st.subheader("Indicadores detectados")
+            st.subheader(f"{UI_TEXTS[lang_ui]["indicator"]}")
 
             indicadores = result.get("indicadores", [])
-            for ind in indicadores:
-                st.write("•", ind)
+            if result["idioma_detectado"] == "es":
+                for ind in indicadores:
+                    st.write("•", ind)
 
         # ----------DETECTAR IDIOMA ----------
         else:
