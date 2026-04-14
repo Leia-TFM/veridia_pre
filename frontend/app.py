@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import requests
 
 API_DETECTAR_IDIOMA = "http://127.0.0.1:8000/api/detectar_idioma"
@@ -97,7 +98,7 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "borrar_url_label": "Erase URL",
         "spinner_label": "Analysing advertisement...",
         "mode_label": "Select a usage mode",
-        "mode_label_one": "Anayse advertisement",
+        "mode_label_one": "Analyse advertisement",
         "mode_label_two": "Detect Language / Translation"
 
     },
@@ -268,6 +269,7 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
     "es":{
         "result":" ✔ Resultado del análisis",
         "spanish_only_error": "Solo se permiten anuncios en español. Inténtalo de nuevo.",
+        "data": "Introduce datos",
         "mode": "Detectar Idioma / Traducción",
         "lang_phrase": "Idioma detectado",
         "valid_phrase": "Texto válido para análisis",
@@ -285,6 +287,7 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
     "en":{
         "result":" ✔ Analysis Result",
         "spanish_only_error": "Only advertisements in Spanish are allowed. Try again.",
+        "data": "Enter data",
         "mode": "Detect Language / Translation",
         "lang_phrase": "Language detected",
         "valid_phrase": "Text suitable for analysis",
@@ -300,6 +303,7 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
     "fr":{
         "result":" ✔ Résultat de l'analyse",
         "spanish_only_error": "Seules les annonces en espagnol sont autorisées. Réessayez.",
+        "data": "Saisir des données",
         "mode": "Détection de la langue / Traduction",
         "lang_phrase": "Langue détectée",
         "valid_phrase": "Texte valable pour l'analyse",
@@ -347,17 +351,72 @@ translations_analisis = {  #Diccionario y funcion para traducir el mensaje desde
         "invalid": "Langue non prise en charge. La langue détectée est ({idioma}). Seul l'espagnol (es) est autorisé."
     }
 }
-def traducir_mensaje_analisis(lang, idioma_detectado):
+def traducir_mensaje_analisis(lang, idioma_detectado):  
     key = "invalid" if idioma_detectado != "es" else "valid"
     
     texto = translations_analisis.get(lang, translations_analisis["en"])[key]
     return texto.format(idioma=idioma_detectado)
 
+def semaforo(nivel=None):
+    html = f"""
+    <html>
+    <body style="margin:0; display:flex; justify-content:center; align-items:center;">
+
+        <div style="
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            width:110px;
+            padding:20px 15px;
+            background:#111;
+            border-radius:18px;
+            box-shadow:0 5px 20px rgba(0,0,0,0.5);
+            overflow:visible;
+        ">
+            
+            <div style="
+                width:60px;
+                height:60px;
+                border-radius:50%;
+                margin:12px 0;
+                background:{'red' if nivel=='rojo' else '#2b2b2b'};
+                box-shadow:{'0 0 35px red' if nivel=='rojo' else 'none'};
+                transition: all 0.3s ease;
+            "></div>
+
+            <div style="
+                width:60px;
+                height:60px;
+                border-radius:50%;
+                margin:12px 0;
+                background:{'yellow' if nivel=='amarillo' else '#2b2b2b'};
+                box-shadow:{'0 0 35px yellow' if nivel=='amarillo' else 'none'};
+                transition: all 0.3s ease;
+            "></div>
+
+            <div style="
+                width:60px;
+                height:60px;
+                border-radius:50%;
+                margin:12px 0;
+                background:{'green' if nivel=='verde' else '#2b2b2b'};
+                box-shadow:{'0 0 35px green' if nivel=='verde' else 'none'};
+                transition: all 0.3s ease;
+            "></div>
+
+        </div>
+
+    </body>
+    </html>
+    """
+
+    components.html(html, height=340)
+
 # ---------- ANÁLISIS ----------
 if analyze:
 
     if not text_input and not url_input and not uploaded_file:
-        st.warning("⚠️ Introduce datos")   #Traducir también con otra variable del idioma seleccionado
+        st.warning(f"⚠️ {UI_TEXTS[lang_ui]["data"]}")   #Traducir también con otra variable del idioma seleccionado
         st.stop()
 
     if uploaded_file:
@@ -402,14 +461,20 @@ if analyze:
             st.info(f"{UI_TEXTS[lang_ui]["lang_phrase"]}: {result.get('idioma_detectado')}")
 
             nivel = result.get("nivel_seguridad")
+            # SEMÁFORO  
+            col1, col2 = st.columns([1,2])
 
-            # SEMÁFORO   (a integrar)**************
-            if nivel == "verde":
-                st.success(f"🟢 {UI_TEXTS[lang_ui]["green"]}")
-            elif nivel == "amarillo":
-                st.warning(f"🟡 {UI_TEXTS[lang_ui]["yellow"]}")
-            elif nivel == "rojo":
-                st.error(f"🔴 {UI_TEXTS[lang_ui]["red"]}")
+            with col1:
+                semaforo(nivel)
+
+            with col2:
+                st.markdown("<div style='height:80px'></div>", unsafe_allow_html=True)
+                if nivel == "verde":
+                    st.success(f"🟢 {UI_TEXTS[lang_ui]['green']}")
+                elif nivel == "amarillo":
+                    st.warning(f"🟡 {UI_TEXTS[lang_ui]['yellow']}")
+                elif nivel == "rojo":
+                    st.error(f"🔴 {UI_TEXTS[lang_ui]['red']}")
 
             # PUNTUACIÓN (0–1 → lo pasamos a %)
             confianza = result.get("confianza_seguridad", 0)
