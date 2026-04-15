@@ -18,7 +18,7 @@ st.markdown("""
 <style>
 
 .main {
-    background-color: #ebe2d3;  #crema, si no gusta se puede cambiar a blanco
+    background-color: #white;  #crema, si no gusta se puede cambiar a blanco
 }
 
 .block-container {
