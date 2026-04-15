@@ -60,7 +60,11 @@ languages = {       #Los idiomas seleccionables en el desplegable
     "🇵🇹 Português": "pt",
     "🇷🇺 Русский": "ru",
     "🇸🇦 العربية": "ar",
-    "🇷🇴 Română": "ro"
+    "🇷🇴 Română": "ro",
+    "🇳🇱 Neerlandés": "nl",
+    "🇨🇦 Catalán": "ca",
+    "🇵🇱 Polaco": "pl",
+    "🇺🇦 Ucraniano": "uk",
 }
 
 languages_input = {     #La traducción de todos los elementos visibles por pantalla a los demás idiomas (faltan idiomas)
