@@ -84,7 +84,7 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "spinner_label": "Analizando anuncio...",
         "mode_label": "Seleccione un modo de uso",
         "mode_label_one": "Analizar anuncio",
-        "mode_label_two": "Detectar Idioma / Traducción"
+        "mode_label_two": "Mostrar estadísticas"
 
     },
     "English": {
@@ -103,7 +103,7 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "spinner_label": "Analysing advertisement...",
         "mode_label": "Select a usage mode",
         "mode_label_one": "Analyse advertisement",
-        "mode_label_two": "Detect Language / Translation"
+        "mode_label_two": "Show statistics"
 
     },
     "Français": {
@@ -122,7 +122,7 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "spinner_label": "Analyse de l'annonce...",
         "mode_label": "Sélectionnez un mode d'utilisation",
         "mode_label_one": "Analyser l'annonce",
-        "mode_label_two": "Détection de la langue / Traduction"
+        "mode_label_two": "Afficher les statistiques"
 
     }
 }
