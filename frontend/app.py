@@ -1,6 +1,7 @@
 import streamlit as st
 import streamlit.components.v1 as components
 import requests
+import time
 
 API_DETECTAR_IDIOMA = "http://127.0.0.1:8000/api/detectar_idioma"
 API_ANALIZAR = "http://127.0.0.1:8000/api/analizar"
@@ -416,6 +417,18 @@ def semaforo(nivel=None):
 
     components.html(html, height=340)
 
+placeholder = st.empty()
+def animacion(color):
+    luces = {
+        "rojo": "🔴 ⚫ ⚫",
+        "ambar": "⚫ 🟡 ⚫",
+        "verde": "⚫ ⚫ 🟢"
+    }
+    placeholder.markdown(
+        f"<div style='font-size:20px; text-align:left'>{luces[color]}</div>",
+        unsafe_allow_html=True
+    )
+
 # ---------- ANÁLISIS ----------
 if analyze:
 
@@ -448,7 +461,15 @@ if analyze:
 
     endpoint = API_ANALIZAR if modo == f"{lang_ui_input["mode_label_one"]}" else API_DETECTAR_IDIOMA
 
-    with st.spinner(idioma_input["spinner_label"]):
+    with st.spinner(f"{idioma_input["spinner_label"]}"):
+        
+        animacion("rojo")
+        time.sleep(1)
+
+        animacion("ambar")
+        time.sleep(1)
+
+        animacion("verde")
         response = llamar_api(endpoint, data, files)
 
     if response.status_code == 200:  #Significa que está correcto
