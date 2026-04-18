@@ -1,16 +1,18 @@
 import pytesseract
 from PIL import Image
 from deep_translator import GoogleTranslator
-from langdetect import detect, DetectorFactory
 from fastapi import UploadFile, HTTPException
 import io
 import logging   
 import requests
 from bs4 import BeautifulSoup
+import fasttext
+import os
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "lid.176.bin")
 
-# Evita resultados aleatorios de langdetect
-DetectorFactory.seed = 0
+model = fasttext.load_model(MODEL_PATH)
 
 # La librería logging registra eventos durante la ejecución: errores, advertencias e información de flujo.
 # A diferencia de print(), permite clasificar los mensajes por nivel de gravedad:
@@ -123,16 +125,27 @@ async def traducir_contenido(target_lang: str, file: UploadFile = None, text: st
     # para que pueda entenderlo aunque no sepa español.
     # Si la detección falla (sin conexión, texto muy corto...) se deja pasar para no bloquear la petición.
     try:
-        idioma_detectado = detect(texto_para_traducir)
-        logger.info(f"Idioma detectado: {idioma_detectado}")
-    except HTTPException:
-        raise
+        pred = model.predict(texto_para_traducir)
+
+        etiqueta = pred[0][0]
+        probabilidad = pred[1][0]
+
+        idioma_detectado = etiqueta.replace("__label__", "")
+
+        logger.info(f"Idioma detectado: {idioma_detectado} (confianza: {probabilidad})")
+
+        # Umbral de confianza
+        if probabilidad < 0.5:
+            idioma_detectado = "unknown"
+            logger.warning("Confianza baja en la detección de idioma.")
+
     except Exception as e:
         logger.warning(f"No se pudo detectar el idioma de entrada: {e}")
+        idioma_detectado = "unknown"
 
     # --- Traducción ---
     try:
-        translator = GoogleTranslator(source='auto', target=target_lang)
+        translator = GoogleTranslator(source="es", target=target_lang)
         # Se limita a 4500 caracteres para evitar bloqueos del servicio de traducción de Google
         translated = translator.translate(texto_para_traducir[:4500])
         return texto_para_traducir, translated, idioma_detectado
