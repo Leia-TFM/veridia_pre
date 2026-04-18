@@ -464,13 +464,15 @@ if analyze:
     with st.spinner(f"{idioma_input["spinner_label"]}"):
         
         animacion("rojo")
-        time.sleep(1)
+        time.sleep(1.5)
 
         animacion("ambar")
         time.sleep(1)
 
         animacion("verde")
         response = llamar_api(endpoint, data, files)
+        time.sleep(0.5)
+        placeholder.empty()
 
     if response.status_code == 200:  #Significa que está correcto
         result = response.json()
