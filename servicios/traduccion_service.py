@@ -10,7 +10,7 @@ import fasttext
 import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR, "lid.176.bin")
+MODEL_PATH = os.path.join(BASE_DIR, "lid.176.ftz")
 
 model = fasttext.load_model(MODEL_PATH)
 
