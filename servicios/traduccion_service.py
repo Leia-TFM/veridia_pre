@@ -136,12 +136,12 @@ async def traducir_contenido(target_lang: str, file: UploadFile = None, text: st
 
         # Umbral de confianza
         if probabilidad < 0.5:
-            idioma_detectado = "unknown"
+            idioma_detectado = "Unknown"
             logger.warning("Confianza baja en la detección de idioma.")
 
     except Exception as e:
         logger.warning(f"No se pudo detectar el idioma de entrada: {e}")
-        idioma_detectado = "unknown"
+        idioma_detectado = "Unknown"
 
     # --- Traducción ---
     try:
