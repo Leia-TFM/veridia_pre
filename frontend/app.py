@@ -248,11 +248,10 @@ else:
     st.markdown(        #Lo podemos cambiar al naranja
     f"""
     <div style="
-        background-color: #b6c35d;
+        background-color: #C3B1E1;
         color: #000000;
         padding: 10px 20px;
         border-radius: 8px;
-        border-left: 5px solid #b6c35d;
         font-weight: 500;
         z-index: 9999;
         pointer-events: none;
@@ -429,6 +428,41 @@ def animacion(color):
         unsafe_allow_html=True
     )
 
+def mostrar_resultado_analisis(res_seg, res_det, lang_ui):
+    # Creamos un contenedor visual con un borde
+    with st.container(border=True):
+        st.header(f"{UI_TEXTS[lang_ui]['result']}")
+        
+        # --- SEMÁFORO ---
+        nivel = res_seg.get("nivel_seguridad")
+        col1, col2 = st.columns([1, 2])
+
+        with col1:
+            semaforo(nivel)
+
+        with col2:
+            if nivel == "verde":
+                st.success(f"🟢 {UI_TEXTS[lang_ui]['green']}")
+            elif nivel == "amarillo":
+                st.warning(f"🟡 {UI_TEXTS[lang_ui]['yellow']}")
+            elif nivel == "rojo":
+                st.error(f"🔴 {UI_TEXTS[lang_ui]['red']}")
+
+        # --- PUNTUACIÓN ---
+        confianza = res_seg.get("confianza_seguridad", 0)
+        st.metric(f"{UI_TEXTS[lang_ui]['trust']}", f"{int(confianza * 100)}%")
+        st.progress(confianza)
+
+        # --- MENSAJE E INDICADORES ---
+
+        st.subheader(UI_TEXTS[lang_ui]["message"])
+        st.write(traducir_mensaje_analisis(lang_ui, res_det["idioma_detectado"]))
+            
+        st.subheader(UI_TEXTS[lang_ui]["indicator"])
+        for ind in res_seg.get("indicadores", []):
+            st.write(f"• {ind}")
+    
+
 # ---------- ANÁLISIS ----------
 if analyze:
 
@@ -482,26 +516,66 @@ if analyze:
                 
                 st.divider()
 
-                st.subheader(f"🌍 {UI_TEXTS[lang_ui]["mode"]}")
+                st.markdown(f"""
+                    <div style="
+                        background-color: #f9fbf2; 
+                        padding: 20px; 
+                        border-radius: 15px; 
+                        border-left: 5px solid #b6c35d; 
+                        margin-bottom: 20px;
+                    ">
+                        <h3 style="color: #4a4a4a; margin: 0;">🌍 {UI_TEXTS[lang_ui]["mode"]}</h3>
+                        <p style="font-size: 18px; color: #6b8e23; font-weight: bold; margin-top: 10px;">
+                            {UI_TEXTS[lang_ui]['lang_phrase']}: {res_det.get('idioma_detectado').upper()}
+                        </p>
+                    </div>
+                """, unsafe_allow_html=True)
 
-                # idioma detectado
-                st.info(f"{UI_TEXTS[lang_ui]['lang_phrase']}: {res_det.get('idioma_detectado')}")
-
-                    # mensaje
+                # Mensaje dinámico (Traducción/Estado)
                 mensaje = traducir_mensaje(
                     lang_ui,
                     res_det["idioma_detectado"],
                     res_det["es_analizable"]
                 )
-                st.write(mensaje)
 
-                st.success(f"{UI_TEXTS[lang_ui]["valid_phrase"]}")
-                # Mostramos el texto original y el traducido
-                st.subheader(f"{UI_TEXTS[lang_ui]['original_phrase']}")
-                st.write(res_det.get("original"))
+                # Cuadro de validación 
+                color_box = "#b6c35d" # Verde del botón
+                texto_validacion = f"✅ {UI_TEXTS[lang_ui]['valid_phrase']}"
 
-                st.subheader(f"{UI_TEXTS[lang_ui]['translated_phrase']}")
-                st.write(res_det.get("traducido"))
+
+                st.markdown(f"""
+                    <div style="
+                        background-color: {color_box}; 
+                        color: white; 
+                        padding: 12px; 
+                        border-radius: 10px; 
+                        text-align: center; 
+                        font-weight: bold;
+                        margin-bottom: 25px;
+                    ">
+                        {texto_validacion}
+                    </div>
+                    <p style="font-style: italic; color: #555;">{mensaje}</p>
+                """, unsafe_allow_html=True)
+
+                # Comparativa de textos (Original vs Traducido) en columnas estéticas
+                col_orig, col_trad = st.columns(2)
+
+                with col_orig:
+                    st.markdown(f"""
+                        <div style="background-color: #ffffff; padding: 15px; border-radius: 10px; border: 1px solid #ddd; height: 100%;">
+                            <h4 style="color: #e89a40; margin-top: 0;">{UI_TEXTS[lang_ui]['original_phrase']}</h4>
+                            <p style="color: #333; font-size: 14px;">{res_det.get("original")}</p>
+                        </div>
+                    """, unsafe_allow_html=True)
+
+                with col_trad:
+                    st.markdown(f"""
+                        <div style="background-color: #f2f7e5; padding: 15px; border-radius: 10px; border: 1px solid #b6c35d; height: 100%;">
+                            <h4 style="color: #6b8e23; margin-top: 0;">{UI_TEXTS[lang_ui]['translated_phrase']}</h4>
+                            <p style="color: #333; font-size: 14px;">{res_det.get("traducido")}</p>
+                        </div>
+                    """, unsafe_allow_html=True)
 
                 if uploaded_file:
                     uploaded_file.seek(0)
@@ -514,46 +588,8 @@ if analyze:
                     res_seg = response_seguridad.json() # Guardamos la respuesta de análisis aquí
 
                     st.divider()
-                    st.subheader(UI_TEXTS[lang_ui]["result"])
+                    mostrar_resultado_analisis(res_seg, res_det, lang_ui)
 
-                    nivel = res_seg.get("nivel_seguridad")
-                    # SeMÁFORO  
-                    col1, col2 = st.columns([1,2])
-
-                    with col1:
-                        semaforo(nivel)
-
-                    with col2:
-                        st.markdown("<div style='height:80px'></div>", unsafe_allow_html=True)
-                        if nivel == "verde":
-                            st.success(f"🟢 {UI_TEXTS[lang_ui]['green']}")
-                        elif nivel == "amarillo":
-                            st.warning(f"🟡 {UI_TEXTS[lang_ui]['yellow']}")
-                        elif nivel == "rojo":
-                            st.error(f"🔴 {UI_TEXTS[lang_ui]['red']}")
-
-                    # PUNTUACIÓN (0–1 → lo pasamos a %)
-                    confianza = res_seg.get("confianza_seguridad", 0)
-
-                    st.metric(f"{UI_TEXTS[lang_ui]["trust"]}", f"{int(confianza * 100)}%")
-                    st.progress(confianza)
-
-                    # MENSAJE
-                    st.subheader(f"{UI_TEXTS[lang_ui]["message"]}")
-                    mensaje_analisis = traducir_mensaje_analisis(
-                        lang_ui,
-                        res_det["idioma_detectado"]
-
-                    )
-                    st.write(mensaje_analisis)
-
-                    # INDICADORES
-                    st.subheader(f"{UI_TEXTS[lang_ui]["indicator"]}")
-
-                    indicadores = res_seg.get("indicadores", [])
-                    if res_det["idioma_detectado"] == "es":
-                        for ind in indicadores:
-                            st.write("•", ind)
                 else:
                     # --- ERROR DE CONEXIÓN EN LA SEGUNDA API (Sustituye al 'else' antiguo) ---
                     st.error("❌ Error al conectar con la API de Análisis")
