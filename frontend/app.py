@@ -459,118 +459,136 @@ if analyze:
             uploaded_file.type
         )
 
-    endpoint = API_ANALIZAR if modo == f"{lang_ui_input["mode_label_one"]}" else API_DETECTAR_IDIOMA
+    if modo == f"{lang_ui_input["mode_label_one"]}":
 
-    with st.spinner(f"{idioma_input["spinner_label"]}"):
-        
-        animacion("rojo")
-        time.sleep(1.5)
+        with st.spinner(f"{idioma_input["spinner_label"]}"):
+            
+            animacion("rojo")
+            time.sleep(1.5)
 
-        animacion("ambar")
-        time.sleep(1)
+            animacion("ambar")
+            time.sleep(1)
 
-        animacion("verde")
-        response = llamar_api(endpoint, data, files)
-        time.sleep(0.5)
-        placeholder.empty()
+            animacion("verde")
+            response_idioma = llamar_api(API_DETECTAR_IDIOMA, data, files)
+            time.sleep(0.5)
+            placeholder.empty()
 
-    if response.status_code == 200:  #Significa que está correcto
-        result = response.json()
-
-        st.divider()
-        st.subheader(UI_TEXTS[lang_ui]["result"])
-
-       
-        # ---------- ANALIZAR ----------
-        if modo == f"{lang_ui_input["mode_label_one"]}":
-
-            # idioma detectado
-            st.info(f"{UI_TEXTS[lang_ui]["lang_phrase"]}: {result.get('idioma_detectado')}")
-
-            nivel = result.get("nivel_seguridad")
-            # SEMÁFORO  
-            col1, col2 = st.columns([1,2])
-
-            with col1:
-                semaforo(nivel)
-
-            with col2:
-                st.markdown("<div style='height:80px'></div>", unsafe_allow_html=True)
-                if nivel == "verde":
-                    st.success(f"🟢 {UI_TEXTS[lang_ui]['green']}")
-                elif nivel == "amarillo":
-                    st.warning(f"🟡 {UI_TEXTS[lang_ui]['yellow']}")
-                elif nivel == "rojo":
-                    st.error(f"🔴 {UI_TEXTS[lang_ui]['red']}")
-
-            # PUNTUACIÓN (0–1 → lo pasamos a %)
-            confianza = result.get("confianza_seguridad", 0)
-
-            st.metric(f"{UI_TEXTS[lang_ui]["trust"]}", f"{int(confianza * 100)}%")
-            st.progress(confianza)
-
-            # MENSAJE
-            st.subheader(f"{UI_TEXTS[lang_ui]["message"]}")
-            mensaje = traducir_mensaje_analisis(
-                lang_ui,
-                result["idioma_detectado"]
-
-            )
-            st.write(mensaje)
-
-            # INDICADORES
-            st.subheader(f"{UI_TEXTS[lang_ui]["indicator"]}")
-
-            indicadores = result.get("indicadores", [])
-            if result["idioma_detectado"] == "es":
-                for ind in indicadores:
-                    st.write("•", ind)
-
-        # ----------DETECTAR IDIOMA ----------
-        else:
-            st.subheader(f"🌍 {UI_TEXTS[lang_ui]["mode"]}")
-
-            # idioma detectado
-            st.info(f"{UI_TEXTS[lang_ui]["lang_phrase"]}: {result.get('idioma_detectado')}")
-
-            # mensaje
-            mensaje = traducir_mensaje(
-                lang_ui,
-                result["idioma_detectado"],
-                result["es_analizable"]
-            )
-            st.write(mensaje)
+        if response_idioma and response_idioma.status_code == 200:  #Significa que está correcto
+            res_det = response_idioma.json()
 
             # comprobación
-            if result.get("es_analizable"):
-                st.success(f"{UI_TEXTS[lang_ui]["valid_phrase"]}")
-
-                # original
-                st.subheader(f"{UI_TEXTS[lang_ui]["original_phrase"]}")
-                st.write(result.get("original"))
-
-                # traducido
-                st.subheader(f"{UI_TEXTS[lang_ui]["translated_phrase"]}")
-                st.success(result.get("traducido"))
-
-            else:
+            if res_det.get("es_analizable"):
                 
-                # Mostrar igualmente el original si quieres
-                st.subheader(f"{UI_TEXTS[lang_ui]["original_phrase"]}")
-                st.write(result.get("original"))
+                st.divider()
 
-                # Mostrar traducción vacía o lo que haya
-                st.subheader(f"{UI_TEXTS[lang_ui]["translated_phrase"]}")
-                st.write(result.get("traducido") or "No disponible")
+                st.subheader(f"🌍 {UI_TEXTS[lang_ui]["mode"]}")
 
-    elif response.status_code == 400:       #Significa que no se ha podido realizar el análisis porque el anuncio no estaba en español
+                # idioma detectado
+                st.info(f"{UI_TEXTS[lang_ui]['lang_phrase']}: {res_det.get('idioma_detectado')}")
 
-        error_msg = response.json()["detail"]
-        st.warning(UI_TEXTS[lang_ui]["spanish_only_error"])
+                    # mensaje
+                mensaje = traducir_mensaje(
+                    lang_ui,
+                    res_det["idioma_detectado"],
+                    res_det["es_analizable"]
+                )
+                st.write(mensaje)
 
-    else:       #Error de la API (no haría nada)
-        st.error("❌ Error al conectar con la API")
-        st.write(response.status_code)
+                st.success(f"{UI_TEXTS[lang_ui]["valid_phrase"]}")
+                # Mostramos el texto original y el traducido
+                st.subheader(f"{UI_TEXTS[lang_ui]['original_phrase']}")
+                st.write(res_det.get("original"))
+
+                st.subheader(f"{UI_TEXTS[lang_ui]['translated_phrase']}")
+                st.write(res_det.get("traducido"))
+
+                if uploaded_file:
+                    uploaded_file.seek(0)
+                    files = {"foto": (uploaded_file.name, uploaded_file, uploaded_file.type)}
+
+                with st.spinner(f"{idioma_input["spinner_label"]}"):
+                    response_seguridad = llamar_api(API_ANALIZAR, data, files)
+                    
+                if response_seguridad and response_seguridad.status_code == 200:
+                    res_seg = response_seguridad.json() # Guardamos la respuesta de análisis aquí
+
+                    st.divider()
+                    st.subheader(UI_TEXTS[lang_ui]["result"])
+
+                    nivel = res_seg.get("nivel_seguridad")
+                    # SeMÁFORO  
+                    col1, col2 = st.columns([1,2])
+
+                    with col1:
+                        semaforo(nivel)
+
+                    with col2:
+                        st.markdown("<div style='height:80px'></div>", unsafe_allow_html=True)
+                        if nivel == "verde":
+                            st.success(f"🟢 {UI_TEXTS[lang_ui]['green']}")
+                        elif nivel == "amarillo":
+                            st.warning(f"🟡 {UI_TEXTS[lang_ui]['yellow']}")
+                        elif nivel == "rojo":
+                            st.error(f"🔴 {UI_TEXTS[lang_ui]['red']}")
+
+                    # PUNTUACIÓN (0–1 → lo pasamos a %)
+                    confianza = res_seg.get("confianza_seguridad", 0)
+
+                    st.metric(f"{UI_TEXTS[lang_ui]["trust"]}", f"{int(confianza * 100)}%")
+                    st.progress(confianza)
+
+                    # MENSAJE
+                    st.subheader(f"{UI_TEXTS[lang_ui]["message"]}")
+                    mensaje_analisis = traducir_mensaje_analisis(
+                        lang_ui,
+                        res_det["idioma_detectado"]
+
+                    )
+                    st.write(mensaje_analisis)
+
+                    # INDICADORES
+                    st.subheader(f"{UI_TEXTS[lang_ui]["indicator"]}")
+
+                    indicadores = res_seg.get("indicadores", [])
+                    if res_det["idioma_detectado"] == "es":
+                        for ind in indicadores:
+                            st.write("•", ind)
+                else:
+                    # --- ERROR DE CONEXIÓN EN LA SEGUNDA API (Sustituye al 'else' antiguo) ---
+                    st.error("❌ Error al conectar con la API de Análisis")
+                    if response_seguridad:
+                         st.write(f"Código de estado: {response_seguridad.status_code}")
+
+            else: 
+                # --- NO ANALIZABLE (Lo que antes era el error 400) ---
+                # Si la detección dice que no es analizable (ej: no es español), mostramos el aviso
+                st.markdown(f"""
+                <div style="
+                    background-color: rgba(235, 226, 211, 1);
+                    padding: 40px;
+                    border-radius: 12px;
+                    text-align: center;
+                    max-width: 500px;
+                    margin: 20px auto;
+                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                    border: 2px solid rgba(232, 154, 64, 1);
+                ">
+                    <div style="font-size: 48px; margin-bottom: 15px;">⚠️</div>
+                    <p style="font-size: 20px; color: rgba(74, 72, 74, 1); margin: 0;">
+                        {UI_TEXTS[lang_ui]["spanish_only_error"]}
+                    </p>
+                    <p style="font-size: 16px; color: rgba(74, 72, 74, 1); margin: 10px 0;">
+                        🌍 {UI_TEXTS[lang_ui]['lang_phrase']}: <strong>{res_det.get('idioma_detectado')}</strong>
+                    </p>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                col1, col2, col3 = st.columns([1, 1, 1])
+                with col2:
+                    if st.button("✓ Entendido", key="close_warning", use_container_width=True):
+                        st.rerun()
+
         
 #Ejecución (local): streamlit run app.py
 #Ejecución del streamlit: streamlit run frontend/app.py
