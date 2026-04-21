@@ -5,9 +5,10 @@ class Settings(BaseSettings):
     APP_NAME: str = "VERID.IA"
     APP_VERSION: str = "0.1.0"
     DEBUG: bool = True
-
-    UMBRAL_SOSPECHOSO: float = 0.6 #aquí se define el umbral para considerar un mensaje como sospechoso, tendremos que ajustar para verde, amarillo o rojo.
     
+    PROMPT: str = ""
+    API_KEY: str = "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"
+    MODELO: str = "Qwen2.5-72B-Instruct"  
 
     class Config:
         env_file = ".env"  # Archivo de entorno para cargar variables de configuración
