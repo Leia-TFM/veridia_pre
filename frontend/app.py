@@ -15,7 +15,7 @@ st.set_page_config(                 #Define el título de la página y su icono 
 )
 
 # ---------- CSS ----------  
-# Código encargado del diseño (colores, tipo de celda, botones, área de texto) de la web en ese orden, formato html
+# Código encargado del diseño (colores, tipo de celda, botones, área de texto) de la web en ese orden, formato html, botón principal
 st.markdown("""     
 <style>
 
@@ -148,10 +148,10 @@ with st.sidebar:    #Aquí es donde se ve el desplegable de los idiomas en el la
     idioma_input = languages_input[selected_name.split(" ")[1]]     #Variable que guarda según el idioma seleccionado los elementos visibles por pantalla
     lang_ui_input = idioma_input        #Variable que guarda según el idioma seleccionado los elementos visibles por pantalla
     
-    st.markdown(        #Lo podemos cambiar al naranja
+    st.markdown(        #CAMBIO DE COLOR AL VIOLETA
     f"""
     <div style="
-        background-color: #D9CCEE;
+        background-color: #D9CCEE;     
         color: #000000;
         padding: 10px 20px;
         border-radius: 8px;
@@ -203,7 +203,7 @@ if "texto" not in st.session_state:
     st.session_state["texto"] = ""
 if "url" not in st.session_state:
     st.session_state["url"] = ""
-if "res_seg" not in st.session_state:       #CAMBIO
+if "res_seg" not in st.session_state:       #CAMBIO 
     st.session_state["res_seg"] = None
 if "res_det" not in st.session_state:
     st.session_state["res_det"] = None
@@ -256,7 +256,7 @@ st.subheader(f"🖼 {lang_ui_input["previa_label"]}") #Si subes una imagen te mu
 if uploaded_file:   #Comprobador de la imagen
     st.image(uploaded_file, use_column_width=True)
 else:
-    st.markdown(        #Lo podemos cambiar al naranja
+    st.markdown(        #CAMBIO AL VIOLETA
     f"""
     <div style="
         background-color: #C3B1E1;
@@ -485,18 +485,18 @@ def mostrar_resultado_analisis(res_seg, res_det, lang_ui):  #FUNCIÓN QUE LLAMA 
 # ---------- ANÁLISIS ----------
 if analyze:
 
-    inputs_filled = sum([
+    inputs_filled = sum([           #CAMBIO PARA MENSAJE DE ERROR (SOLO SE ELIGE UNA OPCION)
         bool(text_input.strip()),
         bool(url_input.strip()),
         bool(uploaded_file)
     ])
 
-    if inputs_filled == 0:
+    if inputs_filled == 0:      #CAMBIO PARA MENSAJE DE ERROR (SOLO SE ELIGE UNA OPCION)
         st.warning(f"⚠️ {UI_TEXTS[lang_ui]['data']}")
         st.stop()
 
-    if inputs_filled > 1:
-        st.error("⚠️ Solo puedes introducir una opción: texto, URL o imagen")
+    if inputs_filled > 1:       #CAMBIO PARA MENSAJE DE ERROR (SOLO SE ELIGE UNA OPCION)
+        st.warning(f"⚠️ {UI_TEXTS[lang_ui]['data_add']}")
         st.stop()
 
     if uploaded_file:
@@ -653,7 +653,8 @@ if analyze:
                 </div>
                 """, unsafe_allow_html=True)
 
-                st.markdown("""
+                #CAMBIO COLOR DEL BOTÓN DE CIERRE 
+                st.markdown("""     
                     <style>
 
                     /* Solo el botón del warning (posición concreta) */
@@ -685,7 +686,8 @@ if st.session_state.get("res_seg") is not None:
     #estado único de apertura (no del widget)
     if "open_modal" not in st.session_state:
         st.session_state.open_modal = False
-
+    
+    #CAMBIO COLOR DEL BOTÓN DE VER ANÁLISIS
     st.markdown("""
         <style>
 
