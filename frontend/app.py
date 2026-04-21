@@ -285,6 +285,7 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "green": "Riesgo bajo",
         "yellow": "Riesgo medio",
         "red": "Riesgo alto",
+        "close": "Entendido"
 
 
     },
@@ -303,6 +304,7 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "green": "Low risk",
         "yellow": "Medium risk",
         "red": "High risk",
+        "close": "Understood"
     },
     "fr":{
         "result":" ✔ Résultat de l'analyse",
@@ -319,6 +321,7 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "green": "Risque faible",
         "yellow": "Risque moyen",
         "red": "Risque élevé ",
+        "close": "Compris"
     }
 }
 translations = {  #Diccionario y funcion para traducir el mensaje desde el backend
@@ -622,7 +625,7 @@ if analyze:
                 
                 col1, col2, col3 = st.columns([1, 1, 1])
                 with col2:
-                    if st.button("✓ Entendido", key="close_warning", use_container_width=True):
+                    if st.button(f"✓ {UI_TEXTS[lang_ui]['close']}", key="close_warning", use_container_width=True):
                         st.rerun()
 
         
