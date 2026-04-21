@@ -151,11 +151,10 @@ with st.sidebar:    #Aquí es donde se ve el desplegable de los idiomas en el la
     st.markdown(        #Lo podemos cambiar al naranja
     f"""
     <div style="
-        background-color: #b6c35d;
+        background-color: #D9CCEE;
         color: #000000;
         padding: 10px 20px;
         border-radius: 8px;
-        border-left: 5px solid #8f9e25;
         font-weight: 500;
         z-index: 9999;
         pointer-events: none;
