@@ -653,10 +653,22 @@ if analyze:
                     </p>
                 </div>
                 """, unsafe_allow_html=True)
+
+                st.markdown("""
+                    <style>
+
+                    /* Solo el botón del warning (posición concreta) */
+                    div[data-testid="stHorizontalBlock"] div:nth-of-type(2) button[kind="secondary"] {
+                        background-color: #FFA94D !important;
+                        color: #000000 !important;
+                    }
+
+                    </style>
+                    """, unsafe_allow_html=True)
                 
                 col1, col2, col3 = st.columns([1, 1, 1])
                 with col2:
-                    if st.button(f"✓ {UI_TEXTS[lang_ui]['close']}", key="close_warning", use_container_width=True):
+                    if st.button(f"✓ {UI_TEXTS[lang_ui]['close']}", key="close_warning", use_container_width=True, type="secondary"):
                         st.rerun()
 
 
@@ -671,10 +683,20 @@ if st.session_state.get("res_seg") is not None:
         max_width=700
     )
 
-    # 🔥 estado único de apertura (no del widget)
+    #estado único de apertura (no del widget)
     if "open_modal" not in st.session_state:
         st.session_state.open_modal = False
 
+    st.markdown("""
+        <style>
+
+        div[data-testid="stHorizontalBlock"] div:nth-child(2) div[data-testid="stButton"] button {
+            background-color: #FFA94D !important;
+            color: #000000 !important;
+        }
+
+        </style>
+        """, unsafe_allow_html=True)
     col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
 
     with col_btn2:
