@@ -495,7 +495,7 @@ if analyze:
             uploaded_file,
             uploaded_file.type
         )
-    #DESDE ESTE IF AL FINAL TODO CAMBIO!!!
+    #DESDE ESTE IF AL FINAL TODO CAMBIO !!!
     if modo == f"{lang_ui_input["mode_label_one"]}":  #CONDICIÓN PARA EL ANÁLISIS DEL ANUNCIO (MODO 1)
 
         with st.spinner(f"{idioma_input["spinner_label"]}"):
