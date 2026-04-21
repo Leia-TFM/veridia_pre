@@ -1,37 +1,47 @@
+import asyncio
+import json
+import httpx
 from fastapi import APIRouter, HTTPException
-from api.models.schemas import  AnuncioEntrada, TipoEntrada, ResultadoAnalisis, NivelSeguridad
+from pydantic import ValidationError
+from servicios.ia_service import OrquestadorAgente, validar_anuncio
+
+router = APIRouter(prefix="/analisis", tags=["fraud-detection"])
+
+# El agente se instancia una vez al arrancar la app (singleton)
+agente = OrquestadorAgente(pipeline_path="models/fraud_pipeline.pkl")
 
 
-router = APIRouter()
+@router.post("/analizar")
+async def analizar_oferta(data: dict):
 
-@router.post("/analizar", response_model=ResultadoAnalisis)
-async def analizar_anuncio(anuncio: AnuncioEntrada):
-
-    # Aquí se implementaría la lógica de análisis del anuncio
-    # Por ahora, se devuelve un resultado simulado
-
-    if anuncio.idioma != "es":
+    # ── Capa 1 y 2: Pydantic + regex + Qwen ──────────────────────────────
+    try:
+        validacion = await validar_anuncio(data)
+    except ValidationError as exc:
+        raise HTTPException(status_code=422, detail=exc.errors())
+    except httpx.HTTPStatusError as exc:
         raise HTTPException(
-            status_code=400,
-            detail=f"Idioma no soportado: {anuncio.idioma}. Solo se admite español (es)."
+            status_code=502,
+            detail=f"Error al contactar con el modelo semántico: {exc.response.status_code}"
         )
-    # Simulación de preprocesado segun tipo de entrada
-    if anuncio.tipo == TipoEntrada.IMAGEN:
-        texto_limpio = "Texto extraído de la imagen (simulado)"
-    elif anuncio.tipo == TipoEntrada.ENLACE:
-        texto_limpio = "Texto extraído del enlace (simulado)"
-    else:
-        texto_limpio = "Texto limpio del anuncio (simulado)"
 
-
-        # Aquí se podría agregar lógica específica para analizar texto
-        # Futuro: resultado = ia_service.analizar_texto(texto_limpio)
-    resultado = ResultadoAnalisis(
-        tipo_entrada=anuncio.tipo,
-        nivel_seguridad=NivelSeguridad.AMARILLO,
-        confianza_seguridad=0.75,
-        mensaje="El anuncio requiere atención debido a posibles riesgos.",
-        indicadores=["Uso de lenguaje ambiguo", "Falta de información clara"],
-        idioma_detectado=anuncio.idioma
+    # ── Capa 3: agente ML ─────────────────────────────────────────────────
+    # ejecutar_tarea es síncrono → lo movemos a un thread para no bloquear
+    # el event loop de FastAPI
+    query = (
+        f"Analiza esta oferta de trabajo y determina si es fraudulenta: "
+        f"{json.dumps(validacion['anuncio'], ensure_ascii=False)}"
     )
-    return resultado
+    loop = asyncio.get_event_loop()
+    resultado_ml = await loop.run_in_executor(
+        None,
+        OrquestadorAgente.ejecutar_tarea,
+        query
+    )
+
+    return {
+        "alertas_ia"      : validacion["alertas_ia"],
+        "nivel_riesgo_ia" : validacion["nivel_riesgo_ia"],
+        "justificacion_ia": validacion["justificacion_ia"],
+        "resultado_ml"    : resultado_ml,
+    }
