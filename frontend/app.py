@@ -209,76 +209,77 @@ if "res_det" not in st.session_state:
     st.session_state["res_det"] = None
 if "lang_ui_resultado" not in st.session_state:
     st.session_state["lang_ui_resultado"] = None
+if "expanded_ad_info" not in st.session_state:
+    st.session_state["expanded_ad_info"] = True  # Abierto por defecto al inicio
 
 
-# ---------- TEXTO DEL ANUNCIO ----------
-col_text_label, col_text_btn = st.columns([9,1])    #Localización del botón de borrar de esa parte y del área del texto
-
-with col_text_label:    #Columna del área del texto
-    st.markdown(f"**{lang_ui_input['text_label']}**") #Mensaje del área del texto
-with col_text_btn:  #Columna del botón de borrar
-    if st.button("🧹", key="clear_text", help=lang_ui_input["borrar_texto_label"]):
-        st.session_state["texto"] = ""
-
-# Input
-text_input = st.text_area(
-    "Text", 
-    key="texto",
-    height=150
-)
-
-# ---------- URL DEL ANUNCIO ----------
-#Mismo funcionamiento que el texto
-col_url_label, col_url_btn = st.columns([9,1])
-
-with col_url_label:
-    st.markdown(f"**{lang_ui_input['url_label']}**")
-with col_url_btn:
-    if st.button("🧹", key="clear_url", help=lang_ui_input["borrar_url_label"]):
-        st.session_state["url"] = ""
-
-# Input
-url_input = st.text_input(
-    "URL",  
-    key="url"
-)
-
-#Parte donde se podía subir la imagen
-st.markdown(f"**{lang_ui_input['imagen_label']}**")
-uploaded_file = st.file_uploader(
-        f"{lang_ui_input["file_label"]}",
+with st.expander(f"📄 {lang_ui_input['info_anuncio_label']}", expanded=st.session_state["expanded_ad_info"]):
+    
+    # ---------- TEXTO DEL ANUNCIO ----------
+    col_text_label, col_text_btn = st.columns([9, 1])
+    
+    with col_text_label:
+        st.markdown(f"*{lang_ui_input['text_label']}*")
+    with col_text_btn:
+        if st.button("🧹", key="clear_text", help=lang_ui_input["borrar_texto_label"]):
+            st.session_state["texto"] = ""
+    
+    # Input
+    text_input = st.text_area(
+        "Text",
+        key="texto",
+        height=150
+    )
+    
+    # ---------- URL DEL ANUNCIO ----------
+    col_url_label, col_url_btn = st.columns([9, 1])
+    
+    with col_url_label:
+        st.markdown(f"*{lang_ui_input['url_label']}*")
+    with col_url_btn:
+        if st.button("🧹", key="clear_url", help=lang_ui_input["borrar_url_label"]):
+            st.session_state["url"] = ""
+    
+    # Input
+    url_input = st.text_input(
+        "URL",
+        key="url"
+    )
+    
+    # Parte donde se podía subir la imagen
+    st.markdown(f"*{lang_ui_input['imagen_label']}*")
+    uploaded_file = st.file_uploader(
+        f"{lang_ui_input['file_label']}",
         key="imagen",
-        type=["jpg","jpeg","png","tiff"]
-)
+        type=["jpg", "jpeg", "png", "tiff"]
+    )
+    
+    # ---------- VISTA PREVIA DE IMAGEN ----------
+    st.subheader(f"🖼 {lang_ui_input['previa_label']}")
+    
+    if uploaded_file:
+        st.image(uploaded_file, use_column_width=True)
+    else:
+        st.markdown(
+            f"""
+            <div style="
+                background-color: #C3B1E1;
+                color: #000000;
+                padding: 10px 20px;
+                border-radius: 8px;
+                font-weight: 500;
+                z-index: 9999;
+                pointer-events: none;
+            ">
+                {lang_ui_input['info_imagen_label']}
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
-st.subheader(f"🖼 {lang_ui_input["previa_label"]}") #Si subes una imagen te muestra una vista previa de la misma
-
-if uploaded_file:   #Comprobador de la imagen
-    st.image(uploaded_file, use_column_width=True)
-else:
-    st.markdown(        #CAMBIO AL VIOLETA
-    f"""
-    <div style="
-        background-color: #C3B1E1;
-        color: #000000;
-        padding: 10px 20px;
-        border-radius: 8px;
-        font-weight: 500;
-        z-index: 9999;
-        pointer-events: none;
-    ">
-        {lang_ui_input['info_imagen_label']}
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
-
-# ---------- BOTÓN ----------
+# ---------- BOTÓN ANALIZAR ----------
 st.divider()
-
-analyze = st.button(f"🔎 {lang_ui_input['anuncio_label']}") #Botón que analiza el anuncio (modificable su visualización)
-
+analyze = st.button(f"🔎 {lang_ui_input['anuncio_label']}")
 # ---------- TEXTOS RESULTADO ----------
 UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por pantalla dependiendo del idioma que haya seleccionado (falta rellenar más)
     "es":{
@@ -298,7 +299,7 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "yellow": "Riesgo medio",
         "red": "Riesgo alto",
         "close": "Entendido", #EXTRA
-        "analysis": "Ver análisis"  #EXTRA
+        "analysis": "Mostrar Detección/Traducción"  #EXTRA
 
 
     },
@@ -319,7 +320,7 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "yellow": "Medium risk",
         "red": "High risk",
         "close": "Understood",
-        "analysis": "Check analysis"
+        "analysis": "Check Detection/Translation"
     },
     "fr":{
         "result":" ✔ Résultat de l'analyse",
@@ -338,7 +339,7 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "yellow": "Risque moyen",
         "red": "Risque élevé ",
         "close": "Compris",
-        "analysis": "Vérifier l'analyse"
+        "analysis": "Vérifier Détection/Traduction"
     }
 }
 translations = {  #Diccionario y funcion para traducir el mensaje desde el backend
@@ -448,43 +449,87 @@ def animacion(color):  #FUNCIÓN PARA LA ANIMACIÓN DEL SEMÁFORO (ESTILO FORMUL
         unsafe_allow_html=True
     )
 
-def mostrar_resultado_analisis(res_seg, res_det, lang_ui):  #FUNCIÓN QUE LLAMA AL CONTENIDO DEL ANÁLISI
-    # Creamos un contenedor visual con un borde
+def mostrar_resultado_traduccion(res_seg, res_det, lang_ui):
+    # Contenedor principal con borde
     with st.container(border=True):
-        
-        # --- SEMÁFORO ---
-        nivel = res_seg.get("nivel_seguridad")
-        col1, col2 = st.columns([1, 2])
 
-        with col1:
-            semaforo(nivel)
+        # --- CABECERA / IDIOMA DETECTADO ---
+        st.markdown(f"""
+            <div style="
+                background-color: #f9fbf2; 
+                padding: 20px; 
+                border-radius: 15px; 
+                border-left: 5px solid #b6c35d; 
+                margin-bottom: 20px;
+            ">
+                <h3 style="color: #4a4a4a; margin: 0;">
+                    🌍 {UI_TEXTS[lang_ui]["mode"]}
+                </h3>
+                <p style="font-size: 18px; color: #6b8e23; font-weight: bold; margin-top: 10px;">
+                    {UI_TEXTS[lang_ui]['lang_phrase']}: {res_det.get('idioma_detectado', '').upper()}
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
 
-        with col2:
-            if nivel == "verde":
-                st.success(f"🟢 {UI_TEXTS[lang_ui]['green']}")
-            elif nivel == "amarillo":
-                st.warning(f"🟡 {UI_TEXTS[lang_ui]['yellow']}")
-            elif nivel == "rojo":
-                st.error(f"🔴 {UI_TEXTS[lang_ui]['red']}")
+        # --- MENSAJE DINÁMICO ---
+        mensaje = traducir_mensaje(
+            lang_ui,
+            res_det["idioma_detectado"],
+            res_det["es_analizable"]
+        )
 
-        # --- PUNTUACIÓN ---
-        confianza = res_seg.get("confianza_seguridad", 0)
-        st.metric(f"{UI_TEXTS[lang_ui]['trust']}", f"{int(confianza * 100)}%")
-        st.progress(confianza)
+        # --- VALIDACIÓN ---
+        color_box = "#b6c35d"
+        texto_validacion = f"✅ {UI_TEXTS[lang_ui]['valid_phrase']}"
 
-        # --- MENSAJE E INDICADORES ---
+        st.markdown(f"""
+            <div style="
+                background-color: {color_box}; 
+                color: white; 
+                padding: 12px; 
+                border-radius: 10px; 
+                text-align: center; 
+                font-weight: bold;
+                margin-bottom: 25px;
+            ">
+                {texto_validacion}
+            </div>
+            <p style="font-style: italic; color: #555;">
+                {mensaje}
+            </p>
+        """, unsafe_allow_html=True)
 
-        st.subheader(UI_TEXTS[lang_ui]["message"])
-        st.write(traducir_mensaje_analisis(lang_ui, res_det["idioma_detectado"]))
-            
-        st.subheader(UI_TEXTS[lang_ui]["indicator"])
-        for ind in res_seg.get("indicadores", []):
-            st.write(f"• {ind}")
+        # --- COMPARATIVA ---
+        col_orig, col_trad = st.columns(2)
+
+        with col_orig:
+            st.markdown(f"""
+                <div style="background-color: #ffffff; padding: 15px; border-radius: 10px; border: 1px solid #ddd; height: 100%;">
+                    <h4 style="color: #e89a40; margin-top: 0;">
+                        {UI_TEXTS[lang_ui]['original_phrase']}
+                    </h4>
+                    <p style="color: #333; font-size: 14px;">
+                        {res_det.get("original", "")}
+                    </p>
+                </div>
+            """, unsafe_allow_html=True)
+
+        with col_trad:
+            st.markdown(f"""
+                <div style="background-color: #f2f7e5; padding: 15px; border-radius: 10px; border: 1px solid #b6c35d; height: 100%;">
+                    <h4 style="color: #6b8e23; margin-top: 0;">
+                        {UI_TEXTS[lang_ui]['translated_phrase']}
+                    </h4>
+                    <p style="color: #333; font-size: 14px;">
+                        {res_det.get("traducido", "")}
+                    </p>
+                </div>
+            """, unsafe_allow_html=True)
     
 
 # ---------- ANÁLISIS ----------
 if analyze:
-
+    # Validar que hay datos
     inputs_filled = sum([           #CAMBIO PARA MENSAJE DE ERROR (SOLO SE ELIGE UNA OPCION)
         bool(text_input.strip()),
         bool(url_input.strip()),
@@ -498,34 +543,38 @@ if analyze:
     if inputs_filled > 1:       #CAMBIO PARA MENSAJE DE ERROR (SOLO SE ELIGE UNA OPCION)
         st.warning(f"⚠️ {UI_TEXTS[lang_ui]['data_add']}")
         st.stop()
-
+    
+    # Cerrar el expander
+    st.session_state["expanded_ad_info"] = False
+    
+    # Definir tipo de entrada
     if uploaded_file:
         tipo = "IMAGEN"
     elif url_input:
         tipo = "ENLACE"
     else:
         tipo = "TEXTO"
-
-    data = {    #Datos recibidos
+    
+    # Preparar datos
+    data = {
         "texto": text_input,
         "url": url_input,
         "idioma_destino": idioma_select,
         "tipo": tipo
     }
-
+    
     files = {}
-
-    if uploaded_file: #Condición para las imágenes
+    if uploaded_file:
         files["foto"] = (
             uploaded_file.name,
             uploaded_file,
             uploaded_file.type
         )
-    #DESDE ESTE IF AL FINAL TODO CAMBIO !!!
+     #DESDE ESTE IF AL FINAL TODO CAMBIO !!!
     if modo == f"{lang_ui_input["mode_label_one"]}":  #CONDICIÓN PARA EL ANÁLISIS DEL ANUNCIO (MODO 1)
-
-        with st.spinner(f"{idioma_input["spinner_label"]}"):
-            
+        # Mostrar spinner mientras se analiza
+        with st.spinner(f"{idioma_input['spinner_label']}"):
+            # PASO 1: Detectar idioma
             animacion("rojo")
             time.sleep(1.5)
 
@@ -533,105 +582,84 @@ if analyze:
             time.sleep(1)
 
             animacion("verde")
-            response_idioma = llamar_api(API_DETECTAR_IDIOMA, data, files)  #LLAMA AL ARCHIVO TRADUCCION.PY
+            response_idioma = llamar_api(API_DETECTAR_IDIOMA, data, files)
             time.sleep(0.5)
             placeholder.empty()
-
-        if response_idioma and response_idioma.status_code == 200:  #Significa que está correcto
-            res_det = response_idioma.json()        #SI ESTÁ CORRECTO DETECTA Y TRADUCE EL IDIOMA AUTOMÁTICAMENTE
-
-            # comprobación
-            if res_det.get("es_analizable"):  #SI EL IDIOMA DEL TEXTO/URL/IMAGEN ESTÁ EN ESPAÑOL TE LO MUESTRA ASÍ
-                
-                st.divider()
-
-                st.markdown(f"""
-                    <div style="
-                        background-color: #f9fbf2; 
-                        padding: 20px; 
-                        border-radius: 15px; 
-                        border-left: 5px solid #b6c35d; 
-                        margin-bottom: 20px;
-                    ">
-                        <h3 style="color: #4a4a4a; margin: 0;">🌍 {UI_TEXTS[lang_ui]["mode"]}</h3>
-                        <p style="font-size: 18px; color: #6b8e23; font-weight: bold; margin-top: 10px;">
-                            {UI_TEXTS[lang_ui]['lang_phrase']}: {res_det.get('idioma_detectado').upper()}
-                        </p>
-                    </div>
-                """, unsafe_allow_html=True)
-
-                # Mensaje dinámico (Traducción/Estado)
-                mensaje = traducir_mensaje(
-                    lang_ui,
-                    res_det["idioma_detectado"],
-                    res_det["es_analizable"]
-                )
-
-                # Cuadro de validación 
-                color_box = "#b6c35d" # Verde del botón
-                texto_validacion = f"✅ {UI_TEXTS[lang_ui]['valid_phrase']}"
-
-
-                st.markdown(f"""
-                    <div style="
-                        background-color: {color_box}; 
-                        color: white; 
-                        padding: 12px; 
-                        border-radius: 10px; 
-                        text-align: center; 
-                        font-weight: bold;
-                        margin-bottom: 25px;
-                    ">
-                        {texto_validacion}
-                    </div>
-                    <p style="font-style: italic; color: #555;">{mensaje}</p>
-                """, unsafe_allow_html=True)
-
-                # Comparativa de textos (Original vs Traducido) en columnas estéticas
-                col_orig, col_trad = st.columns(2)
-
-                with col_orig:
-                    st.markdown(f"""
-                        <div style="background-color: #ffffff; padding: 15px; border-radius: 10px; border: 1px solid #ddd; height: 100%;">
-                            <h4 style="color: #e89a40; margin-top: 0;">{UI_TEXTS[lang_ui]['original_phrase']}</h4>
-                            <p style="color: #333; font-size: 14px;">{res_det.get("original")}</p>
-                        </div>
-                    """, unsafe_allow_html=True)
-
-                with col_trad:
-                    st.markdown(f"""
-                        <div style="background-color: #f2f7e5; padding: 15px; border-radius: 10px; border: 1px solid #b6c35d; height: 100%;">
-                            <h4 style="color: #6b8e23; margin-top: 0;">{UI_TEXTS[lang_ui]['translated_phrase']}</h4>
-                            <p style="color: #333; font-size: 14px;">{res_det.get("traducido")}</p>
-                        </div>
-                    """, unsafe_allow_html=True)
-                
-                st.divider()
-
+        
+        # Procesar respuesta
+        if response_idioma and response_idioma.status_code == 200:
+            res_det = response_idioma.json()
+            
+            # Verificar si es analizable PRIMERO
+            if res_det.get("es_analizable"):
+                # PASO 2: Analizar seguridad (sin mostrar nada todavía)
                 if uploaded_file:
                     uploaded_file.seek(0)
                     files = {"foto": (uploaded_file.name, uploaded_file, uploaded_file.type)}
-
-                with st.spinner(f"{idioma_input["spinner_label"]}"):
-                    response_seguridad = llamar_api(API_ANALIZAR, data, files)  #LLAMA AL ARCHIVO ANALIZAR.PY
+                
+                with st.spinner(f"{idioma_input['spinner_label']}"):
+                    response_seguridad = llamar_api(API_ANALIZAR, data, files)
+                
+                if response_seguridad and response_seguridad.status_code == 200:
+                    res_seg = response_seguridad.json()
                     
-                if response_seguridad and response_seguridad.status_code == 200:  #EL TEXTO AL SER ANALIZABLE, SE ANALIZA CON LOS PARÁMETROS DE ANALIZAR.PY
+                    # ========== MOSTRAR PRIMERO: RESULTADOS DEL ANÁLISIS ==========
+                    st.divider()
+                    st.subheader(UI_TEXTS[lang_ui]["result"])
+                    
+                    # Mostrar semáforo y nivel de riesgo
+                    nivel = res_seg.get("nivel_seguridad")
+                    col1, col2 = st.columns([1, 2])
+                    
+                    with col1:
+                        semaforo(nivel)
+                    
+                    with col2:
+                        st.markdown("<div style='height:80px'></div>", unsafe_allow_html=True)
+                        if nivel == "verde":
+                            st.success(f"🟢 {UI_TEXTS[lang_ui]['green']}")
+                        elif nivel == "amarillo":
+                            st.warning(f"🟡 {UI_TEXTS[lang_ui]['yellow']}")
+                        elif nivel == "rojo":
+                            st.error(f"🔴 {UI_TEXTS[lang_ui]['red']}")
+                    
+                    # Mostrar puntuación
+                    confianza = res_seg.get("confianza_seguridad", 0)
+                    st.metric(f"{UI_TEXTS[lang_ui]['trust']}", f"{int(confianza * 100)}%")
+                    st.progress(confianza)
+                    
+                    # Mostrar mensaje
+                    st.subheader(f"{UI_TEXTS[lang_ui]['message']}")
+                    mensaje_analisis = traducir_mensaje_analisis(
+                        lang_ui,
+                        res_det["idioma_detectado"]
+                    )
+                    st.write(mensaje_analisis)
+                    
+                    # Mostrar indicadores
+                    st.subheader(f"{UI_TEXTS[lang_ui]['indicator']}")
+                    indicadores = res_seg.get("indicadores", [])
+                    if res_det["idioma_detectado"] == "es":
+                        for ind in indicadores:
+                            st.write("•", ind)
+                    
+                    # ========== MOSTRAR DESPUÉS: INFORMACIÓN DE TRADUCCIÓN ==========
+                    st.divider()
                     res_seg = response_seguridad.json() # Guardamos la respuesta de análisis aquí
 
                     # Guardamos resultados en session_state para que sobrevivan al rerender
                     st.session_state["res_seg"] = res_seg
                     st.session_state["res_det"] = res_det
                     st.session_state["lang_ui_resultado"] = lang_ui
-
+                    
                 else:
-                    # --- ERROR DE CONEXIÓN EN LA SEGUNDA API (Sustituye al 'else' antiguo) ---
                     st.error("❌ Error al conectar con la API de Análisis")
                     if response_seguridad:
-                         st.write(f"Código de estado: {response_seguridad.status_code}")
-
-            else: #CAMBIO!!! POP-UP CUANDO EL IDIOMA NO ES ANALIZABLE
-                # --- NO ANALIZABLE (Lo que antes era el error 400) ---
-                # Si la detección dice que no es analizable (ej: no es español), mostramos el aviso
+                        st.write(f"Código de estado: {response_seguridad.status_code}")
+            
+            else:
+                # Idioma no analizable - mostrar warning en popup
+                idioma_detectado = res_det.get('idioma_detectado', 'desconocido')
                 st.markdown(f"""
                 <div style="
                     background-color: rgba(235, 226, 211, 1);
@@ -648,12 +676,12 @@ if analyze:
                         {UI_TEXTS[lang_ui]["spanish_only_error"]}
                     </p>
                     <p style="font-size: 16px; color: rgba(74, 72, 74, 1); margin: 10px 0;">
-                        🌍 {UI_TEXTS[lang_ui]['lang_phrase']}: <strong>{res_det.get('idioma_detectado')}</strong>
+                        🌍 {UI_TEXTS[lang_ui]['lang_phrase']}: <strong>{idioma_detectado.upper()}</strong>
                     </p>
                 </div>
                 """, unsafe_allow_html=True)
-
-                #CAMBIO COLOR DEL BOTÓN DE CIERRE 
+                
+               #CAMBIO COLOR DEL BOTÓN DE CIERRE 
                 st.markdown("""     
                     <style>
 
@@ -670,7 +698,11 @@ if analyze:
                 with col2:
                     if st.button(f"✓ {UI_TEXTS[lang_ui]['close']}", key="close_warning", use_container_width=True, type="secondary"):
                         st.rerun()
-
+        
+        else:
+            st.error("❌ Error al detectar el idioma")
+            if response_idioma:
+                st.write(f"Código de estado: {response_idioma.status_code}")
 
 # ---------- MODAL RESULTADO ----------
 # Este bloque vive FUERA del if analyze: para sobrevivir al rerender
@@ -722,7 +754,7 @@ if st.session_state.get("res_seg") is not None:
     if st.session_state.open_modal:
         with modal.container():
 
-            mostrar_resultado_analisis(
+            mostrar_resultado_traduccion(
                 st.session_state["res_seg"],
                 st.session_state["res_det"],
                 _lang
@@ -737,6 +769,7 @@ if st.session_state.get("res_seg") is not None:
                 st.session_state["res_seg"] = None
                 st.session_state["res_det"] = None
                 st.rerun()
+
 
 #Ejecución (local): streamlit run app.py
 #Ejecución del streamlit: streamlit run frontend/app.py
