@@ -298,7 +298,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "green": "Riesgo bajo",
         "yellow": "Riesgo medio",
         "red": "Riesgo alto",
-        "close": "Entendido"
+        "close": "Entendido",
+        "analysis": "Ver análisis"
 
 
     },
@@ -317,7 +318,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "green": "Low risk",
         "yellow": "Medium risk",
         "red": "High risk",
-        "close": "Understood"
+        "close": "Understood",
+        "analysis": "Check analysis"
     },
     "fr":{
         "result":" ✔ Résultat de l'analyse",
@@ -334,7 +336,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "green": "Risque faible",
         "yellow": "Risque moyen",
         "red": "Risque élevé ",
-        "close": "Compris"
+        "close": "Compris",
+        "analysis": "Vérifier l'analyse"
     }
 }
 translations = {  #Diccionario y funcion para traducir el mensaje desde el backend
@@ -653,7 +656,7 @@ if st.session_state.get("res_seg") is not None:
 
     col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
     with col_btn2:
-        if st.button(f"🔎 {UI_TEXTS[_lang]['result']}", use_container_width=True, key="abrir_modal_btn"):
+        if st.button(f"🔎 {UI_TEXTS[_lang]['analysis']}", use_container_width=True, key="abrir_modal_btn"):
             modal.open()
 
     if modal.is_open():
@@ -663,7 +666,7 @@ if st.session_state.get("res_seg") is not None:
                 st.session_state["res_det"],
                 _lang
             )
-            if st.button("Cerrar", key="cerrar_modal", type="primary"):
+            if st.button(f"{UI_TEXTS[_lang]['close']}", key="cerrar_modal", type="primary"):
                 st.session_state["res_seg"] = None
                 st.session_state["res_det"] = None
                 st.rerun() 
