@@ -1,4 +1,5 @@
 import streamlit as st
+from streamlit_modal import Modal
 import streamlit.components.v1 as components
 import requests
 import time
@@ -37,6 +38,11 @@ st.markdown("""
 
 textarea {
     border-radius:10px !important;
+}
+
+/* En el CSS global */
+div[data-modal-container="true"] [data-testid="baseButton-secondary"] {
+    display: none !important;
 }
 
 </style>
@@ -199,6 +205,13 @@ if "texto" not in st.session_state:
     st.session_state["texto"] = ""
 if "url" not in st.session_state:
     st.session_state["url"] = ""
+if "res_seg" not in st.session_state:       #CAMBIO
+    st.session_state["res_seg"] = None
+if "res_det" not in st.session_state:
+    st.session_state["res_det"] = None
+if "lang_ui_resultado" not in st.session_state:
+    st.session_state["lang_ui_resultado"] = None
+
 
 # ---------- TEXTO DEL ANUNCIO ----------
 col_text_label, col_text_btn = st.columns([9,1])    #Localización del botón de borrar de esa parte y del área del texto
@@ -434,7 +447,6 @@ def animacion(color):  #FUNCIÓN PARA LA ANIMACIÓN DEL SEMÁFORO (ESTILO FORMUL
 def mostrar_resultado_analisis(res_seg, res_det, lang_ui):  #FUNCIÓN QUE LLAMA AL CONTENIDO DEL ANÁLISI
     # Creamos un contenedor visual con un borde
     with st.container(border=True):
-        st.header(f"{UI_TEXTS[lang_ui]['result']}")
         
         # --- SEMÁFORO ---
         nivel = res_seg.get("nivel_seguridad")
@@ -579,6 +591,8 @@ if analyze:
                             <p style="color: #333; font-size: 14px;">{res_det.get("traducido")}</p>
                         </div>
                     """, unsafe_allow_html=True)
+                
+                st.divider()
 
                 if uploaded_file:
                     uploaded_file.seek(0)
@@ -590,8 +604,10 @@ if analyze:
                 if response_seguridad and response_seguridad.status_code == 200:  #EL TEXTO AL SER ANALIZABLE, SE ANALIZA CON LOS PARÁMETROS DE ANALIZAR.PY
                     res_seg = response_seguridad.json() # Guardamos la respuesta de análisis aquí
 
-                    st.divider()
-                    mostrar_resultado_analisis(res_seg, res_det, lang_ui)
+                    # Guardamos resultados en session_state para que sobrevivan al rerender
+                    st.session_state["res_seg"] = res_seg
+                    st.session_state["res_det"] = res_det
+                    st.session_state["lang_ui_resultado"] = lang_ui
 
                 else:
                     # --- ERROR DE CONEXIÓN EN LA SEGUNDA API (Sustituye al 'else' antiguo) ---
@@ -628,7 +644,29 @@ if analyze:
                     if st.button(f"✓ {UI_TEXTS[lang_ui]['close']}", key="close_warning", use_container_width=True):
                         st.rerun()
 
-        
+
+# ---------- MODAL RESULTADO ----------
+# Este bloque vive FUERA del if analyze: para sobrevivir al rerender
+if st.session_state.get("res_seg") is not None:
+    _lang = st.session_state.get("lang_ui_resultado", "es")
+    modal = Modal(f"{UI_TEXTS[_lang]['result']}", key="modal_resultado", max_width=700)
+
+    col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
+    with col_btn2:
+        if st.button(f"🔎 {UI_TEXTS[_lang]['result']}", use_container_width=True, key="abrir_modal_btn"):
+            modal.open()
+
+    if modal.is_open():
+        with modal.container():
+            mostrar_resultado_analisis(
+                st.session_state["res_seg"],
+                st.session_state["res_det"],
+                _lang
+            )
+            if st.button("Cerrar", key="cerrar_modal", type="primary"):
+                st.session_state["res_seg"] = None
+                st.session_state["res_det"] = None
+                st.rerun() 
 #Ejecución (local): streamlit run app.py
 #Ejecución del streamlit: streamlit run frontend/app.py
 #Ejecución del archivo si en la otra terminal se está ejecutando el uvicorn de traduccion.py: python frontend/app.py
