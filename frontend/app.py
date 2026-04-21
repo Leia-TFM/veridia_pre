@@ -40,7 +40,6 @@ textarea {
     border-radius:10px !important;
 }
 
-/* En el CSS global */
 div[data-modal-container="true"] [data-testid="baseButton-secondary"] {
     display: none !important;
 }
@@ -286,7 +285,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
     "es":{
         "result":" ✔ Resultado del análisis",
         "spanish_only_error": "Solo se permiten anuncios en español. Inténtalo de nuevo.",
-        "data": "Introduce datos",
+        "data": "Introduce texto, url o sube una imagen", #MODIFICADO
+        "data_add": "Solo puedes introducir una opción: texto, URL o imagen", #EXTRA
         "mode": "Detectar Idioma / Traducción",
         "lang_phrase": "Idioma detectado",
         "valid_phrase": "Texto válido para análisis",
@@ -298,15 +298,16 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "green": "Riesgo bajo",
         "yellow": "Riesgo medio",
         "red": "Riesgo alto",
-        "close": "Entendido",
-        "analysis": "Ver análisis"
+        "close": "Entendido", #EXTRA
+        "analysis": "Ver análisis"  #EXTRA
 
 
     },
     "en":{
         "result":" ✔ Analysis Result",
         "spanish_only_error": "Only advertisements in Spanish are allowed. Try again.",
-        "data": "Enter data",
+        "data": "Enter text, url or upload an image",
+        "data_add": "You can only enter one option: text, URL or image",  
         "mode": "Detect Language / Translation",
         "lang_phrase": "Language detected",
         "valid_phrase": "Text suitable for analysis",
@@ -324,7 +325,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
     "fr":{
         "result":" ✔ Résultat de l'analyse",
         "spanish_only_error": "Seules les annonces en espagnol sont autorisées. Réessayez.",
-        "data": "Saisir des données",
+        "data": "Saisissez du texte, une URL ou téléchargez une image",
+        "data_add": "Vous ne pouvez saisir qu'un seul élément : du texte, une URL ou une image",  
         "mode": "Détection de la langue / Traduction",
         "lang_phrase": "Langue détectée",
         "valid_phrase": "Texte valable pour l'analyse",
@@ -484,8 +486,18 @@ def mostrar_resultado_analisis(res_seg, res_det, lang_ui):  #FUNCIÓN QUE LLAMA 
 # ---------- ANÁLISIS ----------
 if analyze:
 
-    if not text_input and not url_input and not uploaded_file:
-        st.warning(f"⚠️ {UI_TEXTS[lang_ui]["data"]}")   #Traducir también con otra variable del idioma seleccionado
+    inputs_filled = sum([
+        bool(text_input.strip()),
+        bool(url_input.strip()),
+        bool(uploaded_file)
+    ])
+
+    if inputs_filled == 0:
+        st.warning(f"⚠️ {UI_TEXTS[lang_ui]['data']}")
+        st.stop()
+
+    if inputs_filled > 1:
+        st.error("⚠️ Solo puedes introducir una opción: texto, URL o imagen")
         st.stop()
 
     if uploaded_file:
@@ -702,7 +714,7 @@ if st.session_state.get("res_seg") is not None:
                 st.session_state["res_seg"] = None
                 st.session_state["res_det"] = None
                 st.rerun()
-                
+
 #Ejecución (local): streamlit run app.py
 #Ejecución del streamlit: streamlit run frontend/app.py
 #Ejecución del archivo si en la otra terminal se está ejecutando el uvicorn de traduccion.py: python frontend/app.py
