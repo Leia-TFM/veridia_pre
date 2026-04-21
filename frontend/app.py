@@ -670,6 +670,7 @@ if st.session_state.get("res_seg") is not None:
                 st.session_state["res_seg"] = None
                 st.session_state["res_det"] = None
                 st.rerun() 
+                
 #Ejecución (local): streamlit run app.py
 #Ejecución del streamlit: streamlit run frontend/app.py
 #Ejecución del archivo si en la otra terminal se está ejecutando el uvicorn de traduccion.py: python frontend/app.py
