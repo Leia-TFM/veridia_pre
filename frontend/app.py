@@ -652,24 +652,56 @@ if analyze:
 # Este bloque vive FUERA del if analyze: para sobrevivir al rerender
 if st.session_state.get("res_seg") is not None:
     _lang = st.session_state.get("lang_ui_resultado", "es")
-    modal = Modal(f"{UI_TEXTS[_lang]['result']}", key="modal_resultado", max_width=700)
+
+    modal = Modal(
+        f"{UI_TEXTS[_lang]['result']}",
+        key="modal_resultado",
+        max_width=700
+    )
+
+    # 🔥 estado único de apertura (no del widget)
+    if "open_modal" not in st.session_state:
+        st.session_state.open_modal = False
 
     col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
-    with col_btn2:
-        if st.button(f"🔎 {UI_TEXTS[_lang]['analysis']}", use_container_width=True, key="abrir_modal_btn"):
-            modal.open()
 
-    if modal.is_open():
+    with col_btn2:
+        if st.button(
+            f"🔎 {UI_TEXTS[_lang]['analysis']}",
+            use_container_width=True,
+            key="abrir_modal_btn"
+        ):
+            st.session_state.open_modal = True
+
+    #RESET automático cuando cambia el texto/idioma
+    if "prev_res_seg" not in st.session_state:
+        st.session_state.prev_res_seg = None
+
+    current = st.session_state.get("res_seg")
+
+    if current != st.session_state.prev_res_seg:
+        st.session_state.prev_res_seg = current
+        st.session_state.open_modal = False
+
+    #RENDER CONTROLADO (SIN is_open)
+    if st.session_state.open_modal:
         with modal.container():
+
             mostrar_resultado_analisis(
                 st.session_state["res_seg"],
                 st.session_state["res_det"],
                 _lang
             )
-            if st.button(f"{UI_TEXTS[_lang]['close']}", key="cerrar_modal", type="primary"):
+
+            if st.button(
+                f"{UI_TEXTS[_lang]['close']}",
+                key="cerrar_modal",
+                type="primary"
+            ):
+                st.session_state.open_modal = False
                 st.session_state["res_seg"] = None
                 st.session_state["res_det"] = None
-                st.rerun() 
+                st.rerun()
                 
 #Ejecución (local): streamlit run app.py
 #Ejecución del streamlit: streamlit run frontend/app.py
