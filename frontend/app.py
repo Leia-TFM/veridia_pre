@@ -172,7 +172,7 @@ with st.container():
 # ---------- MODO ----------        #Traducir también al idioma que se seleccione
 with st.container():
     st.markdown(f"<h3 style='color:#6f4a8e;'>{lang_ui_input["mode_label"]}:</h3>", unsafe_allow_html=True)
-    modo = st.radio("Selecciona un modo", [f"{lang_ui_input["mode_label_one"]}", f"{lang_ui_input["mode_label_two"]}"], horizontal=True, label_visibility="hidden")
+    modo = st.radio("Selecciona un modo", [f"{lang_ui_input["mode_label_one"]}", f"{lang_ui_input["mode_label_two"]}"], horizontal=True, label_visibility="hidden")  #CAMBIO CUANDO SE INTRODUZCA EL ESTADISTICAS.PY
 
 st.divider()    #Esto deja un espacio entre el desplegable de los idiomas y el mensaje de funcionalidad
 
@@ -364,7 +364,7 @@ def traducir_mensaje_analisis(lang, idioma_detectado):
     texto = translations_analisis.get(lang, translations_analisis["en"])[key]
     return texto.format(idioma=idioma_detectado)
 
-def semaforo(nivel=None):
+def semaforo(nivel=None):  #FUNCION PARA LOS COLORES DEL SEMÁFORO DE DENTRO DEL ANÁLISIS (EL SEMÁFORO GRANDE)
     html = f"""
     <html>
     <body style="margin:0; display:flex; justify-content:center; align-items:center;">
@@ -420,7 +420,7 @@ def semaforo(nivel=None):
     components.html(html, height=340)
 
 placeholder = st.empty()
-def animacion(color):
+def animacion(color):  #FUNCIÓN PARA LA ANIMACIÓN DEL SEMÁFORO (ESTILO FORMULA 1)
     luces = {
         "rojo": "🔴 ⚫ ⚫",
         "ambar": "⚫ 🟡 ⚫",
@@ -431,7 +431,7 @@ def animacion(color):
         unsafe_allow_html=True
     )
 
-def mostrar_resultado_analisis(res_seg, res_det, lang_ui):
+def mostrar_resultado_analisis(res_seg, res_det, lang_ui):  #FUNCIÓN QUE LLAMA AL CONTENIDO DEL ANÁLISI
     # Creamos un contenedor visual con un borde
     with st.container(border=True):
         st.header(f"{UI_TEXTS[lang_ui]['result']}")
@@ -495,8 +495,8 @@ if analyze:
             uploaded_file,
             uploaded_file.type
         )
-
-    if modo == f"{lang_ui_input["mode_label_one"]}":
+    #DESDE ESTE IF AL FINAL TODO CAMBIO!!!
+    if modo == f"{lang_ui_input["mode_label_one"]}":  #CONDICIÓN PARA EL ANÁLISIS DEL ANUNCIO (MODO 1)
 
         with st.spinner(f"{idioma_input["spinner_label"]}"):
             
@@ -507,15 +507,15 @@ if analyze:
             time.sleep(1)
 
             animacion("verde")
-            response_idioma = llamar_api(API_DETECTAR_IDIOMA, data, files)
+            response_idioma = llamar_api(API_DETECTAR_IDIOMA, data, files)  #LLAMA AL ARCHIVO TRADUCCION.PY
             time.sleep(0.5)
             placeholder.empty()
 
         if response_idioma and response_idioma.status_code == 200:  #Significa que está correcto
-            res_det = response_idioma.json()
+            res_det = response_idioma.json()        #SI ESTÁ CORRECTO DETECTA Y TRADUCE EL IDIOMA AUTOMÁTICAMENTE
 
             # comprobación
-            if res_det.get("es_analizable"):
+            if res_det.get("es_analizable"):  #SI EL IDIOMA DEL TEXTO/URL/IMAGEN ESTÁ EN ESPAÑOL TE LO MUESTRA ASÍ
                 
                 st.divider()
 
@@ -585,9 +585,9 @@ if analyze:
                     files = {"foto": (uploaded_file.name, uploaded_file, uploaded_file.type)}
 
                 with st.spinner(f"{idioma_input["spinner_label"]}"):
-                    response_seguridad = llamar_api(API_ANALIZAR, data, files)
+                    response_seguridad = llamar_api(API_ANALIZAR, data, files)  #LLAMA AL ARCHIVO ANALIZAR.PY
                     
-                if response_seguridad and response_seguridad.status_code == 200:
+                if response_seguridad and response_seguridad.status_code == 200:  #EL TEXTO AL SER ANALIZABLE, SE ANALIZA CON LOS PARÁMETROS DE ANALIZAR.PY
                     res_seg = response_seguridad.json() # Guardamos la respuesta de análisis aquí
 
                     st.divider()
@@ -599,7 +599,7 @@ if analyze:
                     if response_seguridad:
                          st.write(f"Código de estado: {response_seguridad.status_code}")
 
-            else: 
+            else: #CAMBIO!!! POP-UP CUANDO EL IDIOMA NO ES ANALIZABLE
                 # --- NO ANALIZABLE (Lo que antes era el error 400) ---
                 # Si la detección dice que no es analizable (ej: no es español), mostramos el aviso
                 st.markdown(f"""
