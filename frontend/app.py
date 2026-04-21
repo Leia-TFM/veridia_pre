@@ -645,7 +645,7 @@ if analyze:
                     
                     # ========== MOSTRAR DESPUÉS: INFORMACIÓN DE TRADUCCIÓN ==========
                     st.divider()
-                    res_seg = response_seguridad.json() # Guardamos la respuesta de análisis aquí
+                    res_seg = response_seguridad.json() # Guardamos la respuesta de traducción aquí
 
                     # Guardamos resultados en session_state para que sobrevivan al rerender
                     st.session_state["res_seg"] = res_seg
