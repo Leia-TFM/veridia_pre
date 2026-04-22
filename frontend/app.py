@@ -756,26 +756,27 @@ if st.session_state.get("res_seg") is not None:
     
     #CAMBIO COLOR DEL BOTÓN DE VER ANÁLISIS
     st.markdown("""
-        <style>
+    <style>
+    div[data-testid="stHorizontalBlock"] div:nth-child(1) div[data-testid="stButton"] button {
+        background-color: #FFA94D !important;
+        color: #000000 !important;
+        white-space: nowrap !important;
+        font-size: 13px !important;
+        padding: 4px 12px !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
-        div[data-testid="stHorizontalBlock"] div:nth-child(2) div[data-testid="stButton"] button {
-            background-color: #FFA94D !important;
-            color: #000000 !important;
-        }
+    col_btn1, col_btn2 = st.columns([1, 4])
 
-        </style>
-        """, unsafe_allow_html=True)
-    col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
-
-    with col_btn2:
+    with col_btn1:
         if st.button(
             f"🔎 {UI_TEXTS[_lang]['detect']}",
-            use_container_width=True,
             key="abrir_modal_btn"
         ):
             st.session_state.open_modal = True
 
-    #RESET automático cuando cambia el texto/idioma
+        #RESET automático cuando cambia el texto/idioma
     if "prev_res_seg" not in st.session_state:
         st.session_state.prev_res_seg = None
 
