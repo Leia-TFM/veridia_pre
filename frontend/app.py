@@ -624,7 +624,7 @@ if analyze:
             time.sleep(1.5)
 
             animacion("ambar")
-            time.sleep(1)
+            time.sleep(1.5)
 
             animacion("verde")
             response_idioma = llamar_api(API_DETECTAR_IDIOMA, data, files)
