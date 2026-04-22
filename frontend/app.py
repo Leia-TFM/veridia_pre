@@ -385,43 +385,71 @@ def mostrar_resultado_traduccion(res_seg, res_det, lang_ui):  #FUNCIÓN QUE LLAM
 def mostrar_resultados(res_seg, res_det, lang_ui):   #FUNCIÓN QUE LLAMA A LA API ANALIZAR PARA MOSTRAR LOS RESULTADOS
     # Título de resultados
     st.subheader(UI_TEXTS[lang_ui]["result"])
-    
-    # Nivel de seguridad
+
     nivel = res_seg.get("nivel_seguridad")
-    col1, col2 = st.columns([1, 2])
-    
-    with col1:
-        semaforo(nivel)
-    
-    with col2:
-        st.markdown("<div style='height:80px'></div>", unsafe_allow_html=True)
-        if nivel == "verde":
-            st.success(f"🟢 {UI_TEXTS[lang_ui]['green']}")
-        elif nivel == "amarillo":
-            st.warning(f"🟡 {UI_TEXTS[lang_ui]['yellow']}")
-        elif nivel == "rojo":
-            st.error(f"🔴 {UI_TEXTS[lang_ui]['red']}")
-    
-    # Puntuación de confianza
     confianza = res_seg.get("confianza_seguridad", 0)
-    st.metric(UI_TEXTS[lang_ui]['trust'], f"{int(confianza * 100)}%")
-    st.progress(confianza)
-    
-    # Mensaje de análisis
-    st.subheader(UI_TEXTS[lang_ui]['message'])
-    mensaje_analisis = traducir_mensaje_analisis(
-        lang_ui,
-        res_det["idioma_detectado"]
-    )
-    st.write(mensaje_analisis)
-    
+    confianza_pct = int(confianza * 100)
+
+    nivel_config = {
+        "verde":    {"color": "#16a34a", "bg": "#f0fdf4", "border": "#86efac", "icon": "✓", "label": UI_TEXTS[lang_ui]['green']},
+        "amarillo": {"color": "#ca8a04", "bg": "#fefce8", "border": "#fde047", "icon": "⚠", "label": UI_TEXTS[lang_ui]['yellow']},
+        "rojo":     {"color": "#dc2626", "bg": "#fff1f2", "border": "#fca5a5", "icon": "✕", "label": UI_TEXTS[lang_ui]['red']},
+    }
+    cfg = nivel_config.get(nivel, nivel_config["amarillo"])
+    c, bg, bd, icon, lbl = cfg['color'], cfg['bg'], cfg['border'], cfg['icon'], cfg['label']
+
+    st.markdown(f"""
+    <div style="background:{bg};border:2px solid {bd};border-radius:14px;padding:22px 26px;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
+            <div style="width:54px;height:54px;border-radius:50%;background:white;border:2px solid {c};
+                        display:flex;align-items:center;justify-content:center;
+                        font-size:26px;color:{c};font-weight:700;flex-shrink:0;">
+                {icon}
+            </div>
+            <div>
+                <div style="font-size:28px;font-weight:700;color:{c};">{lbl}</div>
+            </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:7px;">
+            <span style="font-size:16px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:1px;">
+                {UI_TEXTS[lang_ui]['trust']}
+            </span>
+            <span style="font-size:22px;font-weight:700;color:{c};">{confianza_pct}%</span>
+        </div>
+        <div style="height:10px;background:#e5e7eb;border-radius:99px;overflow:hidden;">
+            <div style="height:100%;width:{confianza_pct}%;background:{c};border-radius:99px;"></div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Mensaje
+    mensaje = traducir_mensaje_analisis(lang_ui, res_det["idioma_detectado"])
+    st.markdown(f"""
+    <div style="border-left:4px solid {c};background:#f9fafb;padding:16px 20px;border-radius:0 10px 10px 0;margin-bottom:14px;">
+        <div style="font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#111827;margin-bottom:8px;">
+            {UI_TEXTS[lang_ui]['message']}
+        </div>
+        <div style="font-size:17px;color:#374151;line-height:1.7;">{mensaje}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
     # Indicadores
-    st.subheader(UI_TEXTS[lang_ui]['indicator'])
     indicadores = res_seg.get("indicadores", [])
-    
-    if res_det["idioma_detectado"] == "es":
-        for ind in indicadores:
-            st.write("•", ind)
+    if indicadores and res_det["idioma_detectado"] == "es":
+        items = "".join(
+            f"<div style='padding:10px 0;border-bottom:1px solid #f3f4f6;display:flex;gap:10px;align-items:flex-start;'>"
+            f"<span style='color:{c};font-weight:700;font-size:20px;'>›</span>"
+            f"<span style='font-size:17px;color:#374151;line-height:1.6;'>{ind}</span></div>"
+            for ind in indicadores
+        )
+        st.markdown(f"""
+    <div style="background:#f9fafb;border:1.5px solid #e5e7eb;border-left:4px solid {c};border-radius:12px;padding:6px 20px 10px;">
+        <div style="font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#111827;padding:12px 0 8px;">
+            {UI_TEXTS[lang_ui]['indicator']}
+        </div>
+        {items}
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # ---------- SIDEBAR ----------
@@ -628,7 +656,7 @@ if analyze:
 
             animacion("verde")
             response_idioma = llamar_api(API_DETECTAR_IDIOMA, data, files)
-            time.sleep(0.5)
+            time.sleep(1.5)
             placeholder.empty()
         
         # Procesar respuesta
