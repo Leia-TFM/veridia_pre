@@ -642,7 +642,6 @@ if analyze:
                     uploaded_file.seek(0)
                     files = {"foto": (uploaded_file.name, uploaded_file, uploaded_file.type)}
                 
-                
                 response_seguridad = llamar_api(API_ANALIZAR, data, files)
                 
                 if response_seguridad and response_seguridad.status_code == 200:
