@@ -118,120 +118,14 @@ class JobAdInput(BaseModel):
             return v
         return _check_byte_size(v, MAX_BYTES_DESCRIPCION, "descripcion")
 
-
-# =============================================================================
-# SECCIÓN 4 – VALIDACIÓN SEMÁNTICA CON QWEN
-# =============================================================================
-
-FALLBACK_SYSTEM_PROMPT = """
-Eres un asistente especializado en analizar ofertas de trabajo en busca de señales de fraude.
-
-Tu tarea es detectar inconsistencias, promesas poco realistas o patrones sospechosos.
-NO debes determinar si la oferta es falsa o legítima; eso lo decide otro sistema de ML.
-
-Responde ÚNICAMENTE con un JSON válido (sin texto adicional, sin bloques de código):
-{
-"alertas": ["descripción de señal 1", "descripción de señal 2"],
-"nivel_riesgo": "bajo" | "medio" | "alto",
-"justificacion": "breve explicación de máximo 2 frases"
-}
-
-Si no detectas señales sospechosas, devuelve alertas vacío y nivel_riesgo bajo.
-""".strip()
-
-
-async def validar_semantica(ad: JobAdInput) -> dict:
-    """
-    Llama a Qwen para detectar señales de alerta en lenguaje natural.
-    NO emite veredicto final — eso lo hace el modelo ML.
-    """
-    user_prompt = (
-        f"Título del puesto: {ad.titulo or 'No indicado'}\n"
-        f"Empresa: {ad.empresa or 'No indicada'}\n"
-        f"Descripción: {ad.descripcion or 'No indicada'}\n"
-        f"Salario: {f'{ad.salario_min}€ – {ad.salario_max}€' if ad.salario_min else 'No indicado'}\n"
-        f"Jornada: {ad.jornada_horas or 'No indicada'} horas semanales\n"
-        f"Tipo de contrato: {ad.tipo_contrato or 'No indicado'}\n"
-        f"Ubicación: {ad.ubicacion or 'No indicada'}\n"
-        f"Contacto: {ad.contacto or 'No indicado'}\n"
-        f"URL oferta: {ad.url_oferta or 'No proporcionada'}"
-    )
-
-    payload = {
-        "model": "Qwen/Qwen2.5-72B-Instruct",
-        "messages": [
-            {
-                "role": "system",
-                "content": getattr(settings, "PROMPT", None) or FALLBACK_SYSTEM_PROMPT,
-            },
-            {
-                "role": "user",
-                "content": user_prompt,
-            },
-        ],
-        "max_tokens": 400,
-        "temperature": 0.1,
-        "top_p": 0.9,
-    }
-
-    async with httpx.AsyncClient(timeout=25) as client:
-        resp = await client.post(
-            settings.API_URL,
-            headers={
-                "Authorization": f"Bearer {settings.API_KEY}",
-                "Content-Type": "application/json",
-            },
-            json=payload,
-        )
-        resp.raise_for_status()
-
-    raw_content = resp.json()["choices"][0]["message"]["content"]
-
-    try:
-        result = json.loads(raw_content)
-        if "alertas" not in result or "nivel_riesgo" not in result:
-            raise ValueError("Faltan claves en la respuesta del modelo.")
-        return result
-    except (json.JSONDecodeError, ValueError):
-        return {
-            "alertas": ["No se pudo interpretar la respuesta del modelo de análisis."],
-            "nivel_riesgo": "medio",
-            "justificacion": "Error de parseo en la respuesta de Qwen.",
-        }
-
-
 # =============================================================================
 # SECCIÓN 5 – ORQUESTADOR DE VALIDACIÓN
 # =============================================================================
 
 async def validar_anuncio(data: dict) -> dict:
-    """
-    Orquesta las dos capas previas al modelo ML:
-        Capa 1 → Pydantic + regex  (bloquea si falla)
-        Capa 2 → Qwen semántico    (no bloquea, devuelve alertas)
-
-    Returns:
-        {
-            "anuncio":          campos validados y normalizados,
-            "alertas_ia":       señales detectadas por Qwen,
-            "nivel_riesgo_ia":  "bajo" | "medio" | "alto",
-            "justificacion_ia": breve explicación
-        }
-
-    Raises:
-        pydantic.ValidationError:  si algún campo no supera la validación.
-        httpx.HTTPStatusError:     si la llamada a Qwen falla.
-    """
+# Valida el anunció estructuralmente y de segurdad
     ad = JobAdInput(**data)
-    semantica = await validar_semantica(ad)
-
-    return {
-        "anuncio":          ad.model_dump(),
-        "alertas_ia":       semantica.get("alertas", []),
-        "nivel_riesgo_ia":  semantica.get("nivel_riesgo", "desconocido"),
-        "justificacion_ia": semantica.get("justificacion", ""),
-    }
-
+    return ad.model_dump()
 
 # =============================================================================
 # SECCIÓN 6 – HELPER DE TEXTO
