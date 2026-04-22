@@ -83,6 +83,7 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "func_label": "Introduce un anuncio para detectar posibles fraudes.",
         "info_label": "Detecta anuncios de trabajo potencialmente fraudulentos. Puede elegir una de las siguientes tres opciones (Copiar Texto / Copiar URL / Subir una imagen) para comprobarlo.",
         "info_anuncio_label": "Información del anuncio",
+        "copiar_label": "Copia aquí tu anuncio (Texto/URL/Imagen)",
         "previa_label": "Vista previa",
         "info_imagen_label": "Sube una imagen para verla aquí",
         "borrar_texto_label": "Borrar texto",
@@ -94,7 +95,7 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
 
     },
     "English": {
-        "text_label": "Job advertisement text",
+        "text_label": "Advertisement's text",
         "url_label": "Advertisement URL",
         "imagen_label": "Advertisement image",
         "anuncio_label": "Analyse advertisement",
@@ -102,6 +103,7 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "func_label": "Insert an advertisement to detect potential fraud.",
         "info_label": "Detects potentially fraudulent job postings. You may select one of the following three options (Copy Text / Copy URL / Upload an image) to verify this.",
         "info_anuncio_label": "Advertisement´s information",
+        "copiar_label": "Paste your advertisement here (Text/URL/Image)",
         "previa_label": "Preview",
         "info_imagen_label": "Upload an image to view it here",
         "borrar_texto_label": "Erase text",
@@ -121,6 +123,7 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "func_label": "Insérer un annonce pour détecter les fraudes potentielles.",
         "info_label": "Détecte les offres d'emploi potentiellement frauduleuses. Vous pouvez choisir l'une des trois options suivantes (Copier le texte / Copier l'URL / Télécharger une image) pour le vérifier.",
         "info_anuncio_label": "Information de l'annonce",
+        "copiar_label": "Copiez ici votre annonce (texte/URL/image)",
         "previa_label": "Aperçu",
         "info_imagen_label": "Téléchargez une image pour la voir ici",
         "borrar_texto_label": "Effacer texte",
@@ -133,153 +136,6 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
     }
 }
 
-# ---------- SIDEBAR ----------
-with st.sidebar:    #Aquí es donde se ve el desplegable de los idiomas en el lateral izquierdo
-    
-    st.header("⚙️ Configuración")      #Cabecera de configuración donde de momento solo están los idiomas (modificable)
-
-    selected_name = st.selectbox(
-        "🌍 Idioma / Language",
-        list(languages.keys())
-    )
-
-    idioma_select = languages[selected_name]    #Variable que guarda el idioma seleccionado de todos los posibles
-    lang_ui = idioma_select                     #Variable que guarda el idioma seleccionado de todos los posibles
-    idioma_input = languages_input[selected_name.split(" ")[1]]     #Variable que guarda según el idioma seleccionado los elementos visibles por pantalla
-    lang_ui_input = idioma_input        #Variable que guarda según el idioma seleccionado los elementos visibles por pantalla
-    
-    st.markdown(        #CAMBIO DE COLOR AL VIOLETA
-    f"""
-    <div style="
-        background-color: #D9CCEE;     
-        color: #000000;
-        padding: 10px 20px;
-        border-radius: 8px;
-        font-weight: 500;
-        z-index: 9999;
-        pointer-events: none;
-    ">
-        {lang_ui_input['func_label']}
-    </div>
-    """,
-    unsafe_allow_html=True
-    )
-
-
-
-# ---------- HEADER ----------
-with st.container():
-    #Este markdown hace de st.title()
-    st.markdown("<h1 style='text-align:center; color:#8f9e25; font-size:60px;'>✔ Proyecto Verid.IA</h1>",unsafe_allow_html=True) #Título de la web en la cabecera (modificable) 
-    st.caption(lang_ui_input["info_label"])     #Mensaje informativo
-
-# ---------- MODO ----------        #Traducir también al idioma que se seleccione
-with st.container():
-    st.markdown(f"<h3 style='color:#6f4a8e;'>{lang_ui_input["mode_label"]}:</h3>", unsafe_allow_html=True)
-    modo = st.radio("Selecciona un modo", [f"{lang_ui_input["mode_label_one"]}", f"{lang_ui_input["mode_label_two"]}"], horizontal=True, label_visibility="hidden")  #CAMBIO CUANDO SE INTRODUZCA EL ESTADISTICAS.PY
-
-st.divider()    #Esto deja un espacio entre el desplegable de los idiomas y el mensaje de funcionalidad
-
-
-# ---------- CSS para botón pequeño ----------
-# Código encargado del diseño del botón de borrar de la web, formato html
-st.markdown("""
-<style>
-.small-btn button {
-    color: #c3a5c1      
-    padding: 0.2rem 0.4rem;
-    font-size: 14px;
-    float: right;
-}
-</style>
-""", unsafe_allow_html=True)
-
-# ---------- Layout ----------
-
-st.subheader(f"📄 {lang_ui_input["info_anuncio_label"]}")   #Subcabecera del comprobador de anuncios (modificable)
-
-# Inicializar session_state si no existe
-if "texto" not in st.session_state:
-    st.session_state["texto"] = ""
-if "url" not in st.session_state:
-    st.session_state["url"] = ""
-if "res_seg" not in st.session_state:       #CAMBIO 
-    st.session_state["res_seg"] = None
-if "res_det" not in st.session_state:
-    st.session_state["res_det"] = None
-if "lang_ui_resultado" not in st.session_state:
-    st.session_state["lang_ui_resultado"] = None
-if "expanded_ad_info" not in st.session_state:
-    st.session_state["expanded_ad_info"] = True  # Abierto por defecto al inicio
-
-
-with st.expander(f"📄 {lang_ui_input['info_anuncio_label']}", expanded=st.session_state["expanded_ad_info"]):
-    
-    # ---------- TEXTO DEL ANUNCIO ----------
-    col_text_label, col_text_btn = st.columns([9, 1])
-    
-    with col_text_label:
-        st.markdown(f"*{lang_ui_input['text_label']}*")
-    with col_text_btn:
-        if st.button("🧹", key="clear_text", help=lang_ui_input["borrar_texto_label"]):
-            st.session_state["texto"] = ""
-    
-    # Input
-    text_input = st.text_area(
-        "Text",
-        key="texto",
-        height=150
-    )
-    
-    # ---------- URL DEL ANUNCIO ----------
-    col_url_label, col_url_btn = st.columns([9, 1])
-    
-    with col_url_label:
-        st.markdown(f"*{lang_ui_input['url_label']}*")
-    with col_url_btn:
-        if st.button("🧹", key="clear_url", help=lang_ui_input["borrar_url_label"]):
-            st.session_state["url"] = ""
-    
-    # Input
-    url_input = st.text_input(
-        "URL",
-        key="url"
-    )
-    
-    # Parte donde se podía subir la imagen
-    st.markdown(f"*{lang_ui_input['imagen_label']}*")
-    uploaded_file = st.file_uploader(
-        f"{lang_ui_input['file_label']}",
-        key="imagen",
-        type=["jpg", "jpeg", "png", "tiff"]
-    )
-    
-    # ---------- VISTA PREVIA DE IMAGEN ----------
-    st.subheader(f"🖼 {lang_ui_input['previa_label']}")
-    
-    if uploaded_file:
-        st.image(uploaded_file, use_column_width=True)
-    else:
-        st.markdown(
-            f"""
-            <div style="
-                background-color: #C3B1E1;
-                color: #000000;
-                padding: 10px 20px;
-                border-radius: 8px;
-                font-weight: 500;
-                z-index: 9999;
-                pointer-events: none;
-            ">
-                {lang_ui_input['info_imagen_label']}
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-# ---------- BOTÓN ANALIZAR ----------
-st.divider()
-analyze = st.button(f"🔎 {lang_ui_input['anuncio_label']}")
 # ---------- TEXTOS RESULTADO ----------
 UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por pantalla dependiendo del idioma que haya seleccionado (falta rellenar más)
     "es":{
@@ -299,7 +155,7 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "yellow": "Riesgo medio",
         "red": "Riesgo alto",
         "close": "Entendido", #EXTRA
-        "analysis": "Mostrar Detección/Traducción"  #EXTRA
+        "detect": "Mostrar Detección/Traducción"  #EXTRA
 
 
     },
@@ -320,7 +176,7 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "yellow": "Medium risk",
         "red": "High risk",
         "close": "Understood",
-        "analysis": "Check Detection/Translation"
+        "detect": "Check Detection/Translation"
     },
     "fr":{
         "result":" ✔ Résultat de l'analyse",
@@ -339,7 +195,7 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "yellow": "Risque moyen",
         "red": "Risque élevé ",
         "close": "Compris",
-        "analysis": "Vérifier Détection/Traduction"
+        "detect": "Vérifier Détection/Traduction"
     }
 }
 translations = {  #Diccionario y funcion para traducir el mensaje desde el backend
@@ -449,7 +305,7 @@ def animacion(color):  #FUNCIÓN PARA LA ANIMACIÓN DEL SEMÁFORO (ESTILO FORMUL
         unsafe_allow_html=True
     )
 
-def mostrar_resultado_traduccion(res_seg, res_det, lang_ui):
+def mostrar_resultado_traduccion(res_seg, res_det, lang_ui):  #FUNCIÓN QUE LLAMA A LA API DETECTAR IDIOMA PARA MOSTRAR LOS RESULTADOS
     # Contenedor principal con borde
     with st.container(border=True):
 
@@ -526,6 +382,194 @@ def mostrar_resultado_traduccion(res_seg, res_det, lang_ui):
                 </div>
             """, unsafe_allow_html=True)
     
+def mostrar_resultados(res_seg, res_det, lang_ui):   #FUNCIÓN QUE LLAMA A LA API ANALIZAR PARA MOSTRAR LOS RESULTADOS
+    # Título de resultados
+    st.subheader(UI_TEXTS[lang_ui]["result"])
+    
+    # Nivel de seguridad
+    nivel = res_seg.get("nivel_seguridad")
+    col1, col2 = st.columns([1, 2])
+    
+    with col1:
+        semaforo(nivel)
+    
+    with col2:
+        st.markdown("<div style='height:80px'></div>", unsafe_allow_html=True)
+        if nivel == "verde":
+            st.success(f"🟢 {UI_TEXTS[lang_ui]['green']}")
+        elif nivel == "amarillo":
+            st.warning(f"🟡 {UI_TEXTS[lang_ui]['yellow']}")
+        elif nivel == "rojo":
+            st.error(f"🔴 {UI_TEXTS[lang_ui]['red']}")
+    
+    # Puntuación de confianza
+    confianza = res_seg.get("confianza_seguridad", 0)
+    st.metric(UI_TEXTS[lang_ui]['trust'], f"{int(confianza * 100)}%")
+    st.progress(confianza)
+    
+    # Mensaje de análisis
+    st.subheader(UI_TEXTS[lang_ui]['message'])
+    mensaje_analisis = traducir_mensaje_analisis(
+        lang_ui,
+        res_det["idioma_detectado"]
+    )
+    st.write(mensaje_analisis)
+    
+    # Indicadores
+    st.subheader(UI_TEXTS[lang_ui]['indicator'])
+    indicadores = res_seg.get("indicadores", [])
+    
+    if res_det["idioma_detectado"] == "es":
+        for ind in indicadores:
+            st.write("•", ind)
+
+
+# ---------- SIDEBAR ----------
+with st.sidebar:    #Aquí es donde se ve el desplegable de los idiomas en el lateral izquierdo
+    
+    st.header("⚙️ Configuración / Configuration")      #Cabecera de configuración donde de momento solo están los idiomas (modificable)
+
+    selected_name = st.selectbox(
+        "🌍 Idioma / Language",
+        list(languages.keys())
+    )
+
+    idioma_select = languages[selected_name]    #Variable que guarda el idioma seleccionado de todos los posibles
+    lang_ui = idioma_select                     #Variable que guarda el idioma seleccionado de todos los posibles
+    idioma_input = languages_input[selected_name.split(" ")[1]]     #Variable que guarda según el idioma seleccionado los elementos visibles por pantalla
+    lang_ui_input = idioma_input        #Variable que guarda según el idioma seleccionado los elementos visibles por pantalla
+    
+    st.markdown(        #CAMBIO DE COLOR AL VIOLETA
+    f"""
+    <div style="
+        background-color: #D9CCEE;     
+        color: #000000;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 500;
+        z-index: 9999;
+        pointer-events: none;
+    ">
+        {lang_ui_input['func_label']}
+    </div>
+    """,
+    unsafe_allow_html=True
+    )
+
+
+# ---------- HEADER ----------
+with st.container():
+    #Este markdown hace de st.title()
+    st.markdown("<h1 style='text-align:center; color:#8f9e25; font-size:60px;'>✔ Proyecto Verid.IA</h1>",unsafe_allow_html=True) #Título de la web en la cabecera (modificable) 
+    st.caption(lang_ui_input["info_label"])     #Mensaje informativo
+
+# ---------- MODO ----------        #Traducir también al idioma que se seleccione
+with st.container():
+    st.markdown(f"<h3 style='color:#6f4a8e;'>{lang_ui_input["mode_label"]}:</h3>", unsafe_allow_html=True)
+    modo = st.radio("Selecciona un modo", [f"{lang_ui_input["mode_label_one"]}", f"{lang_ui_input["mode_label_two"]}"], horizontal=True, label_visibility="hidden")  #CAMBIO CUANDO SE INTRODUZCA EL ESTADISTICAS.PY
+
+st.divider()    #Esto deja un espacio entre el desplegable de los idiomas y el mensaje de funcionalidad
+
+
+# ---------- CSS para botón pequeño ----------
+# Código encargado del diseño del botón de borrar de la web, formato html
+st.markdown("""
+<style>
+.small-btn button {
+    color: #c3a5c1      
+    padding: 0.2rem 0.4rem;
+    font-size: 14px;
+    float: right;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# ---------- Layout ----------
+
+st.subheader(f"📄 {lang_ui_input["info_anuncio_label"]}")   #Subcabecera del comprobador de anuncios (modificable)
+
+# Inicializar session_state si no existe
+if "texto" not in st.session_state:
+    st.session_state["texto"] = ""
+if "url" not in st.session_state:
+    st.session_state["url"] = ""
+if "res_seg" not in st.session_state:       #CAMBIO 
+    st.session_state["res_seg"] = None
+if "res_det" not in st.session_state:
+    st.session_state["res_det"] = None
+if "lang_ui_resultado" not in st.session_state:
+    st.session_state["lang_ui_resultado"] = None
+if "expanded_ad_info" not in st.session_state:
+    st.session_state["expanded_ad_info"] = True  # Abierto por defecto al inicio
+
+
+with st.expander(f"📋 {lang_ui_input['copiar_label']}", expanded=st.session_state["expanded_ad_info"]):
+    
+    # ---------- TEXTO DEL ANUNCIO ----------
+    col_text_label, col_text_btn = st.columns([9, 1])
+    
+    with col_text_label:
+        st.markdown(f"*{lang_ui_input['text_label']}*")
+    with col_text_btn:
+        if st.button("🧹", key="clear_text", help=lang_ui_input["borrar_texto_label"]):
+            st.session_state["texto"] = ""
+    
+    # Input
+    text_input = st.text_area(
+        "Text",
+        key="texto",
+        height=150
+    )
+    
+    # ---------- URL DEL ANUNCIO ----------
+    col_url_label, col_url_btn = st.columns([9, 1])
+    
+    with col_url_label:
+        st.markdown(f"*{lang_ui_input['url_label']}*")
+    with col_url_btn:
+        if st.button("🧹", key="clear_url", help=lang_ui_input["borrar_url_label"]):
+            st.session_state["url"] = ""
+    
+    # Input
+    url_input = st.text_input(
+        "URL",
+        key="url"
+    )
+    
+    # Parte donde se podía subir la imagen
+    st.markdown(f"*{lang_ui_input['imagen_label']}*")
+    uploaded_file = st.file_uploader(
+        f"{lang_ui_input['file_label']}",
+        key="imagen",
+        type=["jpg", "jpeg", "png", "tiff"]
+    )
+    
+    # ---------- VISTA PREVIA DE IMAGEN ----------
+    st.subheader(f"🖼 {lang_ui_input['previa_label']}")
+    
+    if uploaded_file:
+        st.image(uploaded_file, use_column_width=True)
+    else:
+        st.markdown(
+            f"""
+            <div style="
+                background-color: #C3B1E1;
+                color: #000000;
+                padding: 10px 20px;
+                border-radius: 8px;
+                font-weight: 500;
+                z-index: 9999;
+                pointer-events: none;
+            ">
+                {lang_ui_input['info_imagen_label']}
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+# ---------- BOTÓN ANALIZAR ----------
+st.divider()
+analyze = st.button(f"🔎 {lang_ui_input['anuncio_label']}")
 
 # ---------- ANÁLISIS ----------
 if analyze:
@@ -605,43 +649,7 @@ if analyze:
                     
                     # ========== MOSTRAR PRIMERO: RESULTADOS DEL ANÁLISIS ==========
                     st.divider()
-                    st.subheader(UI_TEXTS[lang_ui]["result"])
-                    
-                    # Mostrar semáforo y nivel de riesgo
-                    nivel = res_seg.get("nivel_seguridad")
-                    col1, col2 = st.columns([1, 2])
-                    
-                    with col1:
-                        semaforo(nivel)
-                    
-                    with col2:
-                        st.markdown("<div style='height:80px'></div>", unsafe_allow_html=True)
-                        if nivel == "verde":
-                            st.success(f"🟢 {UI_TEXTS[lang_ui]['green']}")
-                        elif nivel == "amarillo":
-                            st.warning(f"🟡 {UI_TEXTS[lang_ui]['yellow']}")
-                        elif nivel == "rojo":
-                            st.error(f"🔴 {UI_TEXTS[lang_ui]['red']}")
-                    
-                    # Mostrar puntuación
-                    confianza = res_seg.get("confianza_seguridad", 0)
-                    st.metric(f"{UI_TEXTS[lang_ui]['trust']}", f"{int(confianza * 100)}%")
-                    st.progress(confianza)
-                    
-                    # Mostrar mensaje
-                    st.subheader(f"{UI_TEXTS[lang_ui]['message']}")
-                    mensaje_analisis = traducir_mensaje_analisis(
-                        lang_ui,
-                        res_det["idioma_detectado"]
-                    )
-                    st.write(mensaje_analisis)
-                    
-                    # Mostrar indicadores
-                    st.subheader(f"{UI_TEXTS[lang_ui]['indicator']}")
-                    indicadores = res_seg.get("indicadores", [])
-                    if res_det["idioma_detectado"] == "es":
-                        for ind in indicadores:
-                            st.write("•", ind)
+                    mostrar_resultados(res_seg, res_det, lang_ui)
                     
                     # ========== MOSTRAR DESPUÉS: INFORMACIÓN DE TRADUCCIÓN ==========
                     st.divider()
@@ -704,7 +712,7 @@ if analyze:
             if response_idioma:
                 st.write(f"Código de estado: {response_idioma.status_code}")
 
-# ---------- MODAL RESULTADO ----------
+# ---------- MODAL TRADUCCIÓN ----------
 # Este bloque vive FUERA del if analyze: para sobrevivir al rerender
 if st.session_state.get("res_seg") is not None:
     _lang = st.session_state.get("lang_ui_resultado", "es")
@@ -734,7 +742,7 @@ if st.session_state.get("res_seg") is not None:
 
     with col_btn2:
         if st.button(
-            f"🔎 {UI_TEXTS[_lang]['analysis']}",
+            f"🔎 {UI_TEXTS[_lang]['detect']}",
             use_container_width=True,
             key="abrir_modal_btn"
         ):
