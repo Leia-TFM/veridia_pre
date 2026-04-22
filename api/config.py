@@ -124,6 +124,17 @@ class Settings(BaseSettings):
         No debes variar arbitrariamente entre análisis similares.
     -	Respeta estrictamente el formato JSON. La salida debe ser siempre un JSON válido, 
         sin texto adicional, sin comentarios y sin explicaciones fuera de los campos definidos.
+        Este es el json que debes generar siempre, sin variaciones:
+            {
+                "veredicto": "FRAUDULENTO" | "LEGÍTIMO" | "AMBIGUO",
+                "probabilidad": float,
+                "confianza": "alta" | "media" | "baja",
+                "nivel_riesgo": "alto" | "medio" | "bajo",
+                "alertas": ["alerta 1", "alerta 2"],
+                "justificacion": "explicación breve en 2-3 frases",
+                "señales_detectadas": {...},
+                "estadisticas": {...}
+            }
 
     ## TAREA ##
 
