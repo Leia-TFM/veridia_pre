@@ -617,6 +617,7 @@ if analyze:
      #DESDE ESTE IF AL FINAL TODO CAMBIO !!!
     if modo == f"{lang_ui_input["mode_label_one"]}":  #CONDICIÓN PARA EL ANÁLISIS DEL ANUNCIO (MODO 1)
         # Mostrar spinner mientras se analiza
+        placeholder = st.empty()
         with st.spinner(f"{idioma_input['spinner_label']}"):
             # PASO 1: Detectar idioma
             animacion("rojo")
@@ -641,8 +642,8 @@ if analyze:
                     uploaded_file.seek(0)
                     files = {"foto": (uploaded_file.name, uploaded_file, uploaded_file.type)}
                 
-                with st.spinner(f"{idioma_input['spinner_label']}"):
-                    response_seguridad = llamar_api(API_ANALIZAR, data, files)
+                
+                response_seguridad = llamar_api(API_ANALIZAR, data, files)
                 
                 if response_seguridad and response_seguridad.status_code == 200:
                     res_seg = response_seguridad.json()
@@ -653,7 +654,6 @@ if analyze:
                     
                     # ========== MOSTRAR DESPUÉS: INFORMACIÓN DE TRADUCCIÓN ==========
                     st.divider()
-                    res_seg = response_seguridad.json() # Guardamos la respuesta de traducción aquí
 
                     # Guardamos resultados en session_state para que sobrevivan al rerender
                     st.session_state["res_seg"] = res_seg
