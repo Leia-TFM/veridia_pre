@@ -7,7 +7,7 @@ python-multipart==0.0.9
 pydantic-settings==2.1.0
 
 # --- INTERFAZ DE USUARIO (Frontend) ---
-streamlit==1.31.0
+streamlit==1.56.0
 matplotlib==3.8.2
 
 # --- CIENCIA DE DATOS Y MATEMATICAS ---
