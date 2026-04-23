@@ -767,63 +767,6 @@ def traducir_mensaje_analisis(lang, idioma_detectado):
     texto = translations_analisis.get(lang, translations_analisis["en"])[key]
     return texto.format(idioma=idioma_detectado)
 
-def semaforo(nivel=None):  #FUNCION PARA LOS COLORES DEL SEMÁFORO DE DENTRO DEL ANÁLISIS (EL SEMÁFORO GRANDE)
-    html = f"""
-    <html>
-    <body style="margin:0; display:flex; justify-content:center; align-items:center;">
-
-        <div style="
-            display:flex;
-            flex-direction:column;
-            align-items:center;
-            width:110px;
-            padding:20px 15px;
-            background:#111;
-            border-radius:18px;
-            box-shadow:0 5px 20px rgba(0,0,0,0.5);
-            overflow:visible;
-        ">
-            
-            <div style="
-                width:60px;
-                height:60px;
-                border-radius:50%;
-                margin:12px 0;
-                background:{'red' if nivel=='rojo' else '#2b2b2b'};
-                box-shadow:{'0 0 35px red' if nivel=='rojo' else 'none'};
-                transition: all 0.3s ease;
-            "></div>
-
-            <div style="
-                width:60px;
-                height:60px;
-                border-radius:50%;
-                margin:12px 0;
-                background:{'yellow' if nivel=='amarillo' else '#2b2b2b'};
-                box-shadow:{'0 0 35px yellow' if nivel=='amarillo' else 'none'};
-                transition: all 0.3s ease;
-            "></div>
-
-            <div style="
-                width:60px;
-                height:60px;
-                border-radius:50%;
-                margin:12px 0;
-                background:{'green' if nivel=='verde' else '#2b2b2b'};
-                box-shadow:{'0 0 35px green' if nivel=='verde' else 'none'};
-                transition: all 0.3s ease;
-            "></div>
-
-        </div>
-
-    </body>
-    </html>
-    """
-
-    # CAMBIO: reemplazado components.html por st.iframe para evitar deprecación en junio 2026
-    st.iframe(html, height=340)
-
-
 def animacion(color, luz):
     luces = {
         "rojo":  "🔴 ⚫ ⚫",
