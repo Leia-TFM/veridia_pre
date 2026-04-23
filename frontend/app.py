@@ -1,12 +1,19 @@
 import streamlit as st
 from streamlit_modal import Modal
-import streamlit.components.v1 as components
+from streamlit_scroll_navigation import scroll_navbar  # CAMBIO: navegación por secciones
 import requests
 import time
 
 API_DETECTAR_IDIOMA = "http://127.0.0.1:8000/api/detectar_idioma"
 API_ANALIZAR = "http://127.0.0.1:8000/api/analizar"
 
+# ---------- NAVEGACIÓN ----------
+if "page" not in st.session_state:
+    st.session_state.page = "home"
+
+if "idioma" not in st.session_state:
+    st.session_state.idioma = None
+    
 # ---------- CONFIG ----------
 st.set_page_config(                 #Define el título de la página y su icono en la pestaña del navegador (modificable)
     page_title="Proyecto Verid.IA",
@@ -20,7 +27,7 @@ st.markdown("""
 <style>
 
 .main {
-    background-color: #white;  #crema, si no gusta se puede cambiar a blanco
+    background-color: #ffffff;  #crema, si no gusta se puede cambiar a blanco
 }
 
 .block-container {
@@ -123,7 +130,7 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "func_label": "Insérer un annonce pour détecter les fraudes potentielles.",
         "info_label": "Détecte les offres d'emploi potentiellement frauduleuses. Vous pouvez choisir l'une des trois options suivantes (Copier le texte / Copier l'URL / Télécharger une image) pour le vérifier.",
         "info_anuncio_label": "Information de l'annonce",
-        "copiar_label": "Copiez ici votre annonce (texte/URL/image)",
+        "copiar_label": "Copiez ici votre annonce (Texte/URL/Image)",
         "previa_label": "Aperçu",
         "info_imagen_label": "Téléchargez une image pour la voir ici",
         "borrar_texto_label": "Effacer texte",
@@ -132,7 +139,196 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "mode_label": "Sélectionnez un mode d'utilisation",
         "mode_label_one": "Analyser l'annonce",
         "mode_label_two": "Afficher les statistiques"
-
+    },
+    "Deutsch": {
+        "text_label": "Text des Stellenangebots",
+        "url_label": "URL des Stellenangebots",
+        "imagen_label": "Bild des Stellenangebots",
+        "anuncio_label": "Stellenangebot analysieren",
+        "file_label": "Bild des Stellenangebots hochladen, um es hier zu sehen",
+        "func_label": "Ein Stellenangebot einfügen, um potenzielle Betrugsfälle zu erkennen",
+        "info_label": "Erkennt potenziell betrügerische Stellenangebote. Sie können eine der folgenden drei Optionen auswählen (Text kopieren / URL kopieren / Bild hochladen), um dies zu überprüfen",
+        "info_anuncio_label": "Informationen zum Stellenangebot",
+        "copiar_label": "Füge hier deine Anzeige ein (Text, URL, Bild)",
+        "previa_label": "Vorschau",
+        "info_imagen_label": "Laden Sie ein Bild hoch, um es hier zu sehen",
+        "borrar_texto_label": "Text löschen",
+        "borrar_url_label": "URL löschen",
+        "spinner_label": "Das Stellenangebot wird analysiert...",
+        "mode_label": "Wählen Sie einen Verwendungsmodus",
+        "mode_label_one": "Stellenangebot analysieren",
+        "mode_label_two": "Sprache erkennen / Übersetzen"
+    },
+    "Italiano": {
+        "text_label": "Testo dell'offerta di lavoro",
+        "url_label": "URL dell'offerta di lavoro",
+        "imagen_label": "Immagine dell'offerta di lavoro",
+        "anuncio_label": "Analizza offerta di lavoro",
+        "file_label": "Carica l'immagine dell'offerta di lavoro per vederla qui",
+        "func_label": "Inserisci un'offerta di lavoro per rilevare potenziali frodi",
+        "info_label": "Rileva potenziali offerte di lavoro fraudolente. Puoi selezionare una delle seguenti tre opzioni (Copia testo / Copia URL / Carica un'immagine) per verificarla",
+        "info_anuncio_label": "Informazioni sull'offerta di lavoro",
+        "copiar_label": "Inserisci qui il tuo annuncio (Testo, URL, Immagine)",
+        "previa_label": "Anteprima",
+        "info_imagen_label": "Carica un'immagine per vederla qui",
+        "borrar_texto_label": "Elimina il testo",
+        "borrar_url_label": "Elimina l'URL",
+        "spinner_label": "Analisi dell'offerta di lavoro in corso...",
+        "mode_label": "Seleziona una modalità di utilizzo",
+        "mode_label_one": "Analizza annuncio",
+        "mode_label_two": "Rileva lingua / Traduzione"
+    },
+    "Português": {
+        "text_label": "Texto da oferta de emprego",
+        "url_label": "URL da oferta de emprego",
+        "imagen_label": "Imagem da oferta de emprego",
+        "anuncio_label": "Analisar a oferta de emprego",
+        "file_label": "Carregar a imagem da oferta de emprego para visualizá-la aqui",
+        "func_label": "Inserir uma oferta de emprego para detectar possíveis fraudes",
+        "info_label": "Deteta potenciais ofertas de emprego fraudulentas. Pode selecionar uma das três opções seguintes (Copiar texto / Copiar URL / Carregar imagem) para verificá-la",
+        "info_anuncio_label": "Informações sobre a oferta de emprego",
+        "copiar_label": "Coloque aqui o seu anúncio (Texto, URL, Imagem)",
+        "previa_label": "Pré-visualização",
+        "info_imagen_label": "Carregar uma imagem para visualizá-la aqui",
+        "borrar_texto_label": "Apagar o texto",
+        "borrar_url_label": "Apagar a URL",
+        "spinner_label": "A analisar a oferta de emprego...",
+        "mode_label": "Selecione um modo de uso",
+        "mode_label_one": "Analisar anúncio",
+        "mode_label_two": "Detectar idioma / Tradução" 
+    },
+    "Русский": {
+        "text_label": "Текст объявления о вакансии",
+        "url_label": "URL объявления о вакансии",
+        "imagen_label": "изображение объявления о вакансии",
+        "anuncio_label": "Проанализировать объявление о вакансии",
+        "file_label": "Загрузите изображение объявления о вакансии",
+        "func_label": "Вставить объявление о вакансии, чтобы обнаружить возможное мошенничество",
+        "info_label": "Обнаруживает потенциально мошеннические объявления о вакансиях. Вы можете выбрать один из следующих трех вариантов («Копировать текст» / «Копировать URL» / «Загрузить изображение») для проверки",
+        "info_anuncio_label": "Информация о вакансии",
+        "copiar_label": "Вставьте сюда текст своего объявления (текст, URL, изображение)",
+        "previa_label": "Предварительный просмотр",
+        "info_imagen_label": "Загрузите изображение, чтобы увидеть его здесь",
+        "borrar_texto_label": "Удалить текст",
+        "borrar_url_label": "Удалить URL",
+        "spinner_label": "Анализ вакансии...",
+        "mode_label": "Выберите режим использования",
+        "mode_label_one": "Анализировать объявление",
+        "mode_label_two": "Определить язык / Перевод"
+    },
+    "العربية": {
+        "text_label": "نص عرض العمل",
+        "url_label": "رابط عرض العمل",
+        "imagen_label": "صورة عرض العمل",
+        "anuncio_label": "تحليل عرض العمل",
+        "file_label": "قم بتحميل صورة لعرض العمل لعرضها هنا",
+        "func_label": "أدخل عرض العمل لاكتشاف الاحتيال المحتمل",
+        "info_label": "عروض العمل الاحتيالية المحتملة. يمكنك اختيار أحد الخيارات الثلاثة التالية (نسخ النص / نسخ الرابط / تحميل صورة) للتحقق من ذلك",
+        "info_anuncio_label": "معلومات عرض العمل",
+        "copiar_label": "انسخ إعلانك هنا (نص، رابط، صورة)",
+        "previa_label": "معاينة",
+        "info_imagen_label": "قم بتحميل صورة لعرضها هنا",
+        "borrar_texto_label": "مسح النص",
+        "borrar_url_label": "مسح الرابط",
+        "spinner_label": "تحليل عرض العمل...",
+        "mode_label": "اختر وضع الاستخدام",
+        "mode_label_one": "تحليل الإعلان",
+        "mode_label_two": "اكتشاف اللغة / الترجمة"
+    },
+    "Română": {
+        "text_label": "Textul ofertei de angajare",
+        "url_label": "URL-ul ofertei de angajare",
+        "imagen_label": "Imaginea ofertei de angajare",
+        "anuncio_label": "Analizați oferta de angajare",
+        "file_label": "Încărcați o imagine a ofertei de angajare pentru a o vedea aici",
+        "func_label": "Introduceți o ofertă de angajare pentru a depista eventualele fraude",
+        "info_label": "Detectează ofertele de angajare potențial frauduloase. Puteți selecta una dintre următoarele trei opțiuni (Copiați textul / Copiați URL-ul / Încărcați o imagine) pentru a verifica acest lucru",
+        "info_anuncio_label": "Detalii despre oferta de angajare",
+        "copiar_label": "Copiază aici anunțul tău (Text, URL, Imagine)",
+        "previa_label": "Previzualizare",
+        "info_imagen_label": "Încărcați o imagine pentru a o vedea aici",
+        "borrar_texto_label": "Ștergeți textul",
+        "borrar_url_label": "Ștergeți URL-ul",
+        "spinner_label": "Analizând oferta de angajare...",
+        "mode_label": "Selectați un mod de utilizare",
+        "mode_label_one": "Analizați anunțul",
+        "mode_label_two": "Detectați limba / Traducere"
+    },
+    "Neerlandés": {
+        "text_label": "Tekst van de advertentie",
+        "url_label": "URL van de advertentie",
+        "imagen_label": "Afbeelding van de advertentie",
+        "anuncio_label": "Advertentie analyseren",
+        "file_label": "Upload een afbeelding van de advertentie",
+        "func_label": "Voer een advertentie in om mogelijke fraude te detecteren.",
+        "info_label": "Detecteert mogelijk frauduleuze vacatures. U kunt een van de volgende drie opties kiezen (Tekst kopiëren / URL kopiëren / Afbeelding uploaden) om dit te controleren.",
+        "info_anuncio_label": "Advertentie-informatie",
+        "copiar_label": "Plak hier je advertentie (Tekst, URL, Afbeelding)",
+        "previa_label": "Voorvertoning",
+        "info_imagen_label": "Upload een afbeelding om deze hier te zien",
+        "borrar_texto_label": "Tekst wissen",
+        "borrar_url_label": "URL wissen",
+        "spinner_label": "Advertentie analyseren...",
+        "mode_label": "Selecteer een gebruiksmodus",
+        "mode_label_one": "Advertentie analyseren",
+        "mode_label_two": "Taal detecteren / Vertaling"
+    },
+    "Catalán": {
+        "text_label": "Text de l'oferta de treball",
+        "url_label": "URL de l'oferta de treball",
+        "imagen_label": "Imatge de l'oferta de treball",
+        "anuncio_label": "Analitzar oferta de treball",
+        "file_label": "Puja una imatge de l'oferta de treball",
+        "func_label": "Introdueix una oferta de treball per detectar possibles fraus",
+        "info_label": "Detecta ofertes de treball potencialment fraudulentes. Pot escollir una de les següents tres opcions (Copiar text / Copiar URL / Puja una imatge) per comprovar-ho", #normalmente se gasta más triar (aunque creo que es más con cosas físicas que con decisiones) pero creo que escollir es más correcto (es más similar a seleccionar, lo que no se gasta 100% son seleccionar o elegir porque son castellanismos o en el caso de elegir es SOLO en contexto post elecciones), va en función de zonas y costumbres.
+        "info_anuncio_label": "Informació de l'oferta de treball",
+        "copiar_label": "Pega aquí el teu anunci (Text, URL, Imatge)",
+        "previa_label": "Vista prèvia",
+        "info_imagen_label": "Puja una imatge per veure-la aquí",
+        "borrar_texto_label": "Esborra text",
+        "borrar_url_label": "Esborra URL",
+        "spinner_label": "Analitzant oferta de treball...",
+        "mode_label": "Seleccioneu un mode d'ús",
+        "mode_label_one": "Analitzar anunci",
+        "mode_label_two": "Detectar idioma / Traducció"   
+    },
+    "Polaco": {
+        "text_label": "Treść ogłoszenia",
+        "url_label": "URL ogłoszenia",
+        "imagen_label": "Obraz ogłoszenia",
+        "anuncio_label": "Analizuj ogłoszenie",
+        "file_label": "Prześlij obraz ogłoszenia",
+        "func_label": "Wprowadź ogłoszenie, aby wykryć możliwe oszustwa.",
+        "info_label": "Wykrywa potencjalnie fałszywe oferty pracy. Możesz wybrać jedną z trzech opcji (Skopiuj tekst / Skopiuj URL / Prześlij obraz), aby to sprawdzić.",
+        "info_anuncio_label": "Informacje o ogłoszeniu",
+        "copiar_label": "Wklej tutaj swoją reklamę (Tekst, adres URL, Obraz)",
+        "previa_label": "Podgląd",
+        "info_imagen_label": "Prześlij obraz, aby zobaczyć go tutaj",
+        "borrar_texto_label": "Usuń tekst",
+        "borrar_url_label": "Usuń URL",
+        "spinner_label": "Analizowanie ogłoszenia...",
+        "mode_label": "Wybierz tryb użytkowania",
+        "mode_label_one": "Analizuj ogłoszenie",
+        "mode_label_two": "Wykryj język / Tłumaczenie"
+    },
+    "Ucraniano": {
+        "text_label": "Текст оголошення",
+        "url_label": "URL оголошення",
+        "imagen_label": "Зображення оголошення",
+        "anuncio_label": "Аналізувати оголошення",
+        "file_label": "Завантажте зображення оголошення",
+        "func_label": "Введіть оголошення для виявлення можливого шахрайства.",
+        "info_label": "Виявляє потенційно шахрайські вакансії. Ви можете вибрати один із трьох варіантів (Скопіювати текст / Скопіювати URL / Завантажити зображення) для перевірки.",
+        "info_anuncio_label": "Інформація про оголошення",
+        "copiar_label": "Вставте тут своє оголошення (текст, URL-адресу, зображення)",
+        "previa_label": "Попередній перегляд",
+        "info_imagen_label": "Завантажте зображення, щоб побачити його тут",
+        "borrar_texto_label": "Видалити текст",
+        "borrar_url_label": "Видалити URL",
+        "spinner_label": "Аналіз оголошення...",
+        "mode_label": "Виберіть режим використання",
+        "mode_label_one": "Аналізувати оголошення",
+        "mode_label_two": "Визначити мову / Переклад"      
     }
 }
 
@@ -156,8 +352,6 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "red": "Riesgo alto",
         "close": "Entendido", #EXTRA
         "detect": "Mostrar Detección/Traducción"  #EXTRA
-
-
     },
     "en":{
         "result":" ✔ Analysis Result",
@@ -196,7 +390,197 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "red": "Risque élevé ",
         "close": "Compris",
         "detect": "Vérifier Détection/Traduction"
-    }
+    },
+    "de": {
+        "result": " ✔ Analyseergebnis",
+        "spanish_only_error": "Nur Anzeigen auf Spanisch sind erlaubt. Versuche es erneut.",
+        "data": "Gib Text oder eine URL ein oder lade ein Bild hoch",
+        "data_add": "Du kannst nur eine Option eingeben: Text, URL oder Bilde", 
+        "mode": "Sprache erkennen / Übersetzen",
+        "lang_phrase": "Erkannte Sprache",
+        "valid_phrase": "Text geeignet für die Analyse",
+        "original_phrase": "Originaltext",
+        "translated_phrase": "Übersetzter Text",
+        "message": "Nachricht",
+        "indicator": "Erkannte Indikatoren",
+        "trust": "Vertrauen",
+        "green": "Geringes Risiko",
+        "yellow": "Mittleres Risiko",
+        "red": "Hohes Risiko",
+        "close": "Verstanden",
+        "detect": "Erkennung/Übersetzung anzeigen"
+    },
+    "it": {
+        "result": " ✔ Risultato dell'analisi",
+        "spanish_only_error": "Sono consentiti solo annunci in spagnolo. Riprova.",
+        "data": "Inserisci testo, URL o carica un'immagine",
+        "data_add": "È possibile inserire solo un'opzione tra testo, URL e immagine", 
+        "mode": "Rileva lingua / Traduzione",
+        "lang_phrase": "Lingua rilevata",
+        "valid_phrase": "Testo idoneo all'analisi",
+        "original_phrase": "Testo originale",
+        "translated_phrase": "Testo tradotto",
+        "message": "Messaggio",
+        "indicator": "Indicatori rilevati",
+        "trust": "Affidabilità",
+        "green": "Rischio basso",
+        "yellow": "Rischio medio",
+        "red": "Rischio alto",
+        "close": "Capito",
+        "detect": "Mostra rilevamento/traduzione"
+    },
+    "pt": {
+        "result": " ✔ Resultado da análise",
+        "spanish_only_error": "Apenas anúncios em espanhol são permitidos. Tente novamente.",
+        "data": "Introduza texto, URL ou carregue uma imagem",
+        "data_add": "Só pode introduzir uma opção: texto, URL ou imagem", 
+        "mode": "Detectar idioma / Tradução",
+        "lang_phrase": "Idioma detectado",
+        "valid_phrase": "Texto válido para análise",
+        "original_phrase": "Texto original",
+        "translated_phrase": "Texto traduzido",
+        "message": "Mensagem",
+        "indicator": "Indicadores detectados",
+        "trust": "Confiança",
+        "green": "Risco baixo",
+        "yellow": "Risco médio",
+        "red": "Risco alto",
+        "close": "Entendido",
+        "detect": "Mostrar deteção/tradução"
+    },
+    "ru": {
+        "result": " ✔ Результат анализа",
+        "spanish_only_error": "Разрешены только объявления на испанском языке. Попробуйте снова.",
+        "data": "Введите текст, URL или загрузите изображение",
+        "data_add": "Вы можете ввести только один вариант: текст, URL или изображение", 
+        "mode": "Определить язык / Перевод",
+        "lang_phrase": "Определённый язык",
+        "valid_phrase": "Текст пригоден для анализа",
+        "original_phrase": "Оригинальный текст",
+        "translated_phrase": "Переведённый текст",
+        "message": "Сообщение",
+        "indicator": "Обнаруженные индикаторы",
+        "trust": "Доверие",
+        "green": "Низкий риск",
+        "yellow": "Средний риск",
+        "red": "Высокий риск",
+        "close": "Понятно",
+        "detect": "Показать распознавание/перевод"
+    },
+    "ar": {
+        "result": " ✔ نتيجة التحليل",
+        "spanish_only_error": "يُسمح فقط بالإعلانات باللغة الإسبانية. حاول مرة أخرى.",
+        "data": "أدخل نصًا أو رابطًا أو قم بتحميل صورة",
+        "data_add": "يمكنك إدخال خيار واحد فقط من النص أو الرابط أو الصورة", 
+        "mode": "اكتشاف اللغة / الترجمة",
+        "lang_phrase": "اللغة المكتشفة",
+        "valid_phrase": "النص صالح للتحليل",
+        "original_phrase": "النص الأصلي",
+        "translated_phrase": "النص المترجم",
+        "message": "رسالة",
+        "indicator": "المؤشرات المكتشفة",
+        "trust": "الثقة",
+        "green": "خطر منخفض",
+        "yellow": "خطر متوسط",
+        "red": "خطر مرتفع",
+        "close": "مفهوم",
+        "detect": "إظهار الكشف/الترجمة"
+    },
+    "ro": {
+        "result": " ✔ Rezultatul analizei",
+        "spanish_only_error": "Sunt permise doar anunțuri în spaniolă. Încercați din nou.",
+        "data": "Introdu text, URL sau încarcă o imagine",
+        "data_add": "Poți introduce doar o singură opțiune: text, URL sau imagine",
+        "mode": "Detectați limba / Traducere",
+        "lang_phrase": "Limbă detectată",
+        "valid_phrase": "Text valid pentru analiză",
+        "original_phrase": "Text original",
+        "translated_phrase": "Text tradus",
+        "message": "Mesaj",
+        "indicator": "Indicatori detectați",
+        "trust": "Încredere",
+        "green": "Risc scăzut",
+        "yellow": "Risc mediu",
+        "red": "Risc ridicat",
+        "close": "Am înțeles",
+        "detect": "Afișează detectarea/traducerea"
+    },
+    "nl": {
+        "result": " ✔ Analyseresultaat",
+        "spanish_only_error": "Alleen advertenties in het Spaans zijn toegestaan. Probeer opnieuw.",
+        "data": "Voer tekst of een URL in, of upload een afbeelding",
+        "data_add": "Je kunt slechts één tekst, URL of afbeelding invoeren",
+        "mode": "Taal detecteren / Vertaling",
+        "lang_phrase": "Gedetecteerde taal",
+        "valid_phrase": "Tekst geschikt voor analyse",
+        "original_phrase": "Originele tekst",
+        "translated_phrase": "Vertaalde tekst",
+        "message": "Bericht",
+        "indicator": "Gedetecteerde indicatoren",
+        "trust": "Vertrouwen",
+        "green": "Laag risico",
+        "yellow": "Gemiddeld risico",
+        "red": "Hoog risico",
+        "close": "Begrepen",
+        "detect": "Detectie/vertaling weergeven"
+    },
+    "ca": {
+        "result": " ✔ Resultat de l'anàlisi",
+        "spanish_only_error": "Només es permeten anuncis en espanyol. Torneu-ho a intentar.",
+        "data": "Introduïu text, una URL o pugeu una imatge",
+        "data_add": "Només podeu introduir un text, una URL o una imatge",
+        "mode": "Detectar idioma / Traducció",
+        "lang_phrase": "Idioma detectat",
+        "valid_phrase": "Text vàlid per a l'anàlisi",
+        "original_phrase": "Text original",
+        "translated_phrase": "Text traduït",
+        "message": "Missatge",
+        "indicator": "Indicadors detectats", 
+        "trust": "Confiança",
+        "green": "Risc baix",
+        "yellow": "Risc mitjà",
+        "red": "Risc alt",
+        "close": "Entengut",
+        "detect": "Mostra la detecció/traducció"
+    },
+    "pl": {
+        "result": " ✔ Wynik analizy",
+        "spanish_only_error": "Dozwolone są tylko ogłoszenia w języku hiszpańskim. Spróbuj ponownie.",
+        "data": "Wprowadź tekst, adres URL lub prześlij obraz",
+        "data_add": "Możesz wprowadzić tylko jedną opcję: tekst, adres URL lub obraz",
+        "mode": "Wykryj język / Tłumaczenie",
+        "lang_phrase": "Wykryty język",
+        "valid_phrase": "Tekst nadaje się do analizy",
+        "original_phrase": "Tekst oryginalny",
+        "translated_phrase": "Tekst przetłumaczony",
+        "message": "Wiadomość",
+        "indicator": "Wykryte wskaźniki",
+        "trust": "Zaufanie",
+        "green": "Niskie ryzyko",
+        "yellow": "Średnie ryzyko",
+        "red": "Wysokie ryzyko",
+        "close": "Rozumiem",
+        "detect": "Pokaż wykrycie/tłumaczenie"
+    },
+    "uk": {
+        "result": " ✔ Результат аналізу",
+        "spanish_only_error": "Дозволені лише оголошення іспанською мовою. Спробуйте ще раз.",
+        "data": "Введіть текст, URL-адресу або завантажте зображення",
+        "data_add": "Ви можете ввести лише один елемент: текст, URL-адресу або зображення",
+        "mode": "Визначити мову / Переклад",
+        "lang_phrase": "Визначена мова",
+        "valid_phrase": "Текст придатний для аналізу",
+        "original_phrase": "Оригінальний текст",
+        "translated_phrase": "Перекладений текст",
+        "message": "Повідомлення",
+        "indicator": "Виявлені індикатори",
+        "trust": "Довіра",
+        "green": "Низький ризик",
+        "yellow": "Середній ризик",
+        "red": "Високий ризик",
+        "close": "Зрозуміло",
+        "detect": "Показати розпізнавання/переклад"
+    },
 }
 translations = {  #Diccionario y funcion para traducir el mensaje desde el backend
     "es": {
@@ -210,6 +594,46 @@ translations = {  #Diccionario y funcion para traducir el mensaje desde el backe
     "fr": {
         "valid": "Le texte est en espagnol ({idioma}) et peut être analysé.",
         "invalid": "Langue non prise en charge. La langue détectée est ({idioma}). Seul l'espagnol (es) est autorisé."
+    },
+    "de": {
+        "valid": "Der Text ist auf Spanisch ({idioma}) und kann analysiert werden.",
+        "invalid": "Nicht unterstützte Sprache. Die erkannte Sprache ist ({idioma}). Nur Spanisch (es) ist zulässig."
+    },
+    "it": {
+        "valid": "Il testo è in spagnolo ({idioma}) e può essere analizzato.",
+        "invalid": "Lingua non supportata. La lingua rilevata è ({idioma}). È consentito solo lo spagnolo (es)."
+    },
+    "pt": {
+        "valid": "O texto está em espanhol ({idioma}) e pode ser analisado.",
+        "invalid": "Idioma não suportado. O idioma detetado é ({idioma}). Apenas o espanhol (es) é permitido."
+    },
+    "ru": {
+        "valid": "Текст на испанском языке ({idioma}) и может быть проанализирован.",
+        "invalid": "Неподдерживаемый язык. Обнаруженный язык: ({idioma}). Разрешён только испанский (es)."
+    },
+    "ar": {
+        "valid": "النص باللغة الإسبانية ({idioma}) ويمكن تحليله.",
+        "invalid": "لغة غير مدعومة. اللغة المكتشفة هي ({idioma}). يُسمح فقط بالإسبانية (es)."
+    },
+    "ro": {
+        "valid": "Textul este în spaniolă ({idioma}) și poate fi analizat.",
+        "invalid": "Limbă nesuportată. Limba detectată este ({idioma}). Este permisă doar spaniola (es)."
+    },
+    "nl": {
+        "valid": "De tekst is in het Spaans ({idioma}) en kan worden geanalyseerd.",
+        "invalid": "Niet-ondersteunde taal. De gedetecteerde taal is ({idioma}). Alleen Spaans (es) is toegestaan."
+    },
+    "ca": {
+        "valid": "El text és en espanyol ({idioma}) i es pot analitzar.",
+        "invalid": "Idioma no compatible. L'idioma detectat és ({idioma}). Només s'admet l'espanyol (es)."
+    },
+    "pl": {
+        "valid": "Tekst jest w języku hiszpańskim ({idioma}) i można go analizować.",
+        "invalid": "Nieobsługiwany język. Wykryty język to ({idioma}). Dozwolony jest tylko hiszpański (es)."
+    },
+    "uk": {
+        "valid": "Текст іспанською мовою ({idioma}) і може бути проаналізований.",
+        "invalid": "Непідтримувана мова. Виявлена мова: ({idioma}). Дозволено лише іспанську (es)."
     }
 }
 def traducir_mensaje(lang, idioma_detectado, es_analizable):
@@ -230,6 +654,46 @@ translations_analisis = {  #Diccionario y funcion para traducir el mensaje desde
     "fr": {
         "valid": "Cette annonce mérite votre attention en raison des risques potentiels qu'elle comporte.",
         "invalid": "Langue non prise en charge. La langue détectée est ({idioma}). Seul l'espagnol (es) est autorisé."
+    },
+    "de": {
+        "valid": "Diese Anzeige erfordert aufgrund möglicher Risiken besondere Aufmerksamkeit.",
+        "invalid": "Nicht unterstützte Sprache. Die erkannte Sprache ist ({idioma}). Nur Spanisch (es) ist zulässig."
+    },
+    "it": {
+        "valid": "Questo annuncio richiede attenzione a causa di potenziali rischi.",
+        "invalid": "Lingua non supportata. La lingua rilevata è ({idioma}). È consentito solo lo spagnolo (es)."
+    },
+    "pt": {
+        "valid": "Este anúncio requer atenção devido a potenciais riscos.",
+        "invalid": "Idioma não suportado. O idioma detetado é ({idioma}). Apenas o espanhol (es) é permitido."
+    },
+    "ru": {
+        "valid": "Это объявление требует внимания из-за возможных рисков.",
+        "invalid": "Неподдерживаемый язык. Обнаруженный язык: ({idioma}). Разрешён только испанский (es)."
+    },
+    "ar": {
+        "valid": "يتطلب هذا الإعلان الانتباه بسبب وجود مخاطر محتملة.",
+        "invalid": "لغة غير مدعومة. اللغة المكتشفة هي ({idioma}). يُسمح فقط بالإسبانية (es)."
+    },
+    "ro": {
+        "valid": "Acest anunț necesită atenție din cauza riscurilor potențiale.",
+        "invalid": "Limbă nesuportată. Limba detectată este ({idioma}). Este permisă doar spaniola (es)."
+    },
+    "nl": {
+        "valid": "Deze advertentie vereist aandacht vanwege mogelijke risico's.",
+        "invalid": "Niet-ondersteunde taal. De gedetecteerde taal is ({idioma}). Alleen Spaans (es) is toegestaan."
+    },
+    "ca": {
+        "valid": "Aquest anunci requereix atenció a causa de possibles riscos.",
+        "invalid": "Idioma no compatible. L'idioma detectat és ({idioma}). Només s'admet l'espanyol (es)."
+    },
+    "pl": {
+        "valid": "To ogłoszenie wymaga uwagi ze względu na możliwe zagrożenia.",
+        "invalid": "Nieobsługiwany język. Wykryty język to ({idioma}). Dozwolony jest tylko hiszpański (es)."
+    },
+    "uk": {
+        "valid": "Це оголошення потребує уваги через можливі ризики.",
+        "invalid": "Непідтримувана мова. Виявлена мова: ({idioma}). Дозволено лише іспанську (es)."
     }
 }
 def traducir_mensaje_analisis(lang, idioma_detectado):  
@@ -291,7 +755,9 @@ def semaforo(nivel=None):  #FUNCION PARA LOS COLORES DEL SEMÁFORO DE DENTRO DEL
     </html>
     """
 
-    components.html(html, height=340)
+    # CAMBIO: reemplazado components.html por st.iframe para evitar deprecación en junio 2026
+    st.iframe(html, height=340)
+
 
 placeholder = st.empty()
 def animacion(color):  #FUNCIÓN PARA LA ANIMACIÓN DEL SEMÁFORO (ESTILO FORMULA 1)
@@ -484,6 +950,16 @@ with st.sidebar:    #Aquí es donde se ve el desplegable de los idiomas en el la
     unsafe_allow_html=True
     )
 
+    # CAMBIO: menú de navegación para saltar a cada sección del formulario
+    # El usuario puede pulsar los botones para ir directamente a Texto, URL o Imagen
+    st.markdown("---")
+    st.markdown("#### 🧭 Ir a sección")
+    scroll_navbar(
+        anchor_ids=["seccion-texto", "seccion-url", "seccion-imagen", "seccion-analisis"],
+        anchor_labels=["📝 Texto", "🔗 URL", "🖼️ Imagen", "🔍 Análisis"],
+        key="nav"
+    )
+
 
 # ---------- HEADER ----------
 with st.container():
@@ -534,6 +1010,7 @@ if "expanded_ad_info" not in st.session_state:
 with st.expander(f"📋 {lang_ui_input['copiar_label']}", expanded=st.session_state["expanded_ad_info"]):
     
     # ---------- TEXTO DEL ANUNCIO ----------
+    st.markdown('<div id="seccion-texto"></div>', unsafe_allow_html=True)  # ancla para navegación
     col_text_label, col_text_btn = st.columns([9, 1])
     
     with col_text_label:
@@ -550,6 +1027,7 @@ with st.expander(f"📋 {lang_ui_input['copiar_label']}", expanded=st.session_st
     )
     
     # ---------- URL DEL ANUNCIO ----------
+    st.markdown('<div id="seccion-url"></div>', unsafe_allow_html=True)  # ancla para navegación
     col_url_label, col_url_btn = st.columns([9, 1])
     
     with col_url_label:
@@ -565,6 +1043,7 @@ with st.expander(f"📋 {lang_ui_input['copiar_label']}", expanded=st.session_st
     )
     
     # Parte donde se podía subir la imagen
+    st.markdown('<div id="seccion-imagen"></div>', unsafe_allow_html=True)  # ancla para navegación
     st.markdown(f"*{lang_ui_input['imagen_label']}*")
     uploaded_file = st.file_uploader(
         f"{lang_ui_input['file_label']}",
@@ -597,6 +1076,7 @@ with st.expander(f"📋 {lang_ui_input['copiar_label']}", expanded=st.session_st
 
 # ---------- BOTÓN ANALIZAR ----------
 st.divider()
+st.markdown("<div id='seccion-analisis'></div>", unsafe_allow_html=True)
 analyze = st.button(f"🔎 {lang_ui_input['anuncio_label']}")
 
 # ---------- ANÁLISIS ----------
@@ -643,7 +1123,7 @@ if analyze:
             uploaded_file.type
         )
      #DESDE ESTE IF AL FINAL TODO CAMBIO !!!
-    if modo == f"{lang_ui_input["mode_label_one"]}":  #CONDICIÓN PARA EL ANÁLISIS DEL ANUNCIO (MODO 1)
+    if modo == f"{lang_ui_input['mode_label_one']}":  #CONDICIÓN PARA EL ANÁLISIS DEL ANUNCIO (MODO 1)
         # Mostrar spinner mientras se analiza
         placeholder = st.empty()
         with st.spinner(f"{idioma_input['spinner_label']}"):
