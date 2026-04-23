@@ -824,15 +824,14 @@ def semaforo(nivel=None):  #FUNCION PARA LOS COLORES DEL SEMÁFORO DE DENTRO DEL
     st.iframe(html, height=340)
 
 
-placeholder = st.empty()
-def animacion(color):  #FUNCIÓN PARA LA ANIMACIÓN DEL SEMÁFORO (ESTILO FORMULA 1)
+def animacion(color, luz):
     luces = {
-        "rojo": "🔴 ⚫ ⚫",
+        "rojo":  "🔴 ⚫ ⚫",
         "ambar": "⚫ 🟡 ⚫",
         "verde": "⚫ ⚫ 🟢"
     }
-    placeholder.markdown(
-        f"<div style='font-size:20px; text-align:left'>{luces[color]}</div>",
+    luz.markdown(
+        f"<div style='font-size:24px'>{luces[color]}</div>",
         unsafe_allow_html=True
     )
 
@@ -974,8 +973,7 @@ def mostrar_resultado_traduccion(res_seg, res_det, lang_ui):  #FUNCIÓN QUE LLAM
                 </div>
             """, unsafe_allow_html=True)
     
-def mostrar_resultados(res_seg, res_det, lang_ui):   #FUNCIÓN QUE LLAMA A LA API ANALIZAR PARA MOSTRAR LOS RESULTADOS
-    # Título de resultados
+def mostrar_resultados(res_seg, res_det, lang_ui):
     st.subheader(UI_TEXTS[lang_ui]["result"])
 
     nivel = res_seg.get("nivel_seguridad")
@@ -990,30 +988,63 @@ def mostrar_resultados(res_seg, res_det, lang_ui):   #FUNCIÓN QUE LLAMA A LA AP
     cfg = nivel_config.get(nivel, nivel_config["amarillo"])
     c, bg, bd, icon, lbl = cfg['color'], cfg['bg'], cfg['border'], cfg['icon'], cfg['label']
 
-    st.markdown(f"""
-    <div style="background:{bg};border:2px solid {bd};border-radius:14px;padding:22px 26px;margin-bottom:14px;">
-        <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
-            <div style="width:54px;height:54px;border-radius:50%;background:white;border:2px solid {c};
-                        display:flex;align-items:center;justify-content:center;
-                        font-size:26px;color:{c};font-weight:700;flex-shrink:0;">
-                {icon}
-            </div>
-            <div>
-                <div style="font-size:28px;font-weight:700;color:{c};">{lbl}</div>
-            </div>
-        </div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:7px;">
-            <span style="font-size:16px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:1px;">
-                {UI_TEXTS[lang_ui]['trust']}
-            </span>
-            <span style="font-size:22px;font-weight:700;color:{c};">{confianza_pct}%</span>
-        </div>
-        <div style="height:10px;background:#e5e7eb;border-radius:99px;overflow:hidden;">
-            <div style="height:100%;width:{confianza_pct}%;background:{c};border-radius:99px;"></div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    semaforo_nivel = nivel if nivel in ("rojo", "verde") else "amarillo"
 
+    col_semaforo, col_resultado = st.columns([1, 4])
+
+    with col_semaforo:
+        st.markdown(f"""
+        <div style="display:flex; justify-content:flex-start; align-items:center; height:100%;">
+            <div style="
+                display:flex; flex-direction:column; align-items:center;
+                width:80px; padding:14px 10px; background:#111;
+                border-radius:14px; box-shadow:0 5px 20px rgba(0,0,0,0.5);
+            ">
+                <div style="
+                    width:42px; height:42px; border-radius:50%; margin:8px 0;
+                    background:{'red' if semaforo_nivel=='rojo' else '#2b2b2b'};
+                    box-shadow:{'0 0 25px red' if semaforo_nivel=='rojo' else 'none'};
+                "></div>
+                <div style="
+                    width:42px; height:42px; border-radius:50%; margin:8px 0;
+                    background:{'yellow' if semaforo_nivel=='amarillo' else '#2b2b2b'};
+                    box-shadow:{'0 0 25px yellow' if semaforo_nivel=='amarillo' else 'none'};
+                "></div>
+                <div style="
+                    width:42px; height:42px; border-radius:50%; margin:8px 0;
+                    background:{'green' if semaforo_nivel=='verde' else '#2b2b2b'};
+                    box-shadow:{'0 0 25px green' if semaforo_nivel=='verde' else 'none'};
+                "></div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col_resultado:
+        st.markdown(f"""
+        <div style="background:{bg};border:2px solid {bd};border-radius:14px;padding:22px 26px;margin-bottom:14px;">
+            <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
+                <div style="width:54px;height:54px;border-radius:50%;background:white;border:2px solid {c};
+                            display:flex;align-items:center;justify-content:center;
+                            font-size:26px;color:{c};font-weight:700;flex-shrink:0;">
+                    {icon}
+                </div>
+                <div>
+                    <div style="font-size:28px;font-weight:700;color:{c};">{lbl}</div>
+                </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:7px;">
+                <span style="font-size:16px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:1px;">
+                    {UI_TEXTS[lang_ui]['trust']}
+                </span>
+                <span style="font-size:22px;font-weight:700;color:{c};">{confianza_pct}%</span>
+            </div>
+            <div style="height:10px;background:#e5e7eb;border-radius:99px;overflow:hidden;">
+                <div style="height:100%;width:{confianza_pct}%;background:{c};border-radius:99px;"></div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.divider()
     # Mensaje
     mensaje = traducir_mensaje_analisis(lang_ui, res_det["idioma_detectado"])
     st.markdown(f"""
@@ -1035,13 +1066,13 @@ def mostrar_resultados(res_seg, res_det, lang_ui):   #FUNCIÓN QUE LLAMA A LA AP
             for ind in indicadores
         )
         st.markdown(f"""
-    <div style="background:#f9fafb;border:1.5px solid #e5e7eb;border-left:4px solid {c};border-radius:12px;padding:6px 20px 10px;">
-        <div style="font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#111827;padding:12px 0 8px;">
-            {UI_TEXTS[lang_ui]['indicator']}
+        <div style="background:#f9fafb;border:1.5px solid #e5e7eb;border-left:4px solid {c};border-radius:12px;padding:6px 20px 10px;">
+            <div style="font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#111827;padding:12px 0 8px;">
+                {UI_TEXTS[lang_ui]['indicator']}
+            </div>
+            {items}
         </div>
-        {items}
-    </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
 
 # ---------- SIDEBAR ----------
@@ -1256,19 +1287,19 @@ def pagina_analizador():
         #DESDE ESTE IF AL FINAL TODO CAMBIO !!!
         if modo == f"{lang_ui_input['mode_label_one']}":  #CONDICIÓN PARA EL ANÁLISIS DEL ANUNCIO (MODO 1)
             # Mostrar spinner mientras se analiza
-            placeholder = st.empty()
-            with st.spinner(f"{idioma_input['spinner_label']}"):
-                # PASO 1: Detectar idioma
-                animacion("rojo")
-                time.sleep(1.5)
+            with st.status(f"{idioma_input['spinner_label']}", expanded=True) as status:
+                luz = st.empty()
 
-                animacion("ambar")
+                animacion("rojo", luz)
+                time.sleep(2)
+                animacion("ambar", luz)
                 time.sleep(1.5)
+                animacion("verde", luz)
 
-                animacion("verde")
                 response_idioma = llamar_api(API_DETECTAR_IDIOMA, data, files)
                 time.sleep(1.5)
-                placeholder.empty()
+
+                status.update(label="🟢🟢🟢", state="complete", expanded=False)
             
             # Procesar respuesta
             if response_idioma and response_idioma.status_code == 200:
@@ -1378,7 +1409,7 @@ if st.session_state.get("res_seg") is not None:
         st.session_state["res_seg"] = None
         st.session_state["res_det"] = None
         st.session_state["open_modal"] = False
-        
+
 # ---------- MODAL TRADUCCIÓN ----------
 # Este bloque vive FUERA del if analyze: para sobrevivir al rerender
 if st.session_state.get("res_seg") is not None:
