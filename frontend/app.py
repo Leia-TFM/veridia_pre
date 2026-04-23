@@ -13,7 +13,7 @@ if "page" not in st.session_state:
 
 if "idioma" not in st.session_state:
     st.session_state.idioma = None
-    
+
 # ---------- CONFIG ----------
 st.set_page_config(                 #Define el título de la página y su icono en la pestaña del navegador (modificable)
     page_title="Proyecto Verid.IA",
@@ -47,10 +47,10 @@ textarea {
     border-radius:10px !important;
 }
 
-div[data-modal-container="true"] [data-testid="baseButton-secondary"] {
+.st-key-modal_resultado-close {
     display: none !important;
 }
-
+            
 </style>
 """, unsafe_allow_html=True)
 
@@ -98,7 +98,9 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "spinner_label": "Analizando anuncio...",
         "mode_label": "Seleccione un modo de uso",
         "mode_label_one": "Analizar anuncio",
-        "mode_label_two": "Mostrar estadísticas"
+        "mode_label_two": "Mostrar estadísticas",
+        "idioma_label": "Cambiar idioma",
+        "seccion_label": "Ir a sección"
 
     },
     "English": {
@@ -118,7 +120,9 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "spinner_label": "Analysing advertisement...",
         "mode_label": "Select a usage mode",
         "mode_label_one": "Analyse advertisement",
-        "mode_label_two": "Show statistics"
+        "mode_label_two": "Show statistics",
+        "idioma_label": "Change language",
+        "seccion_label": "Go to section"
 
     },
     "Français": {
@@ -138,7 +142,9 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "spinner_label": "Analyse de l'annonce...",
         "mode_label": "Sélectionnez un mode d'utilisation",
         "mode_label_one": "Analyser l'annonce",
-        "mode_label_two": "Afficher les statistiques"
+        "mode_label_two": "Afficher les statistiques",
+        "idioma_label": "Changer de langue",
+        "seccion_label": "Accéder à la section"
     },
     "Deutsch": {
         "text_label": "Text des Stellenangebots",
@@ -157,7 +163,9 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "spinner_label": "Das Stellenangebot wird analysiert...",
         "mode_label": "Wählen Sie einen Verwendungsmodus",
         "mode_label_one": "Stellenangebot analysieren",
-        "mode_label_two": "Sprache erkennen / Übersetzen"
+        "mode_label_two": "Statistiken anzeigen",
+        "idioma_label": "Sprache ändern",
+        "seccion_label": "Zum Abschnitt gehen"
     },
     "Italiano": {
         "text_label": "Testo dell'offerta di lavoro",
@@ -176,7 +184,9 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "spinner_label": "Analisi dell'offerta di lavoro in corso...",
         "mode_label": "Seleziona una modalità di utilizzo",
         "mode_label_one": "Analizza annuncio",
-        "mode_label_two": "Rileva lingua / Traduzione"
+        "mode_label_two": "Mostra statistiche",
+        "idioma_label": "Cambia lingua",
+        "seccion_label": "Vai alla sezione"
     },
     "Português": {
         "text_label": "Texto da oferta de emprego",
@@ -195,7 +205,9 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "spinner_label": "A analisar a oferta de emprego...",
         "mode_label": "Selecione um modo de uso",
         "mode_label_one": "Analisar anúncio",
-        "mode_label_two": "Detectar idioma / Tradução" 
+        "mode_label_two": "Mostrar estatísticas",
+        "idioma_label": "Mudar idioma",
+        "seccion_label": "Ir para a secção"
     },
     "Русский": {
         "text_label": "Текст объявления о вакансии",
@@ -214,7 +226,9 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "spinner_label": "Анализ вакансии...",
         "mode_label": "Выберите режим использования",
         "mode_label_one": "Анализировать объявление",
-        "mode_label_two": "Определить язык / Перевод"
+        "mode_label_two": "Показать статистику",
+        "idioma_label": "Сменить язык",
+        "seccion_label": "Перейти к разделу"
     },
     "العربية": {
         "text_label": "نص عرض العمل",
@@ -233,7 +247,9 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "spinner_label": "تحليل عرض العمل...",
         "mode_label": "اختر وضع الاستخدام",
         "mode_label_one": "تحليل الإعلان",
-        "mode_label_two": "اكتشاف اللغة / الترجمة"
+        "mode_label_two": "عرض الإحصائيات",
+        "idioma_label": "تغيير اللغة",
+        "seccion_label": "الذهاب إلى القسم"
     },
     "Română": {
         "text_label": "Textul ofertei de angajare",
@@ -252,7 +268,9 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "spinner_label": "Analizând oferta de angajare...",
         "mode_label": "Selectați un mod de utilizare",
         "mode_label_one": "Analizați anunțul",
-        "mode_label_two": "Detectați limba / Traducere"
+        "mode_label_two": "Afișează statistici",
+        "idioma_label": "Schimbă limba",
+        "seccion_label": "Mergi la secțiune"
     },
     "Neerlandés": {
         "text_label": "Tekst van de advertentie",
@@ -271,7 +289,9 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "spinner_label": "Advertentie analyseren...",
         "mode_label": "Selecteer een gebruiksmodus",
         "mode_label_one": "Advertentie analyseren",
-        "mode_label_two": "Taal detecteren / Vertaling"
+        "mode_label_two": "Statistieken tonen",
+        "idioma_label": "Taal wijzigen",
+        "seccion_label": "Ga naar sectie"
     },
     "Catalán": {
         "text_label": "Text de l'oferta de treball",
@@ -290,7 +310,9 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "spinner_label": "Analitzant oferta de treball...",
         "mode_label": "Seleccioneu un mode d'ús",
         "mode_label_one": "Analitzar anunci",
-        "mode_label_two": "Detectar idioma / Traducció"   
+        "mode_label_two": "Mostra estadístiques",
+        "idioma_label": "Canviar idioma",
+        "seccion_label": "Anar a la secció"
     },
     "Polaco": {
         "text_label": "Treść ogłoszenia",
@@ -309,7 +331,9 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "spinner_label": "Analizowanie ogłoszenia...",
         "mode_label": "Wybierz tryb użytkowania",
         "mode_label_one": "Analizuj ogłoszenie",
-        "mode_label_two": "Wykryj język / Tłumaczenie"
+        "mode_label_two": "Pokaż statystyki",
+        "idioma_label": "Zmień język",
+        "seccion_label": "Przejdź do sekcji"
     },
     "Ucraniano": {
         "text_label": "Текст оголошення",
@@ -328,7 +352,9 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "spinner_label": "Аналіз оголошення...",
         "mode_label": "Виберіть режим використання",
         "mode_label_one": "Аналізувати оголошення",
-        "mode_label_two": "Визначити мову / Переклад"      
+        "mode_label_two": "Показати статистику",
+        "idioma_label": "Змінити мову",
+        "seccion_label": "Перейти до розділу"
     }
 }
 
@@ -351,7 +377,10 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "yellow": "Riesgo medio",
         "red": "Riesgo alto",
         "close": "Entendido", #EXTRA
-        "detect": "Mostrar Detección/Traducción"  #EXTRA
+        "detect": "Mostrar Detección/Traducción",  #EXTRA
+        "config_title": "Configuración",
+        "select_language_title": "Selecciona idioma",
+        "continue_phrase": "Continuar"
     },
     "en":{
         "result":" ✔ Analysis Result",
@@ -370,7 +399,10 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "yellow": "Medium risk",
         "red": "High risk",
         "close": "Understood",
-        "detect": "Check Detection/Translation"
+        "detect": "Check Detection/Translation",
+        "config_title": "Configuration",
+        "select_language_title": "Choose Language", 
+        "continue_phrase": "Continue"
     },
     "fr":{
         "result":" ✔ Résultat de l'analyse",
@@ -389,7 +421,10 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "yellow": "Risque moyen",
         "red": "Risque élevé ",
         "close": "Compris",
-        "detect": "Vérifier Détection/Traduction"
+        "detect": "Vérifier Détection/Traduction",
+        "config_title": "Configuration",
+        "select_language_title": "Choisir la langue", 
+        "continue_phrase": "Continuer"
     },
     "de": {
         "result": " ✔ Analyseergebnis",
@@ -408,7 +443,10 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "yellow": "Mittleres Risiko",
         "red": "Hohes Risiko",
         "close": "Verstanden",
-        "detect": "Erkennung/Übersetzung anzeigen"
+        "detect": "Erkennung/Übersetzung anzeigen",
+        "config_title": "Konfiguration",
+        "select_language_title": "Sprache auswählen", 
+        "continue_phrase": "Weiter"
     },
     "it": {
         "result": " ✔ Risultato dell'analisi",
@@ -427,7 +465,10 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "yellow": "Rischio medio",
         "red": "Rischio alto",
         "close": "Capito",
-        "detect": "Mostra rilevamento/traduzione"
+        "detect": "Mostra rilevamento/traduzione",
+        "config_title": "Configurazione",
+        "select_language_title": "Seleziona lingua", 
+        "continue_phrase": "Continua"
     },
     "pt": {
         "result": " ✔ Resultado da análise",
@@ -446,7 +487,10 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "yellow": "Risco médio",
         "red": "Risco alto",
         "close": "Entendido",
-        "detect": "Mostrar deteção/tradução"
+        "detect": "Mostrar deteção/tradução",
+        "config_title": "Configuração",
+        "select_language_title": "Selecionar idioma", 
+        "continue_phrase": "Continuar"
     },
     "ru": {
         "result": " ✔ Результат анализа",
@@ -465,7 +509,10 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "yellow": "Средний риск",
         "red": "Высокий риск",
         "close": "Понятно",
-        "detect": "Показать распознавание/перевод"
+        "detect": "Показать распознавание/перевод",
+        "config_title": "Настройки",
+        "select_language_title": "Выберите язык", 
+        "continue_phrase": "Продолжить"
     },
     "ar": {
         "result": " ✔ نتيجة التحليل",
@@ -484,7 +531,10 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "yellow": "خطر متوسط",
         "red": "خطر مرتفع",
         "close": "مفهوم",
-        "detect": "إظهار الكشف/الترجمة"
+        "detect": "إظهار الكشف/الترجمة",
+        "config_title": "الإعدادات",
+        "select_language_title": "اختر اللغة", 
+        "continue_phrase": "متابعة"
     },
     "ro": {
         "result": " ✔ Rezultatul analizei",
@@ -503,7 +553,10 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "yellow": "Risc mediu",
         "red": "Risc ridicat",
         "close": "Am înțeles",
-        "detect": "Afișează detectarea/traducerea"
+        "detect": "Afișează detectarea/traducerea",
+        "config_title": "Configurare",
+        "select_language_title": "Selectați limba", 
+        "continue_phrase": "Continuați"
     },
     "nl": {
         "result": " ✔ Analyseresultaat",
@@ -522,7 +575,10 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "yellow": "Gemiddeld risico",
         "red": "Hoog risico",
         "close": "Begrepen",
-        "detect": "Detectie/vertaling weergeven"
+        "detect": "Detectie/vertaling weergeven",
+        "config_title": "Instellingen",
+        "select_language_title": "Taal kiezen", 
+        "continue_phrase": "Doorgaan"
     },
     "ca": {
         "result": " ✔ Resultat de l'anàlisi",
@@ -541,7 +597,10 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "yellow": "Risc mitjà",
         "red": "Risc alt",
         "close": "Entengut",
-        "detect": "Mostra la detecció/traducció"
+        "detect": "Mostra la detecció/traducció",
+        "config_title": "Configuració",
+        "select_language_title": "Selecciona l'idioma", 
+        "continue_phrase": "Continuar"
     },
     "pl": {
         "result": " ✔ Wynik analizy",
@@ -560,7 +619,10 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "yellow": "Średnie ryzyko",
         "red": "Wysokie ryzyko",
         "close": "Rozumiem",
-        "detect": "Pokaż wykrycie/tłumaczenie"
+        "detect": "Pokaż wykrycie/tłumaczenie",
+        "config_title": "Ustawienia",
+        "select_language_title": "Wybierz język", 
+        "continue_phrase": "Kontynuuj"
     },
     "uk": {
         "result": " ✔ Результат аналізу",
@@ -579,7 +641,10 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "yellow": "Середній ризик",
         "red": "Високий ризик",
         "close": "Зрозуміло",
-        "detect": "Показати розпізнавання/переклад"
+        "detect": "Показати розпізнавання/переклад",
+        "config_title": "Налаштування",
+        "select_language_title": "Оберіть мову", 
+        "continue_phrase": "Продовжити"
     },
 }
 translations = {  #Diccionario y funcion para traducir el mensaje desde el backend
@@ -771,6 +836,67 @@ def animacion(color):  #FUNCIÓN PARA LA ANIMACIÓN DEL SEMÁFORO (ESTILO FORMUL
         unsafe_allow_html=True
     )
 
+def pagina_inicio():
+    
+    st.markdown("<h1 style='text-align:center; color:#8f9e25; font-size:100px;'>✔ Proyecto Verid.IA</h1>", unsafe_allow_html=True)
+    st.divider()
+
+    # Idioma actual para traducir la UI
+    idioma_actual = languages.get(st.session_state.get("idioma", "🇪🇸 Español"), "es")
+
+    st.title("🌍 " + UI_TEXTS[idioma_actual]["select_language_title"])
+
+    st.markdown("""
+    <style>
+    div[data-baseweb="select"] > div {
+        font-size: 26px !important;
+        padding: 20px 20px !important;
+        min-height: 80px !important;
+        border-radius: 12px !important;
+        align-items: center !important;
+        display: flex !important;
+    }
+    div[data-baseweb="select"] span {
+        font-size: 26px !important;
+        line-height: 80px !important;
+        white-space: nowrap !important;
+        overflow: visible !important;
+        text-overflow: unset !important;
+    }
+    ul[role="listbox"] {
+        max-height: 600px !important;
+        overflow-y: auto !important;
+    }
+    div[data-baseweb="popover"] li {
+        font-size: 22px !important;
+        padding: 14px 20px !important;
+        line-height: 1.5 !important;
+    }
+    div[data-testid="stSelectbox"] label {
+        font-size: 22px !important;
+        font-weight: bold !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    def actualizar_idioma():
+        st.session_state.idioma = st.session_state.selector_idioma
+
+    idioma_guardado = st.session_state.get("idioma") or "🇪🇸 Español"
+
+    selected_name = st.selectbox(
+        UI_TEXTS[idioma_actual]["select_language_title"],
+        list(languages.keys()),
+        index=list(languages.keys()).index(idioma_guardado if idioma_guardado in languages else "🇪🇸 Español"),
+        key="selector_idioma",
+        on_change=actualizar_idioma
+)
+
+    if st.button(UI_TEXTS[idioma_actual]["continue_phrase"]):
+        st.session_state.idioma = selected_name
+        st.session_state.page = "analizador"
+        st.rerun()
+
 def mostrar_resultado_traduccion(res_seg, res_det, lang_ui):  #FUNCIÓN QUE LLAMA A LA API DETECTAR IDIOMA PARA MOSTRAR LOS RESULTADOS
     # Contenedor principal con borde
     with st.container(border=True):
@@ -919,306 +1045,340 @@ def mostrar_resultados(res_seg, res_det, lang_ui):   #FUNCIÓN QUE LLAMA A LA AP
 
 
 # ---------- SIDEBAR ----------
-with st.sidebar:    #Aquí es donde se ve el desplegable de los idiomas en el lateral izquierdo
-    
-    st.header("⚙️ Configuración / Configuration")      #Cabecera de configuración donde de momento solo están los idiomas (modificable)
+def pagina_analizador():
 
-    selected_name = st.selectbox(
-        "🌍 Idioma / Language",
-        list(languages.keys())
-    )
+    # ---------- SIDEBAR ----------
+    with st.sidebar:    #Aquí es donde se ve el desplegable de los idiomas en el lateral izquierdo
 
-    idioma_select = languages[selected_name]    #Variable que guarda el idioma seleccionado de todos los posibles
-    lang_ui = idioma_select                     #Variable que guarda el idioma seleccionado de todos los posibles
-    idioma_input = languages_input[selected_name.split(" ")[1]]     #Variable que guarda según el idioma seleccionado los elementos visibles por pantalla
-    lang_ui_input = idioma_input        #Variable que guarda según el idioma seleccionado los elementos visibles por pantalla
-    
-    st.markdown(        #CAMBIO DE COLOR AL VIOLETA
-    f"""
-    <div style="
-        background-color: #D9CCEE;     
-        color: #000000;
-        padding: 10px 20px;
-        border-radius: 8px;
-        font-weight: 500;
-        z-index: 9999;
-        pointer-events: none;
-    ">
-        {lang_ui_input['func_label']}
-    </div>
-    """,
-    unsafe_allow_html=True
-    )
+        st.header("⚙️ " + UI_TEXTS[languages[st.session_state.idioma]]["config_title"])       #Cabecera de configuración donde de momento solo están los idiomas (modificable)
 
-    # CAMBIO: menú de navegación para saltar a cada sección del formulario
-    # El usuario puede pulsar los botones para ir directamente a Texto, URL o Imagen
-    st.markdown("---")
-    st.markdown("#### 🧭 Ir a sección")
-    scroll_navbar(
-        anchor_ids=["seccion-texto", "seccion-url", "seccion-imagen", "seccion-analisis"],
-        anchor_labels=["📝 Texto", "🔗 URL", "🖼️ Imagen", "🔍 Análisis"],
-        key="nav"
-    )
+        selected_name = st.session_state.idioma
 
+        idioma_select = languages[selected_name]    #Variable que guarda el idioma seleccionado de todos los posibles
+        lang_ui = idioma_select                     #Variable que guarda el idioma seleccionado de todos los posibles
+        idioma_input = languages_input[selected_name.split(" ")[1]]     #Variable que guarda según el idioma seleccionado los elementos visibles por pantalla
+        lang_ui_input = idioma_input        #Variable que guarda según el idioma seleccionado los elementos visibles por pantalla
+        
+        st.divider()        #Esto deja un espacio entre el desplegable de los idiomas y el mensaje de funcionalidad
+
+        if st.button(f"↩️{lang_ui_input['idioma_label']}"):
+            st.session_state.page = "home"
+            st.rerun()
+        
+        st.markdown(        #CAMBIO DE COLOR AL VIOLETA
+        f"""
+        <div style="
+            background-color: #D9CCEE;     
+            color: #000000;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            z-index: 9999;
+            pointer-events: none;
+        ">
+            {lang_ui_input['func_label']}
+        </div>
+        """,
+        unsafe_allow_html=True
+        )
+
+        # CAMBIO: menú de navegación para saltar a cada sección del formulario
+        # El usuario puede pulsar los botones para ir directamente a Texto, URL o Imagen
+        st.markdown("---")
+        st.markdown(f"#### 🧭 {lang_ui_input['seccion_label']}")
+        scroll_navbar(
+            anchor_ids=["seccion-texto", "seccion-url", "seccion-imagen", "seccion-analisis"],
+            anchor_labels=[f"📝 {lang_ui_input['text_label']}", f"🔗 {lang_ui_input['url_label']}", f"🖼️ {lang_ui_input['imagen_label']}", f"🔍 {lang_ui_input['anuncio_label']}"],
+            key="nav"
+        )
 
 # ---------- HEADER ----------
-with st.container():
-    #Este markdown hace de st.title()
-    st.markdown("<h1 style='text-align:center; color:#8f9e25; font-size:60px;'>✔ Proyecto Verid.IA</h1>",unsafe_allow_html=True) #Título de la web en la cabecera (modificable) 
-    st.caption(lang_ui_input["info_label"])     #Mensaje informativo
+    with st.container():
+        #Este markdown hace de st.title()
+        st.markdown("<h1 style='text-align:center; color:#8f9e25; font-size:60px;'>✔ Proyecto Verid.IA</h1>",unsafe_allow_html=True) #Título de la web en la cabecera (modificable) 
+        st.caption(lang_ui_input["info_label"])     #Mensaje informativo
 
-# ---------- MODO ----------        #Traducir también al idioma que se seleccione
-with st.container():
-    st.markdown(f"<h3 style='color:#6f4a8e;'>{lang_ui_input["mode_label"]}:</h3>", unsafe_allow_html=True)
-    modo = st.radio("Selecciona un modo", [f"{lang_ui_input["mode_label_one"]}", f"{lang_ui_input["mode_label_two"]}"], horizontal=True, label_visibility="hidden")  #CAMBIO CUANDO SE INTRODUZCA EL ESTADISTICAS.PY
+    # ---------- MODO ----------        #Traducir también al idioma que se seleccione
+    with st.container():
+        st.markdown(f"<h3 style='color:#6f4a8e;'>{lang_ui_input["mode_label"]}:</h3>", unsafe_allow_html=True)
+        modo = st.radio("Selecciona un modo", [f"{lang_ui_input["mode_label_one"]}", f"{lang_ui_input["mode_label_two"]}"], horizontal=True, label_visibility="hidden")  #CAMBIO CUANDO SE INTRODUZCA EL ESTADISTICAS.PY
 
-st.divider()    #Esto deja un espacio entre el desplegable de los idiomas y el mensaje de funcionalidad
-
-
-# ---------- CSS para botón pequeño ----------
-# Código encargado del diseño del botón de borrar de la web, formato html
-st.markdown("""
-<style>
-.small-btn button {
-    color: #c3a5c1      
-    padding: 0.2rem 0.4rem;
-    font-size: 14px;
-    float: right;
-}
-</style>
-""", unsafe_allow_html=True)
-
-# ---------- Layout ----------
-
-st.subheader(f"📄 {lang_ui_input["info_anuncio_label"]}")   #Subcabecera del comprobador de anuncios (modificable)
-
-# Inicializar session_state si no existe
-if "texto" not in st.session_state:
-    st.session_state["texto"] = ""
-if "url" not in st.session_state:
-    st.session_state["url"] = ""
-if "res_seg" not in st.session_state:       #CAMBIO 
-    st.session_state["res_seg"] = None
-if "res_det" not in st.session_state:
-    st.session_state["res_det"] = None
-if "lang_ui_resultado" not in st.session_state:
-    st.session_state["lang_ui_resultado"] = None
-if "expanded_ad_info" not in st.session_state:
-    st.session_state["expanded_ad_info"] = True  # Abierto por defecto al inicio
+    st.divider()    #Esto deja un espacio entre el desplegable de los idiomas y el mensaje de funcionalidad
 
 
-with st.expander(f"📋 {lang_ui_input['copiar_label']}", expanded=st.session_state["expanded_ad_info"]):
-    
-    # ---------- TEXTO DEL ANUNCIO ----------
-    st.markdown('<div id="seccion-texto"></div>', unsafe_allow_html=True)  # ancla para navegación
-    col_text_label, col_text_btn = st.columns([9, 1])
-    
-    with col_text_label:
-        st.markdown(f"*{lang_ui_input['text_label']}*")
-    with col_text_btn:
-        if st.button("🧹", key="clear_text", help=lang_ui_input["borrar_texto_label"]):
-            st.session_state["texto"] = ""
-    
-    # Input
-    text_input = st.text_area(
-        "Text",
-        key="texto",
-        height=150
-    )
-    
-    # ---------- URL DEL ANUNCIO ----------
-    st.markdown('<div id="seccion-url"></div>', unsafe_allow_html=True)  # ancla para navegación
-    col_url_label, col_url_btn = st.columns([9, 1])
-    
-    with col_url_label:
-        st.markdown(f"*{lang_ui_input['url_label']}*")
-    with col_url_btn:
-        if st.button("🧹", key="clear_url", help=lang_ui_input["borrar_url_label"]):
-            st.session_state["url"] = ""
-    
-    # Input
-    url_input = st.text_input(
-        "URL",
-        key="url"
-    )
-    
-    # Parte donde se podía subir la imagen
-    st.markdown('<div id="seccion-imagen"></div>', unsafe_allow_html=True)  # ancla para navegación
-    st.markdown(f"*{lang_ui_input['imagen_label']}*")
-    uploaded_file = st.file_uploader(
-        f"{lang_ui_input['file_label']}",
-        key="imagen",
-        type=["jpg", "jpeg", "png", "tiff"]
-    )
-    
-    # ---------- VISTA PREVIA DE IMAGEN ----------
-    st.subheader(f"🖼 {lang_ui_input['previa_label']}")
-    
-    if uploaded_file:
-        st.image(uploaded_file, use_column_width=True)
-    else:
-        st.markdown(
-            f"""
-            <div style="
-                background-color: #C3B1E1;
-                color: #000000;
-                padding: 10px 20px;
-                border-radius: 8px;
-                font-weight: 500;
-                z-index: 9999;
-                pointer-events: none;
-            ">
-                {lang_ui_input['info_imagen_label']}
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-# ---------- BOTÓN ANALIZAR ----------
-st.divider()
-st.markdown("<div id='seccion-analisis'></div>", unsafe_allow_html=True)
-analyze = st.button(f"🔎 {lang_ui_input['anuncio_label']}")
-
-# ---------- ANÁLISIS ----------
-if analyze:
-    # Validar que hay datos
-    inputs_filled = sum([           #CAMBIO PARA MENSAJE DE ERROR (SOLO SE ELIGE UNA OPCION)
-        bool(text_input.strip()),
-        bool(url_input.strip()),
-        bool(uploaded_file)
-    ])
-
-    if inputs_filled == 0:      #CAMBIO PARA MENSAJE DE ERROR (SOLO SE ELIGE UNA OPCION)
-        st.warning(f"⚠️ {UI_TEXTS[lang_ui]['data']}")
-        st.stop()
-
-    if inputs_filled > 1:       #CAMBIO PARA MENSAJE DE ERROR (SOLO SE ELIGE UNA OPCION)
-        st.warning(f"⚠️ {UI_TEXTS[lang_ui]['data_add']}")
-        st.stop()
-    
-    # Cerrar el expander
-    st.session_state["expanded_ad_info"] = False
-    
-    # Definir tipo de entrada
-    if uploaded_file:
-        tipo = "IMAGEN"
-    elif url_input:
-        tipo = "ENLACE"
-    else:
-        tipo = "TEXTO"
-    
-    # Preparar datos
-    data = {
-        "texto": text_input,
-        "url": url_input,
-        "idioma_destino": idioma_select,
-        "tipo": tipo
+    # ---------- CSS para botón pequeño ----------
+    # Código encargado del diseño del botón de borrar de la web, formato html
+    st.markdown("""
+    <style>
+    .small-btn button {
+        color: #c3a5c1      
+        padding: 0.2rem 0.4rem;
+        font-size: 14px;
+        float: right;
     }
-    
-    files = {}
-    if uploaded_file:
-        files["foto"] = (
-            uploaded_file.name,
-            uploaded_file,
-            uploaded_file.type
-        )
-     #DESDE ESTE IF AL FINAL TODO CAMBIO !!!
-    if modo == f"{lang_ui_input['mode_label_one']}":  #CONDICIÓN PARA EL ANÁLISIS DEL ANUNCIO (MODO 1)
-        # Mostrar spinner mientras se analiza
-        placeholder = st.empty()
-        with st.spinner(f"{idioma_input['spinner_label']}"):
-            # PASO 1: Detectar idioma
-            animacion("rojo")
-            time.sleep(1.5)
+    </style>
+    """, unsafe_allow_html=True)
 
-            animacion("ambar")
-            time.sleep(1.5)
+    # ---------- Layout ----------
 
-            animacion("verde")
-            response_idioma = llamar_api(API_DETECTAR_IDIOMA, data, files)
-            time.sleep(1.5)
-            placeholder.empty()
+    st.subheader(f"📄 {lang_ui_input["info_anuncio_label"]}")   #Subcabecera del comprobador de anuncios (modificable)
+
+    # Inicializar session_state si no existe
+    if "texto" not in st.session_state:
+        st.session_state["texto"] = ""
+    if "url" not in st.session_state:
+        st.session_state["url"] = ""
+    if "res_seg" not in st.session_state:       #CAMBIO 
+        st.session_state["res_seg"] = None
+    if "res_det" not in st.session_state:
+        st.session_state["res_det"] = None
+    if "lang_ui_resultado" not in st.session_state:
+        st.session_state["lang_ui_resultado"] = None
+    if "expanded_ad_info" not in st.session_state:
+        st.session_state["expanded_ad_info"] = True  # Abierto por defecto al inicio
+
+
+    with st.expander(f"📋 {lang_ui_input['copiar_label']}", expanded=st.session_state["expanded_ad_info"]):
         
-        # Procesar respuesta
-        if response_idioma and response_idioma.status_code == 200:
-            res_det = response_idioma.json()
-            
-            # Verificar si es analizable PRIMERO
-            if res_det.get("es_analizable"):
-                # PASO 2: Analizar seguridad (sin mostrar nada todavía)
-                if uploaded_file:
-                    uploaded_file.seek(0)
-                    files = {"foto": (uploaded_file.name, uploaded_file, uploaded_file.type)}
-                
-                response_seguridad = llamar_api(API_ANALIZAR, data, files)
-                
-                if response_seguridad and response_seguridad.status_code == 200:
-                    res_seg = response_seguridad.json()
-                    
-                    # ========== MOSTRAR PRIMERO: RESULTADOS DEL ANÁLISIS ==========
-                    st.divider()
-                    mostrar_resultados(res_seg, res_det, lang_ui)
-                    
-                    # ========== MOSTRAR DESPUÉS: INFORMACIÓN DE TRADUCCIÓN ==========
-                    st.divider()
+        # ---------- TEXTO DEL ANUNCIO ----------
+        st.markdown('<div id="seccion-texto"></div>', unsafe_allow_html=True)  # ancla para navegación
+        col_text_label, col_text_btn = st.columns([9, 1])
+        
+        with col_text_label:
+            st.markdown(f"*{lang_ui_input['text_label']}*")
+        with col_text_btn:
+            if st.button("🧹", key="clear_text", help=lang_ui_input["borrar_texto_label"]):
+                st.session_state["texto"] = ""
+        
+        # Input
+        text_input = st.text_area(
+            "Text",
+            key="texto",
+            height=150
+        )
+        
+        # ---------- URL DEL ANUNCIO ----------
+        st.markdown('<div id="seccion-url"></div>', unsafe_allow_html=True)  # ancla para navegación
+        col_url_label, col_url_btn = st.columns([9, 1])
+        
+        with col_url_label:
+            st.markdown(f"*{lang_ui_input['url_label']}*")
+        with col_url_btn:
+            if st.button("🧹", key="clear_url", help=lang_ui_input["borrar_url_label"]):
+                st.session_state["url"] = ""
+        
+        # Input
+        url_input = st.text_input(
+            "URL",
+            key="url"
+        )
+        
+        # Parte donde se podía subir la imagen
+        st.markdown('<div id="seccion-imagen"></div>', unsafe_allow_html=True)  # ancla para navegación
+        st.markdown(f"*{lang_ui_input['imagen_label']}*")
+        uploaded_file = st.file_uploader(
+            f"{lang_ui_input['file_label']}",
+            key="imagen",
+            type=["jpg", "jpeg", "png", "tiff"]
+        )
+        
+        # ---------- VISTA PREVIA DE IMAGEN ----------
+        st.subheader(f"🖼 {lang_ui_input['previa_label']}")
+        
+        if uploaded_file:
+            st.image(uploaded_file, use_column_width=True)
+        else:
+            st.markdown(
+                f"""
+                <div style="
+                    background-color: #C3B1E1;
+                    color: #000000;
+                    padding: 10px 20px;
+                    border-radius: 8px;
+                    font-weight: 500;
+                    z-index: 9999;
+                    pointer-events: none;
+                ">
+                    {lang_ui_input['info_imagen_label']}
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
-                    # Guardamos resultados en session_state para que sobrevivan al rerender
-                    st.session_state["res_seg"] = res_seg
-                    st.session_state["res_det"] = res_det
-                    st.session_state["lang_ui_resultado"] = lang_ui
+    # ---------- BOTÓN ANALIZAR ----------
+    st.divider()
+    st.markdown("<div id='seccion-analisis'></div>", unsafe_allow_html=True)
+    analyze = st.button(f"🔎 {lang_ui_input['anuncio_label']}")
+
+    # ---------- ANÁLISIS ----------
+    if analyze:
+        # Validar que hay datos
+        inputs_filled = sum([           #CAMBIO PARA MENSAJE DE ERROR (SOLO SE ELIGE UNA OPCION)
+            bool(text_input.strip()),
+            bool(url_input.strip()),
+            bool(uploaded_file)
+        ])
+
+        if inputs_filled == 0:      #CAMBIO PARA MENSAJE DE ERROR (SOLO SE ELIGE UNA OPCION)
+            st.warning(f"⚠️ {UI_TEXTS[lang_ui]['data']}")
+            st.stop()
+
+        if inputs_filled > 1:       #CAMBIO PARA MENSAJE DE ERROR (SOLO SE ELIGE UNA OPCION)
+            st.warning(f"⚠️ {UI_TEXTS[lang_ui]['data_add']}")
+            st.stop()
+        
+        # Cerrar el expander
+        st.session_state["expanded_ad_info"] = False
+        
+        # Definir tipo de entrada
+        if uploaded_file:
+            tipo = "IMAGEN"
+        elif url_input:
+            tipo = "ENLACE"
+        else:
+            tipo = "TEXTO"
+        
+        # Preparar datos
+        data = {
+            "texto": text_input,
+            "url": url_input,
+            "idioma_destino": idioma_select,
+            "tipo": tipo
+        }
+        
+        files = {}
+        if uploaded_file:
+            files["foto"] = (
+                uploaded_file.name,
+                uploaded_file,
+                uploaded_file.type
+            )
+        #DESDE ESTE IF AL FINAL TODO CAMBIO !!!
+        if modo == f"{lang_ui_input['mode_label_one']}":  #CONDICIÓN PARA EL ANÁLISIS DEL ANUNCIO (MODO 1)
+            # Mostrar spinner mientras se analiza
+            placeholder = st.empty()
+            with st.spinner(f"{idioma_input['spinner_label']}"):
+                # PASO 1: Detectar idioma
+                animacion("rojo")
+                time.sleep(1.5)
+
+                animacion("ambar")
+                time.sleep(1.5)
+
+                animacion("verde")
+                response_idioma = llamar_api(API_DETECTAR_IDIOMA, data, files)
+                time.sleep(1.5)
+                placeholder.empty()
+            
+            # Procesar respuesta
+            if response_idioma and response_idioma.status_code == 200:
+                res_det = response_idioma.json()
+                
+                # Verificar si es analizable PRIMERO
+                if res_det.get("es_analizable"):
+                    # PASO 2: Analizar seguridad (sin mostrar nada todavía)
+                    if uploaded_file:
+                        uploaded_file.seek(0)
+                        files = {"foto": (uploaded_file.name, uploaded_file, uploaded_file.type)}
                     
+                    response_seguridad = llamar_api(API_ANALIZAR, data, files)
+                    
+                    if response_seguridad and response_seguridad.status_code == 200:
+                        res_seg = response_seguridad.json()
+                        
+                        # ========== MOSTRAR PRIMERO: RESULTADOS DEL ANÁLISIS ==========
+                        st.divider()
+                        mostrar_resultados(res_seg, res_det, lang_ui)
+                        
+                        # ========== MOSTRAR DESPUÉS: INFORMACIÓN DE TRADUCCIÓN ==========
+                        st.divider()
+
+                        # Guardamos resultados en session_state para que sobrevivan al rerender
+                        st.session_state["res_seg"] = res_seg
+                        st.session_state["res_det"] = res_det
+                        st.session_state["lang_ui_resultado"] = lang_ui
+                        st.session_state["_ultimo_lang_ui"] = lang_ui
+                        st.session_state["_ultimo_texto"] = text_input
+                        st.session_state["_ultima_url"] = url_input
+                        st.session_state["_ultima_imagen"] = uploaded_file.name if uploaded_file else None
+                        
+                    else:
+                        st.error("❌ Error al conectar con la API de Análisis")
+                        if response_seguridad:
+                            st.write(f"Código de estado: {response_seguridad.status_code}")
+                
                 else:
-                    st.error("❌ Error al conectar con la API de Análisis")
-                    if response_seguridad:
-                        st.write(f"Código de estado: {response_seguridad.status_code}")
+                    # Idioma no analizable - mostrar warning en popup
+                    idioma_detectado = res_det.get('idioma_detectado', 'desconocido')
+                    st.markdown(f"""
+                    <div style="
+                        background-color: rgba(235, 226, 211, 1);
+                        padding: 40px;
+                        border-radius: 12px;
+                        text-align: center;
+                        max-width: 500px;
+                        margin: 20px auto;
+                        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                        border: 2px solid rgba(232, 154, 64, 1);
+                    ">
+                        <div style="font-size: 48px; margin-bottom: 15px;">⚠️</div>
+                        <p style="font-size: 20px; color: rgba(74, 72, 74, 1); margin: 0;">
+                            {UI_TEXTS[lang_ui]["spanish_only_error"]}
+                        </p>
+                        <p style="font-size: 16px; color: rgba(74, 72, 74, 1); margin: 10px 0;">
+                            🌍 {UI_TEXTS[lang_ui]['lang_phrase']}: <strong>{idioma_detectado.upper()}</strong>
+                        </p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    #CAMBIO COLOR DEL BOTÓN DE CIERRE 
+                    st.markdown("""     
+                        <style>
+
+                        /* Solo el botón del warning (posición concreta) */
+                        div[data-testid="stHorizontalBlock"] div:nth-of-type(2) button[kind="secondary"] {
+                            background-color: #FFA94D !important;
+                            color: #000000 !important;
+                        }
+
+                        </style>
+                        """, unsafe_allow_html=True)
+                    
+                    col1, col2, col3 = st.columns([1, 1, 1])
+                    with col2:
+                        if st.button(f"✓ {UI_TEXTS[lang_ui]['close']}", key="close_warning", use_container_width=True, type="secondary"):
+                            st.rerun()
             
             else:
-                # Idioma no analizable - mostrar warning en popup
-                idioma_detectado = res_det.get('idioma_detectado', 'desconocido')
-                st.markdown(f"""
-                <div style="
-                    background-color: rgba(235, 226, 211, 1);
-                    padding: 40px;
-                    border-radius: 12px;
-                    text-align: center;
-                    max-width: 500px;
-                    margin: 20px auto;
-                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-                    border: 2px solid rgba(232, 154, 64, 1);
-                ">
-                    <div style="font-size: 48px; margin-bottom: 15px;">⚠️</div>
-                    <p style="font-size: 20px; color: rgba(74, 72, 74, 1); margin: 0;">
-                        {UI_TEXTS[lang_ui]["spanish_only_error"]}
-                    </p>
-                    <p style="font-size: 16px; color: rgba(74, 72, 74, 1); margin: 10px 0;">
-                        🌍 {UI_TEXTS[lang_ui]['lang_phrase']}: <strong>{idioma_detectado.upper()}</strong>
-                    </p>
-                </div>
-                """, unsafe_allow_html=True)
-                
-               #CAMBIO COLOR DEL BOTÓN DE CIERRE 
-                st.markdown("""     
-                    <style>
+                st.error("❌ Error al detectar el idioma")
+                if response_idioma:
+                    st.write(f"Código de estado: {response_idioma.status_code}")
 
-                    /* Solo el botón del warning (posición concreta) */
-                    div[data-testid="stHorizontalBlock"] div:nth-of-type(2) button[kind="secondary"] {
-                        background-color: #FFA94D !important;
-                        color: #000000 !important;
-                    }
+if st.session_state.page == "home":
+    pagina_inicio()
 
-                    </style>
-                    """, unsafe_allow_html=True)
-                
-                col1, col2, col3 = st.columns([1, 1, 1])
-                with col2:
-                    if st.button(f"✓ {UI_TEXTS[lang_ui]['close']}", key="close_warning", use_container_width=True, type="secondary"):
-                        st.rerun()
+elif st.session_state.page == "analizador":
+    pagina_analizador() 
+
+# Detectar cambios de idioma o texto y limpiar el modal si cambian
+_lang_actual = st.session_state.get("_ultimo_lang_ui")
+_texto_actual = st.session_state.get("_ultimo_texto")
+_url_actual = st.session_state.get("_ultima_url")
+_imagen_actual = st.session_state.get("_ultima_imagen")
+_lang_sesion = languages.get(st.session_state.get("idioma", "🇪🇸 Español"), "es")
+_texto_sesion = st.session_state.get("texto", "")
+_url_sesion = st.session_state.get("url", "")
+_imagen_sesion = st.session_state.get("imagen").name if st.session_state.get("imagen") else None
+
+if st.session_state.get("res_seg") is not None:
+    if (_lang_actual != _lang_sesion or
+        _texto_actual != _texto_sesion or
+        _url_actual != _url_sesion or
+        _imagen_actual != _imagen_sesion):
+        st.session_state["res_seg"] = None
+        st.session_state["res_det"] = None
+        st.session_state["open_modal"] = False
         
-        else:
-            st.error("❌ Error al detectar el idioma")
-            if response_idioma:
-                st.write(f"Código de estado: {response_idioma.status_code}")
-
 # ---------- MODAL TRADUCCIÓN ----------
 # Este bloque vive FUERA del if analyze: para sobrevivir al rerender
 if st.session_state.get("res_seg") is not None:
@@ -1237,12 +1397,13 @@ if st.session_state.get("res_seg") is not None:
     #CAMBIO COLOR DEL BOTÓN DE VER ANÁLISIS
     st.markdown("""
     <style>
-    div[data-testid="stHorizontalBlock"] div:nth-child(1) div[data-testid="stButton"] button {
+    .st-key-abrir_modal_btn button {
         background-color: #FFA94D !important;
         color: #000000 !important;
         white-space: nowrap !important;
-        font-size: 13px !important;
-        padding: 4px 12px !important;
+        font-size: 11px !important;
+        padding: 4px 10px !important;
+        min-width: 200px !important;
     }
     </style>
     """, unsafe_allow_html=True)
