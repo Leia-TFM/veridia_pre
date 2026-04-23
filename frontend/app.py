@@ -38,9 +38,9 @@ st.markdown("""
     background-color: #b6c35d; /* botón verde */
     color: #000000; 
     border-radius: 10px;
-    padding: 10px 20px; /* más grande */
+    padding: 16px 28px; /* más grande */
     font-weight: bold;
-    font-size: 16px; /* aumenta tamaño del texto */
+    font-size: 20px; /* aumenta tamaño del texto */
 }
 
 textarea {
