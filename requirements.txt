@@ -25,7 +25,7 @@ joblib==1.4.2
 scikit-learn==1.6.1
 nltk==3.9.1
 spacy==3.8.2
-trafilatura==1.14.1
+trafilatura==2.0.0
 beautifulsoup4==4.12.3
 deep-translator==1.11.4
 
@@ -33,7 +33,7 @@ deep-translator==1.11.4
 Pillow==11.1.0
 opencv-python-headless==4.10.0.84
 pytesseract==0.3.10
-fasttext==1.0.2
+fasttext==0.9.3
 
 # --- AGENTES IA ---
 smolagents==1.21.1
