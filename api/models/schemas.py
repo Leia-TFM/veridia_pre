@@ -61,13 +61,15 @@ class AnuncioEntrada(BaseModel):
         return cls(texto=texto, url=url, idioma_destino=idioma_destino, tipo=tipo)
 
 #Modelo de datos para la respuesta del análisis
-class ResultadoAnalisis(BaseModel):
-    tipo_entrada: TipoEntrada
-    nivel_seguridad: NivelSeguridad
-    confianza_seguridad: float
-    mensaje: str
-    indicadores: list[str]
-    idioma_detectado: str
+class ResultadoFraude(BaseModel):
+    veredicto:          str
+    probabilidad:       float
+    confianza:          str
+    nivel_riesgo:       str
+    alertas:            list[str]
+    justificacion:      str
+    senales_detectadas: dict
+    estadisticas:       dict
 
 #Modelos    para las estadísticas generales
 #Modelo para la distribución del semáforo
