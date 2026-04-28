@@ -70,12 +70,12 @@ def clean_text(text: str) -> dict:
 
 import re as _re_signals
 
-REGEX_CORREO = r"[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+"
-REGEX_URL = r"https?://\S+"
+REGEX_CORREO = r"[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}"
+REGEX_URL = r"https?://[^\s<>\"']+"
 
 # Regex de teléfonos para países hispanohablantes.
 REGEX_TELEFONO = _re_signals.compile(r"""
-    (\+34\s?\d{9})|
+    (\+34\s?\d{3}[\s.-]?\d{3}[\s.-]?\d{3})|
     (\+52\s?\d{10})|
     (\+54\s?\d{10})|
     (\+57\s?\d{10})|
@@ -86,18 +86,37 @@ REGEX_TELEFONO = _re_signals.compile(r"""
     (\+502\s?\d{8})|
     (\+53\s?\d{8})|
     (\+591\s?\d{8})|
-    (\+1-(809|829|849)\s?\d{7})|
+    (\+1-(809|829|849)[\s.-]?\d{3}[\s.-]?\d{4})|
     (\+504\s?\d{8})|
     (\+595\s?\d{9})|
     (\+503\s?\d{8})|
     (\+505\s?\d{8})|
     (\+506\s?\d{8})|
-    (\+1-(787|939)\s?\d{7})|
+    (\+1-(787|939)[\s.-]?\d{3}[\s.-]?\d{4})|
     (\+598\s?\d{8})|
     (\+507\s?\d{8})
 """, _re_signals.VERBOSE)
 
-PALABRAS_URGENCIA = ["urgente", "rápido", "ya", "inmediato", "incorporación inmediata"]
+PALABRAS_URGENCIA = [
+    "urgente",
+    "urgencia",
+    "rápido",
+    "ya",
+    "inmediato",
+    "incorporación inmediata",
+    "incorporación urgente",
+    "disponibilidad inmediata",
+    "empieza ya",
+    "lo antes posible",
+    "contratación inmediata",
+    "entrevista hoy",
+    "plazas limitadas",
+    "últimas plazas",
+    "solo hoy",
+    "sin demora",
+    "cuanto antes",
+    "proceso express",
+]
 PALABRAS_SOSPECHOSAS = [
     "ganancias",
     "fácil",
@@ -105,14 +124,34 @@ PALABRAS_SOSPECHOSAS = [
     "pago previo",
     "transferencia",
     "ingresos rápidos",
+    "dinero fácil",
+    "trabaja desde casa",
+    "sin titulación",
+    "sin estudios",
+    "sin papeles",
+    "gana dinero",
+    "comisiones altas",
+    "100% comisión",
+    "multinivel",
+    "inversión inicial",
+    "depósito previo",
+    "datos bancarios",
+    "cuenta bancaria",
+    "western union",
+    "bizum previo",
 ]
 
-FUENTES_NO_FIABLES = ["facebook", "whatsapp", "telegram", "instagram", "tiktok"]
-FUENTES_FIABLES = ["linkedin", "infojobs", "indeed", "glassdoor"]
+FUENTES_NO_FIABLES = ["facebook", "whatsapp", "telegram", "instagram", "tiktok", "snapchat"]
+FUENTES_FIABLES = ["linkedin", "infojobs", "indeed", "glassdoor", "tecnoempleo", "computrabajo"]
 
 
 # "Senales" es la información detectada en el texto.
 # "Caracteristicas" son valores más estructurados para análisis posterior.
+def _normalizar_senales(texto: str) -> str:
+    texto = texto.lower()
+    return _re_signals.sub(r"(?<=[a-záéíóúüñ])[.\-_](?=[a-záéíóúüñ])", "", texto)
+
+
 def tiene_email(texto: str) -> int:
     return int(bool(_re_signals.search(REGEX_CORREO, texto, _re_signals.IGNORECASE)))
 
@@ -126,13 +165,18 @@ def tiene_url(texto: str) -> int:
 
 
 def puntuacion_urgencia(texto: str) -> int:
-    texto = texto.lower()
+    texto = _normalizar_senales(texto)
     return sum(palabra in texto for palabra in PALABRAS_URGENCIA)
 
 
 def palabras_sospechosas(texto: str) -> int:
-    texto = texto.lower()
+    texto = _normalizar_senales(texto)
     return sum(palabra in texto for palabra in PALABRAS_SOSPECHOSAS)
+
+
+def extraer_sospechosas(texto: str) -> list[str]:
+    texto = _normalizar_senales(texto)
+    return [palabra for palabra in PALABRAS_SOSPECHOSAS if palabra in texto]
 
 
 def num_exclamaciones(texto: str) -> int:
@@ -206,16 +250,8 @@ def extraer_lugares(texto: str) -> list[str]:
 
 
 def extraer_urgencia(texto: str) -> list[str]:
-    texto_minusculas = texto.lower()
-    patrones = [
-        r"urgente",
-        r"inmediato",
-        r"incorporación inmediata",
-        r"empieza ya",
-        r"disponibilidad inmediata",
-        r"lo antes posible",
-    ]
-    return [patron for patron in patrones if _re_signals.search(patron, texto_minusculas)]
+    texto = _normalizar_senales(texto)
+    return [palabra for palabra in PALABRAS_URGENCIA if palabra in texto]
 
 
 def advertencias_telefonos(texto: str) -> list[str]:
@@ -267,6 +303,7 @@ def extraer_senales(texto: str) -> dict:
         "lugares": extraer_lugares(texto),
         "fuente": evaluar_fuente_trabajo(texto),
         "expresiones_urgencia": extraer_urgencia(texto),
+        "palabras_sospechosas": extraer_sospechosas(texto),
         "advertencias": advertencias_telefonos(texto),
     }
 
