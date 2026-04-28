@@ -1160,7 +1160,7 @@ def pagina_analizador():
         st.subheader(f"🖼 {lang_ui_input['previa_label']}")
         
         if uploaded_file:
-            st.image(uploaded_file, use_column_width=True)
+            st.image(uploaded_file, use_container_width=True)
         else:
             st.markdown(
                 f"""
@@ -1213,20 +1213,18 @@ def pagina_analizador():
             tipo = "TEXTO"
         
         # Preparar datos
-        data = {
-            "texto": text_input,
-            "url": url_input,
-            "idioma_destino": idioma_select,
-            "tipo": tipo
-        }
-        
-        files = {}
+        data = {"idioma_destino": idioma_select, "tipo": tipo}
+
+        if text_input and not uploaded_file and not url_input:
+            data["texto"] = text_input
+
+        if url_input and not uploaded_file and not text_input:
+            data["url"] = url_input
+
+        files = None
         if uploaded_file:
-            files["foto"] = (
-                uploaded_file.name,
-                uploaded_file,
-                uploaded_file.type
-            )
+            files = {"file": (uploaded_file.name, uploaded_file, uploaded_file.type)}
+
         #DESDE ESTE IF AL FINAL TODO CAMBIO !!!
         if modo == f"{lang_ui_input['mode_label_one']}":  #CONDICIÓN PARA EL ANÁLISIS DEL ANUNCIO (MODO 1)
             # Mostrar spinner mientras se analiza
@@ -1251,10 +1249,11 @@ def pagina_analizador():
                 # Verificar si es analizable PRIMERO
                 if res_det.get("es_analizable"):
                     # PASO 2: Analizar seguridad (sin mostrar nada todavía)
+                    files = None
                     if uploaded_file:
                         uploaded_file.seek(0)
-                        files = {"foto": (uploaded_file.name, uploaded_file, uploaded_file.type)}
-                    
+                        files = {"file": (uploaded_file.name, uploaded_file, uploaded_file.type)}
+
                     response_seguridad = llamar_api(API_ANALIZAR, data, files)
                     
                     if response_seguridad and response_seguridad.status_code == 200:
