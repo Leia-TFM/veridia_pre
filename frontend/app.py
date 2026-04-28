@@ -95,6 +95,7 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "info_imagen_label": "Sube una imagen para verla aquí",
         "borrar_texto_label": "Borrar texto",
         "borrar_url_label": "Borrar URL",
+        "borrar_imagen_label": "Borrar imagen",
         "spinner_label": "Analizando anuncio...",
         "mode_label": "Seleccione un modo de uso",
         "mode_label_one": "Analizar anuncio",
@@ -117,6 +118,7 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "info_imagen_label": "Upload an image to view it here",
         "borrar_texto_label": "Erase text",
         "borrar_url_label": "Erase URL",
+        "borrar_imagen_label": "Erase image",
         "spinner_label": "Analysing advertisement...",
         "mode_label": "Select a usage mode",
         "mode_label_one": "Analyse advertisement",
@@ -139,6 +141,7 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "info_imagen_label": "Téléchargez une image pour la voir ici",
         "borrar_texto_label": "Effacer texte",
         "borrar_url_label": "Effacer URL",
+        "borrar_imagen_label": "Effacer image",
         "spinner_label": "Analyse de l'annonce...",
         "mode_label": "Sélectionnez un mode d'utilisation",
         "mode_label_one": "Analyser l'annonce",
@@ -160,6 +163,7 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "info_imagen_label": "Laden Sie ein Bild hoch, um es hier zu sehen",
         "borrar_texto_label": "Text löschen",
         "borrar_url_label": "URL löschen",
+        "borrar_imagen_label": "Bild löschen",
         "spinner_label": "Das Stellenangebot wird analysiert...",
         "mode_label": "Wählen Sie einen Verwendungsmodus",
         "mode_label_one": "Stellenangebot analysieren",
@@ -181,6 +185,7 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "info_imagen_label": "Carica un'immagine per vederla qui",
         "borrar_texto_label": "Elimina il testo",
         "borrar_url_label": "Elimina l'URL",
+        "borrar_imagen_label": "Elimina l'immagine",
         "spinner_label": "Analisi dell'offerta di lavoro in corso...",
         "mode_label": "Seleziona una modalità di utilizzo",
         "mode_label_one": "Analizza annuncio",
@@ -202,6 +207,7 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "info_imagen_label": "Carregar uma imagem para visualizá-la aqui",
         "borrar_texto_label": "Apagar o texto",
         "borrar_url_label": "Apagar a URL",
+        "borrar_imagen_label": "Apagar imagem",
         "spinner_label": "A analisar a oferta de emprego...",
         "mode_label": "Selecione um modo de uso",
         "mode_label_one": "Analisar anúncio",
@@ -223,6 +229,7 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "info_imagen_label": "Загрузите изображение, чтобы увидеть его здесь",
         "borrar_texto_label": "Удалить текст",
         "borrar_url_label": "Удалить URL",
+        "borrar_imagen_label": "удалить изображение",
         "spinner_label": "Анализ вакансии...",
         "mode_label": "Выберите режим использования",
         "mode_label_one": "Анализировать объявление",
@@ -244,6 +251,7 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "info_imagen_label": "قم بتحميل صورة لعرضها هنا",
         "borrar_texto_label": "مسح النص",
         "borrar_url_label": "مسح الرابط",
+        "borrar_imagen_label": "حذف الصورة",
         "spinner_label": "تحليل عرض العمل...",
         "mode_label": "اختر وضع الاستخدام",
         "mode_label_one": "تحليل الإعلان",
@@ -265,6 +273,7 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "info_imagen_label": "Încărcați o imagine pentru a o vedea aici",
         "borrar_texto_label": "Ștergeți textul",
         "borrar_url_label": "Ștergeți URL-ul",
+        "borrar_imagen_label": "Șterge imaginea",
         "spinner_label": "Analizând oferta de angajare...",
         "mode_label": "Selectați un mod de utilizare",
         "mode_label_one": "Analizați anunțul",
@@ -286,6 +295,7 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "info_imagen_label": "Upload een afbeelding om deze hier te zien",
         "borrar_texto_label": "Tekst wissen",
         "borrar_url_label": "URL wissen",
+        "borrar_imagen_label": "Afbeelding verwijderen",
         "spinner_label": "Advertentie analyseren...",
         "mode_label": "Selecteer een gebruiksmodus",
         "mode_label_one": "Advertentie analyseren",
@@ -307,6 +317,7 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "info_imagen_label": "Puja una imatge per veure-la aquí",
         "borrar_texto_label": "Esborra text",
         "borrar_url_label": "Esborra URL",
+        "borrar_imagen_label": "Esborra imatge",
         "spinner_label": "Analitzant oferta de treball...",
         "mode_label": "Seleccioneu un mode d'ús",
         "mode_label_one": "Analitzar anunci",
@@ -328,6 +339,7 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "info_imagen_label": "Prześlij obraz, aby zobaczyć go tutaj",
         "borrar_texto_label": "Usuń tekst",
         "borrar_url_label": "Usuń URL",
+        "borrar_imagen_label": "Usuń obraz",
         "spinner_label": "Analizowanie ogłoszenia...",
         "mode_label": "Wybierz tryb użytkowania",
         "mode_label_one": "Analizuj ogłoszenie",
@@ -349,6 +361,7 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "info_imagen_label": "Завантажте зображення, щоб побачити його тут",
         "borrar_texto_label": "Видалити текст",
         "borrar_url_label": "Видалити URL",
+        "borrar_imagen_label": "видалити зображення",
         "spinner_label": "Аналіз оголошення...",
         "mode_label": "Виберіть режим використання",
         "mode_label_one": "Аналізувати оголошення",
@@ -1149,18 +1162,30 @@ def pagina_analizador():
         
         # Parte donde se podía subir la imagen
         st.markdown('<div id="seccion-imagen"></div>', unsafe_allow_html=True)  # ancla para navegación
-        st.markdown(f"*{lang_ui_input['imagen_label']}*")
+        col_img_label, col_img_btn = st.columns([9, 1])
+
+        with col_img_label:
+            st.markdown(f"*{lang_ui_input['imagen_label']}*")
+
+        with col_img_btn:
+            if st.button("🧹", key="clear_image", help=lang_ui_input["borrar_imagen_label"]):
+                st.session_state["imagen"] = None
+                st.rerun()
+
+        # uploader
         uploaded_file = st.file_uploader(
             f"{lang_ui_input['file_label']}",
-            key="imagen",
+            key="imagen_uploader",  
             type=["jpg", "jpeg", "png", "tiff"]
         )
-        
-        # ---------- VISTA PREVIA DE IMAGEN ----------
-        st.subheader(f"🖼 {lang_ui_input['previa_label']}")
-        
-        if uploaded_file:
-            st.image(uploaded_file, use_container_width=True)
+
+        # guardar en session_state
+        if uploaded_file is not None:
+            st.session_state["imagen"] = uploaded_file
+
+        # mostrar imagen si existe
+        if st.session_state.get("imagen") is not None:
+            st.image(st.session_state["imagen"], use_container_width=True)
         else:
             st.markdown(
                 f"""
