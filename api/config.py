@@ -6,8 +6,10 @@ class Settings(BaseSettings):
     APP_VERSION: str = "0.1.0"
     DEBUG: bool = True
 
-    UMBRAL_SOSPECHOSO: float = 0.6 #aquí se define el umbral para considerar un mensaje como sospechoso, tendremos que ajustar para verde, amarillo o rojo.
     
+    # Configuración de HuggingFace
+    API_KEY: str = "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"
+    MODELO: str = "Qwen/Qwen2.5-72B-Instruct"
     
     PROMPT: str = """
     ##ROL##
@@ -197,11 +199,7 @@ class Settings(BaseSettings):
     No hagas suposiciones sobre la fiabilidad del anuncio más allá de lo que indique el porcentaje calculado.
     No reproduzcas ni parafrasees contenido explícito del anuncio bajo ninguna circunstancia.
     No atribuyas intenciones ni culpabilidad a personas o empresas. Describe únicamente patrones observables.
-
-
-"""
-    API_KEY: str = "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"
-    MODELO: str = "Qwen/Qwen2.5-72B-Instruct"  
+    """
 
     class Config:
         env_file = ".env"  # Archivo de entorno para cargar variables de configuración

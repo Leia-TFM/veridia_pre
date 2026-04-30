@@ -5,9 +5,9 @@ import unicodedata
 import httpx
 from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field, field_validator, ValidationError
-from smolagents import ToolCallingAgent, HfApiModel, Tool
+from smolagents import ToolCallingAgent, ApiModel, Tool
 from api.config import settings
-from texto_service import process_text_input, process_url_input
+from servicios.texto_service import process_text_input, process_url_input
 
 
 # =============================================================================
@@ -272,7 +272,7 @@ class OrquestadorAgente:
         if not token:
             raise ValueError("HF_TOKEN no configurado")
 
-        self.model = HfApiModel(model_id=model_id, token=token)
+        self.model = ApiModel(model_id=model_id, token=token)
         self.tools = [FraudDetectionTool(pipeline_path=pipeline_path)]
         self.validator = validator
 

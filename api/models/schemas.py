@@ -65,9 +65,15 @@ class ResultadoAnalisis(BaseModel):
     tipo_entrada: TipoEntrada
     nivel_seguridad: NivelSeguridad
     confianza_seguridad: float
-    mensaje: str
+    justificacion: str
     indicadores: list[str]
     idioma_detectado: str
+    # Campos adicionales del agente IA
+    nivel_confianza: Optional[str] = None  # high/medium/low
+    senales: Optional[list[str]] = None   # Señales detectadas
+    caracteristicas: Optional[dict] = None # Características adicionales
+    veredicto: Optional[str] = None        # FRAUDULENT/LEGITIMATE
+    probabilidad: float
 
 #Modelos    para las estadísticas generales
 #Modelo para la distribución del semáforo
