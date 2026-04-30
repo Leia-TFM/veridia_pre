@@ -193,9 +193,11 @@ def _analisis_por_reglas(texto: str, tipo: TipoEntrada, idioma_detectado: str) -
         tipo_entrada=tipo,
         nivel_seguridad=nivel,
         confianza_seguridad=confianza,
-        mensaje=mensajes[nivel],
+        probabilidad=confianza,  # 🔥 importante
+        justificacion=mensajes[nivel],  # 🔥 sustituye mensaje
         indicadores=indicadores,
-        idioma_detectado=idioma_detectado
+        idioma_detectado=idioma_detectado,
+        veredicto="FRAUDULENT" if nivel.name == "ROJO" else "LEGITIMATE",
     )
 
 
