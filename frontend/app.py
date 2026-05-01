@@ -384,6 +384,7 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "original_phrase": "Texto original",
         "translated_phrase": "Texto traducido",
         "message": "Mensaje",
+        "veredict": "Veredicto",
         "indicator": "Indicadores detectados",
         "trust": "Confianza",
         "green": "Riesgo bajo",
@@ -406,6 +407,7 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "original_phrase": "Original text",
         "translated_phrase": "Translated text",
         "message": "Message",
+        "veredict": "Verdict",
         "indicator": "Indicators detected",
         "trust": "Trust",
         "green": "Low risk",
@@ -428,6 +430,7 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "original_phrase": "Texte original",
         "translated_phrase": "Texte traduit",
         "message": "Message",
+        "veredict": "Verdict",
         "indicator": "Indicateurs détectés",
         "trust": "Confiance",
         "green": "Risque faible",
@@ -450,6 +453,7 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "original_phrase": "Originaltext",
         "translated_phrase": "Übersetzter Text",
         "message": "Nachricht",
+        "veredict": "Urteil",
         "indicator": "Erkannte Indikatoren",
         "trust": "Vertrauen",
         "green": "Geringes Risiko",
@@ -472,6 +476,7 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "original_phrase": "Testo originale",
         "translated_phrase": "Testo tradotto",
         "message": "Messaggio",
+        "veredict": "Verdetto",
         "indicator": "Indicatori rilevati",
         "trust": "Affidabilità",
         "green": "Rischio basso",
@@ -494,6 +499,7 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "original_phrase": "Texto original",
         "translated_phrase": "Texto traduzido",
         "message": "Mensagem",
+        "veredict": "Veredito",
         "indicator": "Indicadores detectados",
         "trust": "Confiança",
         "green": "Risco baixo",
@@ -516,6 +522,7 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "original_phrase": "Оригинальный текст",
         "translated_phrase": "Переведённый текст",
         "message": "Сообщение",
+        "veredict": "Вердикт",
         "indicator": "Обнаруженные индикаторы",
         "trust": "Доверие",
         "green": "Низкий риск",
@@ -538,6 +545,7 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "original_phrase": "النص الأصلي",
         "translated_phrase": "النص المترجم",
         "message": "رسالة",
+        "veredict": "الحكم",
         "indicator": "المؤشرات المكتشفة",
         "trust": "الثقة",
         "green": "خطر منخفض",
@@ -560,6 +568,7 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "original_phrase": "Text original",
         "translated_phrase": "Text tradus",
         "message": "Mesaj",
+        "veredict": "Verdict",
         "indicator": "Indicatori detectați",
         "trust": "Încredere",
         "green": "Risc scăzut",
@@ -582,6 +591,7 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "original_phrase": "Originele tekst",
         "translated_phrase": "Vertaalde tekst",
         "message": "Bericht",
+        "veredict": "Vonnis",
         "indicator": "Gedetecteerde indicatoren",
         "trust": "Vertrouwen",
         "green": "Laag risico",
@@ -604,6 +614,7 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "original_phrase": "Text original",
         "translated_phrase": "Text traduït",
         "message": "Missatge",
+        "veredict": "Veredicte",
         "indicator": "Indicadors detectats", 
         "trust": "Confiança",
         "green": "Risc baix",
@@ -626,6 +637,7 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "original_phrase": "Tekst oryginalny",
         "translated_phrase": "Tekst przetłumaczony",
         "message": "Wiadomość",
+        "veredict": "Werdykt",
         "indicator": "Wykryte wskaźniki",
         "trust": "Zaufanie",
         "green": "Niskie ryzyko",
@@ -648,6 +660,7 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "original_phrase": "Оригінальний текст",
         "translated_phrase": "Перекладений текст",
         "message": "Повідомлення",
+        "veredict": "Вердикт",
         "indicator": "Виявлені індикатори",
         "trust": "Довіра",
         "green": "Низький ризик",
@@ -943,53 +956,80 @@ def mostrar_resultados(res_seg, res_det, lang_ui):
     }
     cfg = nivel_config.get(nivel, nivel_config["amarillo"])
     c, bg, bd, icon, lbl = cfg['color'], cfg['bg'], cfg['border'], cfg['icon'], cfg['label']
-
     semaforo_nivel = nivel if nivel in ("rojo", "verde") else "amarillo"
+
+    # --- SEMÁFORO + RESULTADO PRINCIPAL ---
 
     col_semaforo, col_resultado = st.columns([1, 4])
 
     with col_semaforo:
         st.markdown(f"""
-        <div style="display:flex; justify-content:flex-start; align-items:center; height:100%;">
-            <div style="
-                display:flex; flex-direction:column; align-items:center;
-                width:80px; padding:14px 10px; background:#111;
-                border-radius:14px; box-shadow:0 5px 20px rgba(0,0,0,0.5);
-            ">
-                <div style="
-                    width:42px; height:42px; border-radius:50%; margin:8px 0;
+        <div style="display:flex;justify-content:flex-end;align-items:center;height:100%;padding-right:8px;">
+            <div style="display:flex;flex-direction:column;align-items:center;
+                width:70px;padding:12px 8px;background:#111;
+                border-radius:14px;box-shadow:0 5px 20px rgba(0,0,0,0.5);">
+                <div style="width:38px;height:38px;border-radius:50%;margin:6px 0;
                     background:{'red' if semaforo_nivel=='rojo' else '#2b2b2b'};
-                    box-shadow:{'0 0 25px red' if semaforo_nivel=='rojo' else 'none'};
-                "></div>
-                <div style="
-                    width:42px; height:42px; border-radius:50%; margin:8px 0;
+                    box-shadow:{'0 0 25px red' if semaforo_nivel=='rojo' else 'none'};"></div>
+                <div style="width:38px;height:38px;border-radius:50%;margin:6px 0;
                     background:{'yellow' if semaforo_nivel=='amarillo' else '#2b2b2b'};
-                    box-shadow:{'0 0 25px yellow' if semaforo_nivel=='amarillo' else 'none'};
-                "></div>
-                <div style="
-                    width:42px; height:42px; border-radius:50%; margin:8px 0;
-                    background:{'green' if semaforo_nivel=='verde' else '#2b2b2b'};
-                    box-shadow:{'0 0 25px green' if semaforo_nivel=='verde' else 'none'};
-                "></div>
+                    box-shadow:{'0 0 25px yellow' if semaforo_nivel=='amarillo' else 'none'};"></div>
+                <div style="width:38px;height:38px;border-radius:50%;margin:6px 0;
+                    background:{'limegreen' if semaforo_nivel=='verde' else '#2b2b2b'};
+                    box-shadow:{'0 0 25px limegreen' if semaforo_nivel=='verde' else 'none'};"></div>
             </div>
         </div>
         """, unsafe_allow_html=True)
 
     with col_resultado:
+        nivel_confianza = res_seg.get("nivel_confianza") or ""
+        badge_map = {"high": ("🟢", "Alta"), "medium": ("🟡", "Media"), "low": ("🔴", "Baja")}
+        badge_icon, badge_label = badge_map.get(nivel_confianza, ("", ""))
+        badge_html = (
+            f"<span style='font-size:13px;background:#e5e7eb;border-radius:20px;"
+            f"padding:2px 12px;margin-left:10px;color:#374151;vertical-align:middle;'>"
+            f"{badge_icon} {badge_label}</span>"
+        ) if badge_label else ""
+
+        veredicto = res_seg.get("veredicto", "")
+        if veredicto:
+            veredicto_color = {"FRAUDULENT": "#dc2626", "LEGITIMATE": "#16a34a"}.get(veredicto, "#ca8a04")
+            veredicto_bg = {"FRAUDULENT": "#fff1f2", "LEGITIMATE": "#f0fdf4"}.get(veredicto, "#fefce8")
+            veredicto_icon = {"FRAUDULENT": "🚨", "LEGITIMATE": "✅"}.get(veredicto, "⚠️")
+            veredicto_html = (
+                f"<span style='"
+                f"display:inline-block;"
+                f"background:{veredicto_bg};"
+                f"color:{veredicto_color};"
+                f"border:1.5px solid {veredicto_color};"
+                f"border-radius:20px;"
+                f"padding:3px 14px;"
+                f"font-size:13px;"
+                f"font-weight:700;"
+                f"letter-spacing:1px;"
+                f"text-transform:uppercase;"
+                f"'>{veredicto_icon} {UI_TEXTS[lang_ui]['veredict']}: {veredicto}</span>"
+            )
+        else:
+            veredicto_html = ""
+
         st.markdown(f"""
         <div style="background:{bg};border:2px solid {bd};border-radius:14px;padding:22px 26px;margin-bottom:14px;">
             <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
-                <div style="width:54px;height:54px;border-radius:50%;background:white;border:2px solid {c};
-                            display:flex;align-items:center;justify-content:center;
-                            font-size:26px;color:{c};font-weight:700;flex-shrink:0;">
+                <div style="width:54px;height:54px;border-radius:50%;background:white;
+                            border:2px solid {c};display:flex;align-items:center;
+                            justify-content:center;font-size:26px;color:{c};
+                            font-weight:700;flex-shrink:0;">
                     {icon}
                 </div>
-                <div>
-                    <div style="font-size:28px;font-weight:700;color:{c};">{lbl}</div>
+                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                    <div style="font-size:28px;font-weight:700;color:{c};">{lbl}{badge_html}</div>
+                    {veredicto_html}
                 </div>
             </div>
             <div style="display:flex;justify-content:space-between;margin-bottom:7px;">
-                <span style="font-size:16px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:1px;">
+                <span style="font-size:16px;font-weight:600;color:#6b7280;
+                            text-transform:uppercase;letter-spacing:1px;">
                     {UI_TEXTS[lang_ui]['trust']}
                 </span>
                 <span style="font-size:22px;font-weight:700;color:{c};">{confianza_pct}%</span>
@@ -1001,35 +1041,89 @@ def mostrar_resultados(res_seg, res_det, lang_ui):
         """, unsafe_allow_html=True)
 
     st.divider()
-    # Mensaje
-    mensaje = traducir_mensaje_analisis(lang_ui, res_det["idioma_detectado"])
+
+    # --- MENSAJE ---
+    mensaje = (res_seg.get("mensaje") or "").strip()
+    if not mensaje:
+        mensaje = traducir_mensaje_analisis(lang_ui, res_det.get("idioma_detectado", "es"))
+
     st.markdown(f"""
-    <div style="border-left:4px solid {c};background:#f9fafb;padding:16px 20px;border-radius:0 10px 10px 0;margin-bottom:14px;">
-        <div style="font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#111827;margin-bottom:8px;">
+    <div style="border-left:4px solid {c};background:#f9fafb;padding:16px 20px;
+                border-radius:0 10px 10px 0;margin-bottom:14px;">
+        <div style="font-size:13px;font-weight:600;letter-spacing:2px;
+                    text-transform:uppercase;color:#111827;margin-bottom:8px;">
             {UI_TEXTS[lang_ui]['message']}
         </div>
         <div style="font-size:17px;color:#374151;line-height:1.7;">{mensaje}</div>
     </div>
     """, unsafe_allow_html=True)
 
-    # Indicadores
-    indicadores = res_seg.get("indicadores", [])
-    if indicadores and res_det["idioma_detectado"] == "es":
-        items = "".join(
-            f"<div style='padding:10px 0;border-bottom:1px solid #f3f4f6;display:flex;gap:10px;align-items:flex-start;'>"
+    # --- SEÑALES ---   # A CAMBIAR CUANDO FUNCIONE EL AGENTE
+    senales = res_seg.get("senales") or []
+    if senales:
+        items_senales = "".join(
+            f"<div style='padding:8px 0;border-bottom:1px solid #f3f4f6;"
+            f"display:flex;gap:10px;align-items:flex-start;'>"
+            f"<span style='color:#e89a40;font-weight:700;font-size:18px;'>⚑</span>"
+            f"<span style='font-size:16px;color:#374151;line-height:1.6;'>{s}</span></div>"
+            for s in senales
+        )
+        st.markdown(f"""
+        <div style="background:#fffbf2;border:1.5px solid #fde68a;
+                    border-left:4px solid #e89a40;border-radius:12px;
+                    padding:6px 20px 10px;margin-bottom:14px;">
+            <div style="font-size:13px;font-weight:600;letter-spacing:2px;
+                        text-transform:uppercase;color:#92400e;padding:12px 0 8px;">
+                🔎 Señales detectadas
+            </div>
+            {items_senales}
+        </div>
+        """, unsafe_allow_html=True)
+
+    # --- INDICADORES ---
+    indicadores = res_seg.get("indicadores") or []
+    if indicadores:
+        items_ind = "".join(
+            f"<div style='padding:10px 0;border-bottom:1px solid #f3f4f6;"
+            f"display:flex;gap:10px;align-items:flex-start;'>"
             f"<span style='color:{c};font-weight:700;font-size:20px;'>›</span>"
             f"<span style='font-size:17px;color:#374151;line-height:1.6;'>{ind}</span></div>"
             for ind in indicadores
         )
         st.markdown(f"""
-        <div style="background:#f9fafb;border:1.5px solid #e5e7eb;border-left:4px solid {c};border-radius:12px;padding:6px 20px 10px;">
-            <div style="font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#111827;padding:12px 0 8px;">
+        <div style="background:#f9fafb;border:1.5px solid #e5e7eb;
+                    border-left:4px solid {c};border-radius:12px;
+                    padding:6px 20px 10px;margin-bottom:14px;">
+            <div style="font-size:13px;font-weight:600;letter-spacing:2px;
+                        text-transform:uppercase;color:#111827;padding:12px 0 8px;">
                 {UI_TEXTS[lang_ui]['indicator']}
             </div>
-            {items}
+            {items_ind}
         </div>
         """, unsafe_allow_html=True)
 
+    # --- CARACTERÍSTICAS ---   # A CAMBIAR CUANDO FUNCIONE EL AGENTE
+    caracteristicas = res_seg.get("caracteristicas") or {}
+    if isinstance(caracteristicas, dict) and caracteristicas:
+        filas = "".join(
+            f"<tr>"
+            f"<td style='padding:8px 12px;font-weight:600;color:#6b7280;"
+            f"font-size:14px;border-bottom:1px solid #f3f4f6;'>{k}</td>"
+            f"<td style='padding:8px 12px;color:#374151;font-size:14px;"
+            f"border-bottom:1px solid #f3f4f6;'>{v}</td>"
+            f"</tr>"
+            for k, v in caracteristicas.items()
+        )
+        st.markdown(f"""
+        <div style="background:#f9fafb;border:1.5px solid #e5e7eb;
+                    border-radius:12px;padding:12px 20px;margin-top:4px;">
+            <div style="font-size:13px;font-weight:600;letter-spacing:2px;
+                        text-transform:uppercase;color:#111827;padding-bottom:8px;">
+                📊 Características del anuncio
+            </div>
+            <table style="width:100%;border-collapse:collapse;">{filas}</table>
+        </div>
+        """, unsafe_allow_html=True)
 
 
 # ---------- SIDEBAR ----------
