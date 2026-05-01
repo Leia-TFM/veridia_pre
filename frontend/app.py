@@ -86,13 +86,13 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "url_label": "URL del anuncio",
         "imagen_label": "Imagen del anuncio",
         "anuncio_label": "Analizar anuncio",
-        "file_label": "Sube una imagen del anuncio",
+        "file_label": "📷Sube una imagen del anuncio. Para mejores resultados y evitar 'ruido' externo, recorta la foto encuadrando el anuncio de forma nítida.",
         "func_label": "Introduce un anuncio para detectar posibles fraudes.",
         "info_label": "Detecta anuncios de trabajo potencialmente fraudulentos. Puede elegir una de las siguientes tres opciones (Copiar Texto / Copiar URL / Subir una imagen) para comprobarlo.",
         "info_anuncio_label": "Información del anuncio",
         "copiar_label": "Copia aquí tu anuncio (Texto/URL/Imagen)",
         "previa_label": "Vista previa",
-        "info_imagen_label": "Sube una imagen para verla aquí",
+        "info_imagen_label": "Sube una imagen para verla aquí.",
         "borrar_texto_label": "Borrar texto",
         "borrar_url_label": "Borrar URL",
         "borrar_imagen_label": "Borrar imagen",
@@ -109,13 +109,13 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "url_label": "Advertisement URL",
         "imagen_label": "Advertisement image",
         "anuncio_label": "Analyse advertisement",
-        "file_label": "Upload image of advertisement to view it here",
+        "file_label": "📷Upload an image of the advertisement. For best results and to avoid external 'noise', crop the photo so that the ad is clearly framed.",
         "func_label": "Insert an advertisement to detect potential fraud.",
         "info_label": "Detects potentially fraudulent job postings. You may select one of the following three options (Copy Text / Copy URL / Upload an image) to verify this.",
         "info_anuncio_label": "Advertisement´s information",
         "copiar_label": "Paste your advertisement here (Text/URL/Image)",
         "previa_label": "Preview",
-        "info_imagen_label": "Upload an image to view it here",
+        "info_imagen_label": "Upload an image to view it here.",
         "borrar_texto_label": "Erase text",
         "borrar_url_label": "Erase URL",
         "borrar_imagen_label": "Erase image",
@@ -132,13 +132,13 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "url_label": "URL de l'annonce",
         "imagen_label": "Image de l'annonce",
         "anuncio_label": "Analyser l'annonce",
-        "file_label": "Télécharger image de l'annonce pour la voir ici",
+        "file_label": "📷Téléchargez une image de l’annonce. Pour de meilleurs résultats et éviter le 'bruit' externe, recadrez la photo afin que l’annonce soit clairement cadrée.",
         "func_label": "Insérer un annonce pour détecter les fraudes potentielles.",
         "info_label": "Détecte les offres d'emploi potentiellement frauduleuses. Vous pouvez choisir l'une des trois options suivantes (Copier le texte / Copier l'URL / Télécharger une image) pour le vérifier.",
         "info_anuncio_label": "Information de l'annonce",
         "copiar_label": "Copiez ici votre annonce (Texte/URL/Image)",
         "previa_label": "Aperçu",
-        "info_imagen_label": "Téléchargez une image pour la voir ici",
+        "info_imagen_label": "Téléchargez une image pour la voir ici.",
         "borrar_texto_label": "Effacer texte",
         "borrar_url_label": "Effacer URL",
         "borrar_imagen_label": "Effacer image",
@@ -154,13 +154,13 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "url_label": "URL des Stellenangebots",
         "imagen_label": "Bild des Stellenangebots",
         "anuncio_label": "Stellenangebot analysieren",
-        "file_label": "Bild des Stellenangebots hochladen, um es hier zu sehen",
+        "file_label": "📷Laden Sie ein Bild der Anzeige hoch. Für beste Ergebnisse und um externes 'Rauschen' zu vermeiden, schneiden Sie das Foto so zu, dass die Anzeige klar eingerahmt ist.",
         "func_label": "Ein Stellenangebot einfügen, um potenzielle Betrugsfälle zu erkennen",
         "info_label": "Erkennt potenziell betrügerische Stellenangebote. Sie können eine der folgenden drei Optionen auswählen (Text kopieren / URL kopieren / Bild hochladen), um dies zu überprüfen",
         "info_anuncio_label": "Informationen zum Stellenangebot",
         "copiar_label": "Füge hier deine Anzeige ein (Text, URL, Bild)",
         "previa_label": "Vorschau",
-        "info_imagen_label": "Laden Sie ein Bild hoch, um es hier zu sehen",
+        "info_imagen_label": "Laden Sie ein Bild hoch, um es hier zu sehen.",
         "borrar_texto_label": "Text löschen",
         "borrar_url_label": "URL löschen",
         "borrar_imagen_label": "Bild löschen",
@@ -176,13 +176,13 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "url_label": "URL dell'offerta di lavoro",
         "imagen_label": "Immagine dell'offerta di lavoro",
         "anuncio_label": "Analizza offerta di lavoro",
-        "file_label": "Carica l'immagine dell'offerta di lavoro per vederla qui",
+        "file_label": "📷Carica un'immagine dell'annuncio. Per ottenere risultati migliori ed evitare 'rumore' esterno, ritaglia la foto in modo che l'annuncio sia chiaramente inquadrato.",
         "func_label": "Inserisci un'offerta di lavoro per rilevare potenziali frodi",
         "info_label": "Rileva potenziali offerte di lavoro fraudolente. Puoi selezionare una delle seguenti tre opzioni (Copia testo / Copia URL / Carica un'immagine) per verificarla",
         "info_anuncio_label": "Informazioni sull'offerta di lavoro",
         "copiar_label": "Inserisci qui il tuo annuncio (Testo, URL, Immagine)",
         "previa_label": "Anteprima",
-        "info_imagen_label": "Carica un'immagine per vederla qui",
+        "info_imagen_label": "Carica un'immagine per vederla qui.",
         "borrar_texto_label": "Elimina il testo",
         "borrar_url_label": "Elimina l'URL",
         "borrar_imagen_label": "Elimina l'immagine",
@@ -198,13 +198,13 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "url_label": "URL da oferta de emprego",
         "imagen_label": "Imagem da oferta de emprego",
         "anuncio_label": "Analisar a oferta de emprego",
-        "file_label": "Carregar a imagem da oferta de emprego para visualizá-la aqui",
+        "file_label": "📷Envie uma imagem do anúncio. Para melhores resultados e evitar 'ruído' externo, recorte a foto para que o anúncio fique claramente enquadrado.",
         "func_label": "Inserir uma oferta de emprego para detectar possíveis fraudes",
         "info_label": "Deteta potenciais ofertas de emprego fraudulentas. Pode selecionar uma das três opções seguintes (Copiar texto / Copiar URL / Carregar imagem) para verificá-la",
         "info_anuncio_label": "Informações sobre a oferta de emprego",
         "copiar_label": "Coloque aqui o seu anúncio (Texto, URL, Imagem)",
         "previa_label": "Pré-visualização",
-        "info_imagen_label": "Carregar uma imagem para visualizá-la aqui",
+        "info_imagen_label": "Carregar uma imagem para visualizá-la aqui.",
         "borrar_texto_label": "Apagar o texto",
         "borrar_url_label": "Apagar a URL",
         "borrar_imagen_label": "Apagar imagem",
@@ -220,13 +220,13 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "url_label": "URL объявления о вакансии",
         "imagen_label": "изображение объявления о вакансии",
         "anuncio_label": "Проанализировать объявление о вакансии",
-        "file_label": "Загрузите изображение объявления о вакансии",
+        "file_label": "📷Загрузите изображение объявления. Для наилучших результатов и чтобы избежать внешнего 'шума', обрежьте фото так, чтобы объявление было чётко в кадре.",
         "func_label": "Вставить объявление о вакансии, чтобы обнаружить возможное мошенничество",
         "info_label": "Обнаруживает потенциально мошеннические объявления о вакансиях. Вы можете выбрать один из следующих трех вариантов («Копировать текст» / «Копировать URL» / «Загрузить изображение») для проверки",
         "info_anuncio_label": "Информация о вакансии",
         "copiar_label": "Вставьте сюда текст своего объявления (текст, URL, изображение)",
         "previa_label": "Предварительный просмотр",
-        "info_imagen_label": "Загрузите изображение, чтобы увидеть его здесь",
+        "info_imagen_label": "Загрузите изображение, чтобы увидеть его здесь.",
         "borrar_texto_label": "Удалить текст",
         "borrar_url_label": "Удалить URL",
         "borrar_imagen_label": "удалить изображение",
@@ -242,7 +242,7 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "url_label": "رابط عرض العمل",
         "imagen_label": "صورة عرض العمل",
         "anuncio_label": "تحليل عرض العمل",
-        "file_label": "قم بتحميل صورة لعرض العمل لعرضها هنا",
+        "file_label": "📷قم بتحميل صورة للإعلان. للحصول على أفضل النتائج وتجنب 'الضوضاء' الخارجية، قم بقص الصورة بحيث يكون الإعلان واضحًا داخل الإطار",
         "func_label": "أدخل عرض العمل لاكتشاف الاحتيال المحتمل",
         "info_label": "عروض العمل الاحتيالية المحتملة. يمكنك اختيار أحد الخيارات الثلاثة التالية (نسخ النص / نسخ الرابط / تحميل صورة) للتحقق من ذلك",
         "info_anuncio_label": "معلومات عرض العمل",
@@ -264,13 +264,13 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "url_label": "URL-ul ofertei de angajare",
         "imagen_label": "Imaginea ofertei de angajare",
         "anuncio_label": "Analizați oferta de angajare",
-        "file_label": "Încărcați o imagine a ofertei de angajare pentru a o vedea aici",
+        "file_label": "📷Încarcă o imagine a anunțului. Pentru rezultate mai bune și pentru a evita 'zgomotul' extern, decupează fotografia astfel încât anunțul să fie clar încadrat.",
         "func_label": "Introduceți o ofertă de angajare pentru a depista eventualele fraude",
         "info_label": "Detectează ofertele de angajare potențial frauduloase. Puteți selecta una dintre următoarele trei opțiuni (Copiați textul / Copiați URL-ul / Încărcați o imagine) pentru a verifica acest lucru",
         "info_anuncio_label": "Detalii despre oferta de angajare",
         "copiar_label": "Copiază aici anunțul tău (Text, URL, Imagine)",
         "previa_label": "Previzualizare",
-        "info_imagen_label": "Încărcați o imagine pentru a o vedea aici",
+        "info_imagen_label": "Încărcați o imagine pentru a o vedea aici.",
         "borrar_texto_label": "Ștergeți textul",
         "borrar_url_label": "Ștergeți URL-ul",
         "borrar_imagen_label": "Șterge imaginea",
@@ -286,13 +286,13 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "url_label": "URL van de advertentie",
         "imagen_label": "Afbeelding van de advertentie",
         "anuncio_label": "Advertentie analyseren",
-        "file_label": "Upload een afbeelding van de advertentie",
+        "file_label": "📷Upload een afbeelding van de advertentie. Voor de beste resultaten en om externe 'ruis' te vermijden, snijd de foto bij zodat de advertentie duidelijk in beeld is.",
         "func_label": "Voer een advertentie in om mogelijke fraude te detecteren.",
         "info_label": "Detecteert mogelijk frauduleuze vacatures. U kunt een van de volgende drie opties kiezen (Tekst kopiëren / URL kopiëren / Afbeelding uploaden) om dit te controleren.",
         "info_anuncio_label": "Advertentie-informatie",
         "copiar_label": "Plak hier je advertentie (Tekst, URL, Afbeelding)",
         "previa_label": "Voorvertoning",
-        "info_imagen_label": "Upload een afbeelding om deze hier te zien",
+        "info_imagen_label": "Upload een afbeelding om deze hier te zien.",
         "borrar_texto_label": "Tekst wissen",
         "borrar_url_label": "URL wissen",
         "borrar_imagen_label": "Afbeelding verwijderen",
@@ -308,13 +308,13 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "url_label": "URL de l'oferta de treball",
         "imagen_label": "Imatge de l'oferta de treball",
         "anuncio_label": "Analitzar oferta de treball",
-        "file_label": "Puja una imatge de l'oferta de treball",
+        "file_label": "📷Puja una imatge de l’anunci. Per obtenir millors resultats i evitar 'soroll' extern, retalla la foto de manera que l’anunci quedi clarament enquadrat.",
         "func_label": "Introdueix una oferta de treball per detectar possibles fraus",
         "info_label": "Detecta ofertes de treball potencialment fraudulentes. Pot escollir una de les següents tres opcions (Copiar text / Copiar URL / Puja una imatge) per comprovar-ho", #normalmente se gasta más triar (aunque creo que es más con cosas físicas que con decisiones) pero creo que escollir es más correcto (es más similar a seleccionar, lo que no se gasta 100% son seleccionar o elegir porque son castellanismos o en el caso de elegir es SOLO en contexto post elecciones), va en función de zonas y costumbres.
         "info_anuncio_label": "Informació de l'oferta de treball",
         "copiar_label": "Pega aquí el teu anunci (Text, URL, Imatge)",
         "previa_label": "Vista prèvia",
-        "info_imagen_label": "Puja una imatge per veure-la aquí",
+        "info_imagen_label": "Puja una imatge per veure-la aquí.",
         "borrar_texto_label": "Esborra text",
         "borrar_url_label": "Esborra URL",
         "borrar_imagen_label": "Esborra imatge",
@@ -330,13 +330,13 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "url_label": "URL ogłoszenia",
         "imagen_label": "Obraz ogłoszenia",
         "anuncio_label": "Analizuj ogłoszenie",
-        "file_label": "Prześlij obraz ogłoszenia",
+        "file_label": "📷Prześlij obraz reklamy. Aby uzyskać najlepsze wyniki i uniknąć zewnętrznego 'szumu', przytnij zdjęcie tak, aby reklama była wyraźnie w kadrze.",
         "func_label": "Wprowadź ogłoszenie, aby wykryć możliwe oszustwa.",
         "info_label": "Wykrywa potencjalnie fałszywe oferty pracy. Możesz wybrać jedną z trzech opcji (Skopiuj tekst / Skopiuj URL / Prześlij obraz), aby to sprawdzić.",
         "info_anuncio_label": "Informacje o ogłoszeniu",
         "copiar_label": "Wklej tutaj swoją reklamę (Tekst, adres URL, Obraz)",
         "previa_label": "Podgląd",
-        "info_imagen_label": "Prześlij obraz, aby zobaczyć go tutaj",
+        "info_imagen_label": "Prześlij obraz, aby zobaczyć go tutaj.",
         "borrar_texto_label": "Usuń tekst",
         "borrar_url_label": "Usuń URL",
         "borrar_imagen_label": "Usuń obraz",
@@ -352,13 +352,13 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
         "url_label": "URL оголошення",
         "imagen_label": "Зображення оголошення",
         "anuncio_label": "Аналізувати оголошення",
-        "file_label": "Завантажте зображення оголошення",
+        "file_label": "📷Завантажте зображення оголошення. Для найкращих результатів і щоб уникнути зовнішнього 'шуму', обріжте фото так, щоб оголошення було чітко в кадрі.",
         "func_label": "Введіть оголошення для виявлення можливого шахрайства.",
         "info_label": "Виявляє потенційно шахрайські вакансії. Ви можете вибрати один із трьох варіантів (Скопіювати текст / Скопіювати URL / Завантажити зображення) для перевірки.",
         "info_anuncio_label": "Інформація про оголошення",
         "copiar_label": "Вставте тут своє оголошення (текст, URL-адресу, зображення)",
         "previa_label": "Попередній перегляд",
-        "info_imagen_label": "Завантажте зображення, щоб побачити його тут",
+        "info_imagen_label": "Завантажте зображення, щоб побачити його тут.",
         "borrar_texto_label": "Видалити текст",
         "borrar_url_label": "Видалити URL",
         "borrar_imagen_label": "видалити зображення",
@@ -1031,6 +1031,7 @@ def mostrar_resultados(res_seg, res_det, lang_ui):
         """, unsafe_allow_html=True)
 
 
+
 # ---------- SIDEBAR ----------
 def pagina_analizador():
 
@@ -1174,8 +1175,8 @@ def pagina_analizador():
 
         # uploader
         uploaded_file = st.file_uploader(
-            f"{lang_ui_input['file_label']}",
-            key="imagen_uploader",  
+            label=f"{lang_ui_input['info_imagen_label']}",
+            key="imagen_uploader",
             type=["jpg", "jpeg", "png", "tiff"]
         )
 
@@ -1190,15 +1191,16 @@ def pagina_analizador():
             st.markdown(
                 f"""
                 <div style="
-                    background-color: #C3B1E1;
+                    background-color: #D6C2F0;
                     color: #000000;
                     padding: 10px 20px;
                     border-radius: 8px;
+                    font-size: 16px; 
                     font-weight: 500;
                     z-index: 9999;
                     pointer-events: none;
                 ">
-                    {lang_ui_input['info_imagen_label']}
+                    {lang_ui_input['file_label']}
                 </div>
                 """,
                 unsafe_allow_html=True
