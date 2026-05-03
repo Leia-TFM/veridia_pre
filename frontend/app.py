@@ -1043,12 +1043,15 @@ def mostrar_resultados(res_seg, res_det, lang_ui):
     st.divider()
 
     # --- MENSAJE ---
-    mensaje = (res_seg.get("mensaje") or "").strip()
+    mensaje = (res_seg.get("mensaje") or res_seg.get("justificacion") or "").strip()
     if not mensaje:
         mensaje = traducir_mensaje_analisis(lang_ui, res_det.get("idioma_detectado", "es"))
 
+    aviso_color = "#fde68a" if nivel != "verde" else "#d1fae5"
+    border_color = "#f59e0b" if nivel != "verde" else "#10b981"
+
     st.markdown(f"""
-    <div style="border-left:4px solid {c};background:#f9fafb;padding:16px 20px;
+    <div style="border-left:4px solid {border_color};background:{aviso_color};padding:16px 20px;
                 border-radius:0 10px 10px 0;margin-bottom:14px;">
         <div style="font-size:13px;font-weight:600;letter-spacing:2px;
                     text-transform:uppercase;color:#111827;margin-bottom:8px;">

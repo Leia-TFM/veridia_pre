@@ -32,12 +32,12 @@ def _get_orquestador():
     if _orquestador is None:
         pipeline_path = os.path.join(
             os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-            "servicios",
-            "pipeline_detector.pkl"
+            "models",
+            "modelo_hibrido_prueba.pkl"
         )
         # Si no existe el pipeline, usamos modo sin ML
         if not os.path.exists(pipeline_path):
-            logger.warning("Pipeline de ML no encontrado, usando modo texto")
+            logger.warning(f"Pipeline de ML no encontrado en {pipeline_path}, usando modo texto")
             _orquestador = None
         else:
             _orquestador = OrquestadorAgente(
@@ -83,6 +83,8 @@ async def _procesar_y_analizar(texto_original: str, translated: str, idioma_dete
             job_posting_json = json.dumps(data_validada, ensure_ascii=False)
             resultado_ia = orquestador.ejecutar_tarea(job_posting_json)
             
+            logger.info(f"Resultado raw del agente: {resultado_ia[:500]}")
+
             # Parsear resultado del agente
             return _parsear_resultado_ia(resultado_ia, tipo, idioma_detectado)
         except Exception as e:
@@ -98,10 +100,27 @@ def _parsear_resultado_ia(resultado: str, tipo: TipoEntrada, idioma_detectado: s
     """
     Parsea el resultado del agente de IA y lo convierte al formato de respuesta.
     """
+    import re
+
+    # Intentar parsear directamente
+    data = None
     try:
-        # Intentar parsear como JSON
         data = json.loads(resultado)
-        
+    except json.JSONDecodeError:
+        # El agente devuelve texto libre con JSON embebido — extraerlo
+        match = re.search(r'\{.*\}', resultado, re.DOTALL)
+        if match:
+            try:
+                data = json.loads(match.group())
+            except json.JSONDecodeError as e:
+                logger.warning(f"Error al parsear JSON extraído: {e}, usando análisis por reglas")
+        else:
+            logger.warning(f"No se encontró JSON en resultado IA: {resultado[:200]}")
+
+    if data is None:
+        return _analisis_por_reglas(resultado, tipo, idioma_detectado)
+
+    try:
         # Mapear veredicto a nivel de seguridad
         veredicto = data.get("verdict", "").upper()
         if veredicto == "FRAUDULENT":
@@ -110,27 +129,30 @@ def _parsear_resultado_ia(resultado: str, tipo: TipoEntrada, idioma_detectado: s
             nivel = NivelSeguridad.VERDE
         else:
             nivel = NivelSeguridad.AMARILLO
-        
-        # Extraer señales e indicadores
-        senales = data.get("senales", [])
-        indicadores = data.get("caracteristicas", [])
-        
-        # Si no hay señales específicas, usar las genéricas
+
+        senales = data.get("senales") or []
+        indicadores = data.get("caracteristicas") or []
+
         if not indicadores and senales:
             indicadores = senales
-        
+            
         # Confianza basada en el nivel de certeza
-        probabilidad = data.get("probability", 0.5)
+        probabilidad = data.get("probability", data.get("probabilidad", 0.5))
         confianza = float(probabilidad) if isinstance(probabilidad, (int, float)) else 0.5
-        
+
         # Nivel de confianza (high/medium/low)
-        nivel_confianza = data.get("confidence_level", "medium")
-        
+        nivel_confianza = data.get("confidence_level", data.get("confianza", "medium"))
+
+        justificacion = data.get("justificacion") or ""
+        mensaje = justificacion
+
         return ResultadoAnalisis(
             tipo_entrada=tipo,
             nivel_seguridad=nivel,
             confianza_seguridad=confianza,
-            mensaje=data.get("mensaje", ""),
+            probabilidad=confianza,
+            justificacion=justificacion,
+            mensaje=mensaje,
             indicadores=indicadores if isinstance(indicadores, list) else [str(indicadores)],
             idioma_detectado=idioma_detectado,
             nivel_confianza=nivel_confianza,
@@ -138,8 +160,8 @@ def _parsear_resultado_ia(resultado: str, tipo: TipoEntrada, idioma_detectado: s
             caracteristicas=data.get("caracteristicas", {}),
             veredicto=veredicto
         )
-    except (json.JSONDecodeError, KeyError) as e:
-        logger.warning(f"Error al parsear resultado IA: {e}, usando análisis por reglas")
+    except (KeyError, TypeError, ValueError) as e:
+        logger.warning(f"Error al construir ResultadoAnalisis: {e}, usando análisis por reglas")
         return _analisis_por_reglas(resultado, tipo, idioma_detectado)
 
 

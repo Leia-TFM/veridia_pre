@@ -5,9 +5,12 @@ import unicodedata
 import httpx
 from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field, field_validator, ValidationError
-from smolagents import ToolCallingAgent, ApiModel, Tool
+from smolagents import ToolCallingAgent, LiteLLMModel, Tool
 from api.config import settings
 from servicios.texto_service import process_text_input, process_url_input
+
+import logging
+logger = logging.getLogger(__name__)
 
 
 # =============================================================================
@@ -160,6 +163,15 @@ def _campos_a_texto(fields: dict) -> str:
 # =============================================================================
 # SECCIÓN 7 – TOOL DE DETECCIÓN ML
 # =============================================================================
+def _generar_justificacion(label: int, proba: float, senales: list) -> str:
+    pct = round(proba * 100)
+    if label == 1:
+        base = f"El modelo detecta un riesgo de fraude del {pct}%."
+        if senales:
+            base += f" Señales de alerta identificadas: {', '.join(senales[:4])}."
+    else:
+        base = f"El modelo no detecta señales significativas de fraude (probabilidad estimada: {pct}%)."
+    return base
 
 class FraudDetectionTool(Tool):
 
@@ -197,13 +209,25 @@ class FraudDetectionTool(Tool):
     def _load_pipeline(self):
         if self._pipeline is None:
             import joblib
-            self._pipeline = joblib.load(self._pipeline_path)
+            data = joblib.load(self._pipeline_path)
+            self._pipeline = {
+                "model" : data["model"],
+                "threshold" : data["threshold"],
+                "sbert_model_name": data["sbert_model_name"],
+                "encoder": None
+            }
+    def _get_encoder(self):
+        if self._pipeline["encoder"] is None:
+            from sentence_transformers import SentenceTransformer
+            self._pipeline["encoder"] = SentenceTransformer(self._pipeline["sbert_model_name"])
+        return self._pipeline["encoder"]
 
     def _get_confidence_level(self, probability: float) -> str:
         for threshold, level in self._CONFIDENCE_MAP:
             if probability >= threshold:
                 return level
         return "low"
+    
 
     def forward(self, job_posting_json: str) -> str:
 
@@ -234,8 +258,16 @@ class FraudDetectionTool(Tool):
         # 3. Predicción ML
         texto_para_modelo = resultado_proc["texto_normalizado"]
         self._load_pipeline()
-        proba_fraud = float(self._pipeline.predict_proba([texto_para_modelo])[0][1])
-        label       = int(self._pipeline.predict([texto_para_modelo])[0])
+
+        # Encodear texto con Sentence-BERT
+        encoder = self._get_encoder()
+        embedding = encoder.encode([texto_para_modelo])  # shape (1, 384)
+
+        # Predecir con XGBoost
+        model = self._pipeline["model"]
+        threshold = self._pipeline["threshold"]
+        proba_fraud = float(model.predict_proba(embedding)[0][1])
+        label = 1 if proba_fraud >= threshold else 0
 
         return json.dumps({
             "verdict"         : "FRAUDULENT" if label == 1 else "LEGITIMATE",
@@ -245,6 +277,7 @@ class FraudDetectionTool(Tool):
             "senales"         : resultado_proc["senales"],
             "caracteristicas" : resultado_proc["caracteristicas"],
             "estadisticas"    : resultado_proc["estadisticas"],
+            "justificacion"   : _generar_justificacion(label, proba_fraud, resultado_proc["senales"])
         }, ensure_ascii=False)
 
     def __getstate__(self):
@@ -272,19 +305,36 @@ class OrquestadorAgente:
         if not token:
             raise ValueError("HF_TOKEN no configurado")
 
-        self.model = ApiModel(model_id=model_id, token=token)
+        self.model = LiteLLMModel(model_id="ollama/qwen2.5:7b")
         self.tools = [FraudDetectionTool(pipeline_path=pipeline_path)]
         self.validator = validator
 
         self.agent = ToolCallingAgent(
             tools=self.tools,
             model=self.model,
-            system_prompt=settings.PROMPT,
             max_steps=max_steps,
+        )
+        self.agent.prompt_templates["system_prompt"] = (
+            settings.PROMPT +
+            "\n\nIMPORTANT: Always call the fraud_detection tool before providing any answer. "
+            "Never respond directly with a JSON result without first calling the tool."
         )
 
     def ejecutar_tarea(self, query: str) -> str:
-        resultado = self.agent.run(query)
-        if self.validator and not self.validator(resultado):
-            return "Resultado inválido tras validación"
-        return resultado
+        tarea = (
+            "Use the fraud_detection tool to analyze the following job posting. "
+            "You MUST call the fraud_detection tool with the job posting data as a JSON string. "
+            "Do not answer directly without calling the tool first.\n\n"
+            f"Job posting data: {query}"
+        )
+        try:
+            resultado = self.agent.run(tarea)
+            resultado_str = str(resultado).strip()
+
+            json.loads(resultado_str)
+            return resultado_str
+        
+        except (Exception, json.JSONDecodeError):
+            logger.warning("Agente no usó la tool, ejecutando fraud_detection directamente")
+            tool = self.tools[0]
+            return tool.forward(job_posting_json=query)
