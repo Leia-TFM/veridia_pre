@@ -1,10 +1,18 @@
 from pydantic_settings import BaseSettings
+import os
 
 class Settings(BaseSettings):
     # Ajustes de configuración para la aplicación definidos aquí parámetros para todo el proyecto
     APP_NAME: str = "VERID.IA"
     APP_VERSION: str = "0.1.0"
     DEBUG: bool = True
+
+
+    #Valores para el guardado de datos
+        
+    DATA_SERVICE_ROOT = os.path.dirname(os.path.abspath(__file__))
+    DATASET_DIR = os.path.normpath(os.path.join(DATA_SERVICE_ROOT, "..", "data"))
+    DATASET_FILE = os.path.join(DATASET_DIR, "analisis_dataset.jsonl")
 
     
     # Configuración de HuggingFace

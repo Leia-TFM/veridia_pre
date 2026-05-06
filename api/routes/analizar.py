@@ -15,6 +15,7 @@ from api.config import settings
 # Importar servicios
 from servicios.traduccion_service import traducir_contenido
 from servicios.ia_service import OrquestadorAgente, validar_anuncio
+from servicios.data_service import guardar_datos
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
@@ -297,6 +298,18 @@ async def analizar_anuncio(anuncio: AnuncioEntrada = Depends(AnuncioEntrada.as_f
     
     # Análisis mediante IA
     resultado = await _procesar_y_analizar(original, translated, idioma_detectado, anuncio.tipo)
+
+    # Guardar registro de análisis para entrenamiento/finetuning posterior
+    try:
+        guardar_datos(
+            anuncio=anuncio.dict(),
+            original_text=original,
+            translated_text=translated,
+            idioma_detectado=idioma_detectado,
+            resultado=resultado.dict()
+        )
+    except Exception as e:
+        logger.warning(f"No se pudo guardar registro de análisis: {e}")
     
     logger.info(f"Análisis completado - Nivel: {resultado.nivel_seguridad}, Confianza: {resultado.confianza_seguridad}")
     
