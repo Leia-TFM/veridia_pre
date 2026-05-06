@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings
 import os
+from typing import ClassVar
 
 class Settings(BaseSettings):
     # Ajustes de configuración para la aplicación definidos aquí parámetros para todo el proyecto
@@ -10,9 +11,9 @@ class Settings(BaseSettings):
 
     #Valores para el guardado de datos
         
-    DATA_SERVICE_ROOT = os.path.dirname(os.path.abspath(__file__))
-    DATASET_DIR = os.path.normpath(os.path.join(DATA_SERVICE_ROOT, "..", "data"))
-    DATASET_FILE = os.path.join(DATASET_DIR, "analisis_dataset.jsonl")
+    DATA_SERVICE_ROOT: ClassVar[str] = os.path.dirname(os.path.abspath(__file__))
+    DATASET_DIR : ClassVar[str] = os.path.normpath(os.path.join(DATA_SERVICE_ROOT, "..", "data"))
+    DATASET_FILE: ClassVar[str] = os.path.join(DATASET_DIR, "analisis_dataset.jsonl")
 
     
     # Configuración de HuggingFace

@@ -131,7 +131,16 @@ def _parsear_resultado_ia(resultado: str, tipo: TipoEntrada, idioma_detectado: s
         else:
             nivel = NivelSeguridad.AMARILLO
 
-        senales = data.get("senales") or []
+        senales_raw = data.get("senales") or []
+        if isinstance(senales_raw, dict):
+            senales = []
+            for key, val in senales_raw.items():
+                if key == "fuente" and val:
+                    senales.append(str(val))
+                elif isinstance(val, list) and val:
+                    senales.extend([str(s) for s in val])
+        else:
+            senales = senales_raw
         indicadores = data.get("caracteristicas") or []
 
         if not indicadores and senales:

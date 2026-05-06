@@ -301,10 +301,6 @@ class OrquestadorAgente:
         max_steps: int = 6,
         validator=None
     ):
-        token = settings.API_KEY
-        if not token:
-            raise ValueError("HF_TOKEN no configurado")
-
         self.model = LiteLLMModel(model_id="ollama/qwen2.5:7b")
         self.tools = [FraudDetectionTool(pipeline_path=pipeline_path)]
         self.validator = validator
@@ -321,20 +317,24 @@ class OrquestadorAgente:
         )
 
     def ejecutar_tarea(self, query: str) -> str:
+        # 1. Datos estructurados de la tool
+        try:
+            tool_data = json.loads(self.tools[0].forward(job_posting_json=query))
+        except Exception as e:
+            logger.error(f"Tool falló: {e}")
+            return json.dumps({"error": str(e)})
+
+        # 2. Razonamiento del agente como justificación
         tarea = (
-            "Use the fraud_detection tool to analyze the following job posting. "
-            "You MUST call the fraud_detection tool with the job posting data as a JSON string. "
-            "Do not answer directly without calling the tool first.\n\n"
+            "Analyze this job posting for fraud risk. "
+            "Call the fraud_detection tool to get the ML prediction, "
+            "then explain in Spanish your reasoning about why this posting "
+            "may or may not be fraudulent, highlighting the most suspicious elements.\n\n"
             f"Job posting data: {query}"
         )
         try:
-            resultado = self.agent.run(tarea)
-            resultado_str = str(resultado).strip()
+            tool_data["justificacion"] = str(self.agent.run(tarea)).strip()
+        except Exception as e:
+            logger.warning(f"Agente falló al razonar: {e}")
 
-            json.loads(resultado_str)
-            return resultado_str
-        
-        except (Exception, json.JSONDecodeError):
-            logger.warning("Agente no usó la tool, ejecutando fraud_detection directamente")
-            tool = self.tools[0]
-            return tool.forward(job_posting_json=query)
+        return json.dumps(tool_data, ensure_ascii=False)
