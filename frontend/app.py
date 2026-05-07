@@ -394,7 +394,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "detect": "Mostrar Detección/Traducción",  #EXTRA
         "config_title": "Configuración",
         "select_language_title": "Selecciona idioma",
-        "continue_phrase": "Continuar"
+        "continue_phrase": "Continuar",
+        "about_us": "¿Quiénes somos?"
     },
     "en":{
         "result":" ✔ Analysis Result",
@@ -417,7 +418,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "detect": "Check Detection/Translation",
         "config_title": "Configuration",
         "select_language_title": "Choose Language", 
-        "continue_phrase": "Continue"
+        "continue_phrase": "Continue",
+        "about_us": "Who are we?" 
     },
     "fr":{
         "result":" ✔ Résultat de l'analyse",
@@ -440,7 +442,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "detect": "Vérifier Détection/Traduction",
         "config_title": "Configuration",
         "select_language_title": "Choisir la langue", 
-        "continue_phrase": "Continuer"
+        "continue_phrase": "Continuer",
+        "about_us": "Qui sommes-nous?"
     },
     "de": {
         "result": " ✔ Analyseergebnis",
@@ -463,7 +466,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "detect": "Erkennung/Übersetzung anzeigen",
         "config_title": "Konfiguration",
         "select_language_title": "Sprache auswählen", 
-        "continue_phrase": "Weiter"
+        "continue_phrase": "Weiter",
+        "about_us": "Wer sind wir?"
     },
     "it": {
         "result": " ✔ Risultato dell'analisi",
@@ -486,7 +490,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "detect": "Mostra rilevamento/traduzione",
         "config_title": "Configurazione",
         "select_language_title": "Seleziona lingua", 
-        "continue_phrase": "Continua"
+        "continue_phrase": "Continua",
+        "about_us": "Chi siamo?"
     },
     "pt": {
         "result": " ✔ Resultado da análise",
@@ -509,7 +514,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "detect": "Mostrar deteção/tradução",
         "config_title": "Configuração",
         "select_language_title": "Selecionar idioma", 
-        "continue_phrase": "Continuar"
+        "continue_phrase": "Continuar",
+        "about_us": "Quem somos?"
     },
     "ru": {
         "result": " ✔ Результат анализа",
@@ -532,7 +538,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "detect": "Показать распознавание/перевод",
         "config_title": "Настройки",
         "select_language_title": "Выберите язык", 
-        "continue_phrase": "Продолжить"
+        "continue_phrase": "Продолжить",
+        "about_us": "Кто мы?"
     },
     "ar": {
         "result": " ✔ نتيجة التحليل",
@@ -555,7 +562,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "detect": "إظهار الكشف/الترجمة",
         "config_title": "الإعدادات",
         "select_language_title": "اختر اللغة", 
-        "continue_phrase": "متابعة"
+        "continue_phrase": "متابعة",
+        "about_us": "من نحن؟"
     },
     "ro": {
         "result": " ✔ Rezultatul analizei",
@@ -578,7 +586,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "detect": "Afișează detectarea/traducerea",
         "config_title": "Configurare",
         "select_language_title": "Selectați limba", 
-        "continue_phrase": "Continuați"
+        "continue_phrase": "Continuați",
+        "about_us": "Cine suntem?"
     },
     "nl": {
         "result": " ✔ Analyseresultaat",
@@ -601,7 +610,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "detect": "Detectie/vertaling weergeven",
         "config_title": "Instellingen",
         "select_language_title": "Taal kiezen", 
-        "continue_phrase": "Doorgaan"
+        "continue_phrase": "Doorgaan",
+        "about_us": "Wie zijn wij?"
     },
     "ca": {
         "result": " ✔ Resultat de l'anàlisi",
@@ -624,7 +634,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "detect": "Mostra la detecció/traducció",
         "config_title": "Configuració",
         "select_language_title": "Selecciona l'idioma", 
-        "continue_phrase": "Continuar"
+        "continue_phrase": "Continuar",
+        "about_us": "Qui som?"
     },
     "pl": {
         "result": " ✔ Wynik analizy",
@@ -647,7 +658,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "detect": "Pokaż wykrycie/tłumaczenie",
         "config_title": "Ustawienia",
         "select_language_title": "Wybierz język", 
-        "continue_phrase": "Kontynuuj"
+        "continue_phrase": "Kontynuuj",
+        "about_us": "Kim jesteśmy?"
     },
     "uk": {
         "result": " ✔ Результат аналізу",
@@ -670,7 +682,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "detect": "Показати розпізнавання/переклад",
         "config_title": "Налаштування",
         "select_language_title": "Оберіть мову", 
-        "continue_phrase": "Продовжити"
+        "continue_phrase": "Продовжити",
+        "about_us": "Хто ми?"
     },
 }
 translations = {  #Diccionario y funcion para traducir el mensaje desde el backend
@@ -812,6 +825,86 @@ def pagina_inicio():
     # Idioma actual para traducir la UI
     idioma_actual = languages.get(st.session_state.get("idioma", "🇪🇸 Español"), "es")
 
+     # ---- CSS BOTÓN VIOLETA SUAVE ----
+    st.markdown("""
+    <style>
+    .st-key-btn_sobre_nosotros button {
+        background-color: #ddb6fc !important;
+        color: #2d0060 !important;
+    }
+    .st-key-cerrar_sobre_nosotros button {
+        background-color: #ddb6fc !important;
+        color: #2d0060 !important;
+        margin-top: 5px !important;   /* Muy poco espacio con el modal */
+        margin-bottom: 4px !important;
+        padding: 4px 8px !important;  /* Más pequeño */
+        font-size: 14px !important;   /* Texto reducido */
+        height: 32px !important;      /* Altura compacta */
+    }
+
+    /* Contenedor del botón cerrar: menos espacio */
+    div.stKeyText_cerrar_sobre_nosotros,
+    div[class*="st-key-cerrar_sobre_nosotros"] {
+        margin-top: 8px !important;   /* Espacio mínimo desde modal */
+        margin-bottom: 0 !important;
+        padding-top: 4px !important;
+        position: relative !important;
+        z-index: 10 !important;
+    }
+
+    /* Ancho del contenedor */
+    div.st-key-cerrar_sobre_nosotros {
+        width: 100% !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # ---- BOTÓN "SOBRE NOSOTROS" ----
+    col_left, col_center, col_right = st.columns([2, 1, 2])
+    with col_center:
+        if st.button(f"ℹ️ {UI_TEXTS[idioma_actual]['about_us']}", key="btn_sobre_nosotros", use_container_width=True):
+            st.session_state["mostrar_sobre_nosotros"] = True
+
+    # ---- MODAL SOBRE NOSOTROS ----
+    if st.session_state.get("mostrar_sobre_nosotros", False):
+        st.markdown("""
+        <div style="
+            background-color: #f9fbf2;
+            border: 2px solid #ddb6fc;
+            border-radius: 16px 16px 0 0;
+            padding: 32px 32px 24px 32px;
+            max-width: 700px;
+            margin: 20px auto 0 auto;
+            box-shadow: 0 5px 20px rgba(192,132,252,0.15);
+        ">
+            <h2 style="color: #9b5fcf; text-align:center;">👥 ¿Quiénes somos?</h2>
+            <p style="font-size:17px; color:#333; text-align:center;">
+                Somos un equipo comprometido con la lucha contra el fraude laboral. 
+                <strong>Proyecto Verid.IA</strong> nace para ayudar a las personas a identificar 
+                ofertas de trabajo falsas mediante inteligencia artificial.
+            </p>
+            <h3 style="color: #9b5fcf; text-align:center;">🎯 ¿Qué hacemos?</h3>
+            <p style="font-size:16px; color:#555; text-align:center;">
+                Analizamos anuncios de trabajo (texto, URL o imagen) y evaluamos el riesgo 
+                de que sean fraudulentos, protegiendo a los usuarios de posibles estafas.
+            </p>
+            <hr style="border-color:#ddb6fc; margin: 20px 0;">
+            <h3 style="color: #9b5fcf; text-align:center;">🌐 Síguenos</h3>
+            <div style="text-align:center; font-size:18px;">
+                <a href="https://twitter.com/TU_USUARIO" target="_blank" style="margin: 0 12px; color:#1da1f2; text-decoration:none;">🐦 Twitter / X</a>
+                <a href="https://instagram.com/TU_USUARIO" target="_blank" style="margin: 0 12px; color:#e1306c; text-decoration:none;">📸 Instagram</a>
+                <a href="https://linkedin.com/in/TU_USUARIO" target="_blank" style="margin: 0 12px; color:#0077b5; text-decoration:none;">💼 LinkedIn</a>
+                <a href="https://github.com/TU_USUARIO" target="_blank" style="margin: 0 12px; color:#333; text-decoration:none;">🐙 GitHub</a>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        col1, col2, col3 = st.columns([2, 1, 2])
+        with col2:
+            if st.button(f"✕ {UI_TEXTS[idioma_actual]['close']}", key="cerrar_sobre_nosotros", use_container_width=True):
+                st.session_state["mostrar_sobre_nosotros"] = False
+                st.rerun()
+         
     st.title("🌍 " + UI_TEXTS[idioma_actual]["select_language_title"])
 
     st.markdown("""
