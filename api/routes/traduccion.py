@@ -14,10 +14,15 @@ router = APIRouter()
 @router.post("/detectar_idioma", response_model=ResultadoDeteccion)
 async def detectar_idioma(texto: TextoDetectar = Depends(TextoDetectar.as_form), file: UploadFile = File(None)):
     
-    # Aquí se implementaría la lógica de detección de idioma
-    original, translated, idioma_detectado = await traducir_contenido(target_lang=texto.idioma_destino,file=file,text=texto.texto,url=texto.url)
+    # Extrae contenido y detecta idioma
+    original, translated, idioma_detectado = await traducir_contenido(
+        target_lang=texto.idioma_destino,
+        file=file,
+        text=texto.texto,
+        url=texto.url
+    )
 
-     # comprobador de idioma en el router
+    # Verificar que el idioma detectado es español
     if idioma_detectado != "es":
         return ResultadoDeteccion(
             idioma_detectado=idioma_detectado,
