@@ -67,7 +67,6 @@ class ResultadoAnalisis(BaseModel):
     confianza_seguridad: float
     justificacion: str
     mensaje: Optional[str] = None
-    indicadores: list[str]
     idioma_detectado: str
     # Campos adicionales del agente IA
     nivel_confianza: Optional[str] = None  # high/medium/low

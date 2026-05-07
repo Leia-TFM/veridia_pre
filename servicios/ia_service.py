@@ -3,6 +3,7 @@ import json
 import re
 import unicodedata
 import httpx
+import numpy as np
 from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field, field_validator, ValidationError
 from smolagents import ToolCallingAgent, LiteLLMModel, Tool
@@ -168,7 +169,8 @@ def _generar_justificacion(label: int, proba: float, senales: list) -> str:
     if label == 1:
         base = f"El modelo detecta un riesgo de fraude del {pct}%."
         if senales:
-            base += f" Señales de alerta identificadas: {', '.join(senales[:4])}."
+            senales_formateadas = [str(s) for s in senales[:4]]
+            base += f" Señales de alerta identificadas: {', '.join(senales_formateadas)}."
     else:
         base = f"El modelo no detecta señales significativas de fraude (probabilidad estimada: {pct}%)."
     return base
@@ -177,20 +179,16 @@ class FraudDetectionTool(Tool):
 
     name = "fraud_detection"
     description = (
-        "Analyzes a pre-validated job posting and predicts whether it is FRAUDULENT or LEGITIMATE. "
-        "Input is a JSON string with already sanitized fields: "
-        "All fields are optional. Send whatever fields are available in the job posting. "
-        "Also accepts any additional fields not listed above. " 
-        "and optionally 'jornada_horas', 'ubicacion', 'tipo_contrato', 'url_oferta'. "
-        "If 'url_oferta' is present, content is extracted directly from the URL. "
-        "Returns JSON with 'verdict' (FRAUDULENT/LEGITIMATE), 'probability' (0-1), "
-        "'confidence_level' (high/medium/low), 'senales', 'caracteristicas', 'estadisticas'."
+        "Detects fraud in job postings. "
+        "Analyzes text signals, linguistic patterns, and ML predictions. "
+        "Input can be a JSON string or object with job posting fields (descripcion, titulo, empresa, etc.). "
+        "Returns JSON with verdict (FRAUDULENT/LEGITIMATE), probability, confidence, signals, and reasoning."
     )
 
     inputs = {
         "job_posting_json": {
             "type": "string",
-            "description": "JSON string with pre-validated job posting fields.",
+            "description": "Job posting data as JSON string or object. Can include: descripcion, titulo, empresa, salario_min, salario_max, url_oferta, etc.",
         }
     }
     output_type = "string"
@@ -210,16 +208,20 @@ class FraudDetectionTool(Tool):
         if self._pipeline is None:
             import joblib
             data = joblib.load(self._pipeline_path)
+            model = data["model"]
+            model.set_params(device='cpu')
             self._pipeline = {
-                "model" : data["model"],
-                "threshold" : data["threshold"],
+                "model"           : model,
+                "threshold"       : data["threshold"],
                 "sbert_model_name": data["sbert_model_name"],
-                "encoder": None
+                "encoder"         : None
             }
     def _get_encoder(self):
         if self._pipeline["encoder"] is None:
             from sentence_transformers import SentenceTransformer
-            self._pipeline["encoder"] = SentenceTransformer(self._pipeline["sbert_model_name"])
+            self._pipeline["encoder"] = SentenceTransformer(
+                self._pipeline["sbert_model_name"],
+                device="cpu")
         return self._pipeline["encoder"]
 
     def _get_confidence_level(self, probability: float) -> str:
@@ -229,13 +231,21 @@ class FraudDetectionTool(Tool):
         return "low"
     
 
-    def forward(self, job_posting_json: str) -> str:
+    def forward(self, job_posting_json) -> str:
 
-        # 1. Deserializar (el dato ya viene validado desde la ruta)
+        # 1. Deserializar (el dato puede venir como string JSON o como dict)
         try:
-            fields = json.loads(job_posting_json)
-        except json.JSONDecodeError as exc:
-            return json.dumps({"error": f"JSON inválido: {exc}"}, ensure_ascii=False)
+            # Si es un dict, usarlo directamente. Si es string, parsear como JSON
+            if isinstance(job_posting_json, dict):
+                fields = job_posting_json
+            elif isinstance(job_posting_json, str):
+                fields = json.loads(job_posting_json)
+            else:
+                # Intenta convertir a string y parsear
+                fields = json.loads(str(job_posting_json))
+        except (json.JSONDecodeError, TypeError, ValueError) as exc:
+            logger.error(f"Error al deserializar entrada: {type(exc).__name__}: {exc}. Input type: {type(job_posting_json).__name__}")
+            return json.dumps({"error": f"Formato de entrada inválido: {exc}"}, ensure_ascii=False)
 
         # 2. Procesamiento de texto
         # Si hay URL, trafilatura extrae el contenido real de la página.
@@ -256,29 +266,181 @@ class FraudDetectionTool(Tool):
             }, ensure_ascii=False)
 
         # 3. Predicción ML
-        texto_para_modelo = resultado_proc["texto_normalizado"]
-        self._load_pipeline()
+        try:
+            texto_para_modelo = resultado_proc.get("texto_normalizado", "")
+            
+            # Validar que tenemos texto
+            if not texto_para_modelo or not isinstance(texto_para_modelo, str):
+                logger.error(f"Texto inválido para modelo: type={type(texto_para_modelo)}, valor={texto_para_modelo[:50] if texto_para_modelo else 'vacío'}")
+                return json.dumps({
+                    "error": "Texto inválido para procesamiento",
+                    "verdict": None,
+                    "probability": None,
+                    "confidence_level": None,
+                }, ensure_ascii=False)
+            
+            self._load_pipeline()
 
-        # Encodear texto con Sentence-BERT
-        encoder = self._get_encoder()
-        embedding = encoder.encode([texto_para_modelo])  # shape (1, 384)
+            # Encodear texto con Sentence-BERT
+            try:
+                encoder = self._get_encoder()
+                embedding = encoder.encode([texto_para_modelo])  # shape (1, 384)
+                logger.debug(f"Embedding generado, shape: {embedding.shape if hasattr(embedding, 'shape') else 'sin shape'}")
+            except Exception as e:
+                logger.error(f"Error al generar embedding: {type(e).__name__}: {e}")
+                return json.dumps({
+                    "error": f"Error al codificar texto: {str(e)[:100]}",
+                    "verdict": None,
+                    "probability": None,
+                    "confidence_level": None,
+                }, ensure_ascii=False)
+            
+            # Validar que embedding tiene forma correcta
+            try:
+                if not hasattr(embedding, 'shape'):
+                    embedding = np.array(embedding)
+                    logger.debug(f"Embedding convertido a array, shape: {embedding.shape}")
+                
+                # Asegurar que es 2D
+                if embedding.ndim == 1:
+                    embedding = embedding.reshape(1, -1)
+                    logger.debug(f"Embedding reshape a 2D: {embedding.shape}")
+                elif embedding.ndim != 2:
+                    logger.error(f"Embedding con dimensión inesperada: {embedding.ndim}")
+                    return json.dumps({
+                        "error": f"Formato de embedding inválido: {embedding.ndim}D",
+                        "verdict": None,
+                        "probability": None,
+                        "confidence_level": None,
+                    }, ensure_ascii=False)
+                    
+            except Exception as e:
+                logger.error(f"Error al validar embedding: {type(e).__name__}: {e}")
+                return json.dumps({
+                    "error": f"Error validando embedding: {str(e)[:100]}",
+                    "verdict": None,
+                    "probability": None,
+                    "confidence_level": None,
+                }, ensure_ascii=False)
 
-        # Predecir con XGBoost
-        model = self._pipeline["model"]
-        threshold = self._pipeline["threshold"]
-        proba_fraud = float(model.predict_proba(embedding)[0][1])
-        label = 1 if proba_fraud >= threshold else 0
+            # Predecir con XGBoost
+            try:
+                model = self._pipeline["model"]
+                threshold = self._pipeline["threshold"]
+                
+                logger.debug(f"Llamando predict_proba con embedding shape: {embedding.shape}")
+                predicciones = model.predict_proba(embedding)
+                logger.debug(f"Predicciones recibidas, type: {type(predicciones)}")
+                
+            except Exception as e:
+                logger.error(f"Error en predict_proba: {type(e).__name__}: {e}")
+                return json.dumps({
+                    "error": f"Error en modelo ML: {str(e)[:100]}",
+                    "verdict": None,
+                    "probability": None,
+                    "confidence_level": None,
+                }, ensure_ascii=False)
+            
+            # Validar estructura de predicciones
+            try:
+                if predicciones is None:
+                    raise ValueError("Predicciones es None")
+                    
+                if not hasattr(predicciones, '__len__'):
+                    raise TypeError(f"Predicciones no es iterable: {type(predicciones)}")
+                
+                if len(predicciones) == 0:
+                    raise ValueError("Predicciones vacío")
+                
+                logger.debug(f"Predicciones válidas: shape={predicciones.shape if hasattr(predicciones, 'shape') else len(predicciones)}")
+                
+                # Extraer probabilidad de clase 1 (fraude) de forma segura
+                if isinstance(predicciones, np.ndarray):
+                    logger.debug(f"Predicciones es ndarray: shape={predicciones.shape}, ndim={predicciones.ndim}")
+                    
+                    if predicciones.ndim == 1:
+                        # Array 1D - tomar el segundo elemento si existe
+                        if len(predicciones) > 1:
+                            proba_fraud = float(predicciones[1])
+                        elif len(predicciones) > 0:
+                            proba_fraud = float(predicciones[0])
+                        else:
+                            raise ValueError("Array 1D vacío")
+                            
+                    elif predicciones.ndim == 2:
+                        # Array 2D - tomar primera fila, segunda columna si existe
+                        if predicciones.shape[0] > 0:
+                            if predicciones.shape[1] > 1:
+                                proba_fraud = float(predicciones[0, 1])
+                            elif predicciones.shape[1] > 0:
+                                proba_fraud = float(predicciones[0, 0])
+                            else:
+                                raise ValueError("Array 2D sin columnas")
+                        else:
+                            raise ValueError("Array 2D sin filas")
+                    else:
+                        raise ValueError(f"Predicciones con {predicciones.ndim} dimensiones no soportadas")
+                else:
+                    # Tipo de dato desconocido, intentar acceso por índice
+                    logger.debug(f"Predicciones no es ndarray: type={type(predicciones)}")
+                    proba_fraud = float(predicciones[0][1])
+                
+                logger.debug(f"Probabilidad extraída: {proba_fraud}")
+                
+            except (IndexError, ValueError, TypeError, KeyError) as e:
+                logger.error(f"Error al extraer probabilidad: {type(e).__name__}: {e}")
+                return json.dumps({
+                    "error": f"Error al procesar predicciones: {str(e)[:100]}",
+                    "verdict": None,
+                    "probability": None,
+                    "confidence_level": None,
+                }, ensure_ascii=False)
+            
+            # Clasificar
+            label = 1 if proba_fraud >= threshold else 0
+            
+            # Procesar señales de forma segura
+            try:
+                senales = resultado_proc.get("senales", {})
+                if isinstance(senales, dict):
+                    raw_list = list(senales.values())
+                else:
+                    raw_list = senales if isinstance(senales, list) else []
+                
+                # Aplanamos y limpiamos: extraemos el string si es ['texto'] y quitamos vacíos
+                senales_list = []
+                for s in raw_list:
+                    if isinstance(s, list) and len(s) > 0:
+                        item = str(s[0]).strip()
+                    else:
+                        item = str(s).strip()
+                    
+                    if item and item not in ["[]", "None", ""]:
+                        senales_list.append(item)
+                        
+            except Exception as e:
+                logger.warning(f"Error procesando señales: {e}")
+                senales_list = []
 
-        return json.dumps({
-            "verdict"         : "FRAUDULENT" if label == 1 else "LEGITIMATE",
-            "probability"     : round(proba_fraud, 4),
-            "confidence_level": self._get_confidence_level(proba_fraud),
-            "fuente"          : resultado_proc["fuente"],
-            "senales"         : resultado_proc["senales"],
-            "caracteristicas" : resultado_proc["caracteristicas"],
-            "estadisticas"    : resultado_proc["estadisticas"],
-            "justificacion"   : _generar_justificacion(label, proba_fraud, resultado_proc["senales"])
-        }, ensure_ascii=False)
+            return json.dumps({
+                "verdict"         : "FRAUDULENT" if label == 1 else "LEGITIMATE",
+                "probability"     : round(proba_fraud, 4),
+                "confidence_level": self._get_confidence_level(proba_fraud),
+                "fuente"          : resultado_proc.get("fuente", "desconocida"),
+                "senales"         : senales_list,
+                "caracteristicas" : resultado_proc.get("caracteristicas", {}),
+                "estadisticas"    : resultado_proc.get("estadisticas", {}),
+                "justificacion"   : _generar_justificacion(label, proba_fraud, senales_list)
+            }, ensure_ascii=False)
+        
+        except Exception as e:
+            logger.error(f"Error inesperado en forward(): {type(e).__name__}: {e}", exc_info=True)
+            return json.dumps({
+                "error": f"Error inesperado: {type(e).__name__}",
+                "verdict": None,
+                "probability": None,
+                "confidence_level": None,
+            }, ensure_ascii=False)
 
     def __getstate__(self):
         state = self.__dict__.copy()
@@ -317,24 +479,56 @@ class OrquestadorAgente:
         )
 
     def ejecutar_tarea(self, query: str) -> str:
-        # 1. Datos estructurados de la tool
         try:
-            tool_data = json.loads(self.tools[0].forward(job_posting_json=query))
-        except Exception as e:
-            logger.error(f"Tool falló: {e}")
-            return json.dumps({"error": str(e)})
+            # 1. Preparar la entrada
+            if isinstance(query, str):
+                try:
+                    query_data = json.loads(query)
+                except json.JSONDecodeError:
+                    query_data = {"descripcion": query}
+            else:
+                query_data = query
+            
+            job_posting_json = json.dumps(query_data, ensure_ascii=False)
 
-        # 2. Razonamiento del agente como justificación
-        tarea = (
-            "Analyze this job posting for fraud risk. "
-            "Call the fraud_detection tool to get the ML prediction, "
-            "then explain in Spanish your reasoning about why this posting "
-            "may or may not be fraudulent, highlighting the most suspicious elements.\n\n"
-            f"Job posting data: {query}"
-        )
-        try:
-            tool_data["justificacion"] = str(self.agent.run(tarea)).strip()
-        except Exception as e:
-            logger.warning(f"Agente falló al razonar: {e}")
+            # 2. EJECUCIÓN TÉCNICA (Tool de confianza)
+            # Obtenemos los datos duros que el frontend necesita para el semáforo y gráficas
+            logger.info("Obteniendo datos técnicos de la Tool...")
+            tool_result_str = self.tools[0].forward(job_posting_json=job_posting_json)
+            datos_finales = json.loads(tool_result_str)
 
-        return json.dumps(tool_data, ensure_ascii=False)
+            if "error" in datos_finales:
+                return tool_result_str
+
+            # 3. EJECUCIÓN NARRATIVA (Agente)
+            # Le pedimos que genere SOLO el mensaje para el usuario
+            tarea = (
+                f"Analiza este anuncio siguiendo tus instrucciones de experto.\n"
+                f"DATOS TÉCNICOS: {tool_result_str}\n"
+                f"CONTENIDO DEL ANUNCIO: {job_posting_json}\n"
+                "TAREA: Escribe una explicación breve (2-3 frases) para el usuario. "
+                "Usa un tono directo y neutral. No devuelvas JSON, solo el texto."
+            )
+
+            logger.info("Iniciando razonamiento narrativo del agente...")
+            # Aquí capturamos la respuesta del agente como un string simple
+            mensaje_agente = str(self.agent.run(tarea)).strip()
+
+            # 4. ENSAMBLAJE FINAL
+            # Sustituimos la justificación genérica de la tool por la narrativa rica del agente
+            if mensaje_agente and len(mensaje_agente) > 10:
+                # Limpiamos posibles artefactos por si el agente escribe "Respuesta: ..."
+                mensaje_limpio = re.sub(r'^(Respuesta|Justificación|Mensaje):\s*', '', mensaje_agente, flags=re.IGNORECASE)
+                datos_finales["justificacion"] = mensaje_limpio
+
+            # Devolvemos el JSON de la Tool enriquecido con el texto del Agente
+            return json.dumps(datos_finales, ensure_ascii=False)
+
+        except Exception as e:
+            logger.error(f"Error crítico en ejecutar_tarea: {e}", exc_info=True)
+            # Si todo falla, al menos devolvemos algo que el frontend entienda
+            return json.dumps({
+                "error": "Error en el análisis",
+                "verdicto": "AMBIGUO",
+                "justificacion": "No se pudo completar el análisis técnico."
+            }, ensure_ascii=False)

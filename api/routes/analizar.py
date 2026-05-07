@@ -34,7 +34,7 @@ def _get_orquestador():
         pipeline_path = os.path.join(
             os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
             "models",
-            "modelo_hibrido_prueba.pkl"
+            "modelo_hibrido.pkl"
         )
         # Si no existe el pipeline, usamos modo sin ML
         if not os.path.exists(pipeline_path):
@@ -100,30 +100,40 @@ async def _procesar_y_analizar(texto_original: str, translated: str, idioma_dete
 def _parsear_resultado_ia(resultado: str, tipo: TipoEntrada, idioma_detectado: str) -> ResultadoAnalisis:
     """
     Parsea el resultado del agente de IA y lo convierte al formato de respuesta.
+    Maneja múltiples formatos de respuesta (JSON válido, JSON embebido, error).
     """
     import re
 
     # Intentar parsear directamente
     data = None
     try:
-        data = json.loads(resultado)
+        if isinstance(resultado, str):
+            data = json.loads(resultado)
+        else:
+            data = resultado
     except json.JSONDecodeError:
         # El agente devuelve texto libre con JSON embebido — extraerlo
-        match = re.search(r'\{.*\}', resultado, re.DOTALL)
+        match = re.search(r'\{.*\}', str(resultado), re.DOTALL)
         if match:
             try:
                 data = json.loads(match.group())
             except json.JSONDecodeError as e:
                 logger.warning(f"Error al parsear JSON extraído: {e}, usando análisis por reglas")
         else:
-            logger.warning(f"No se encontró JSON en resultado IA: {resultado[:200]}")
+            logger.warning(f"No se encontró JSON en resultado IA: {str(resultado)[:200]}")
 
     if data is None:
-        return _analisis_por_reglas(resultado, tipo, idioma_detectado)
+        logger.warning("No se pudo parsear resultado del agente, usando análisis por reglas")
+        return _analisis_por_reglas(str(resultado)[:500], tipo, idioma_detectado)
+    
+    # Verificar si hay error en la respuesta
+    if isinstance(data, dict) and "error" in data:
+        logger.warning(f"Agente devolvió error: {data['error']}")
+        return _analisis_por_reglas(data.get("error", "Error en análisis"), tipo, idioma_detectado)
 
     try:
         # Mapear veredicto a nivel de seguridad
-        veredicto = data.get("verdict", "").upper()
+        veredicto = data.get("verdict", data.get("veredicto", "")).upper()
         if veredicto == "FRAUDULENT":
             nivel = NivelSeguridad.ROJO
         elif veredicto == "LEGITIMATE":
@@ -140,8 +150,13 @@ def _parsear_resultado_ia(resultado: str, tipo: TipoEntrada, idioma_detectado: s
                 elif isinstance(val, list) and val:
                     senales.extend([str(s) for s in val])
         else:
-            senales = senales_raw
+            senales = senales_raw if isinstance(senales_raw, list) else []
+        
         indicadores = data.get("caracteristicas") or []
+        if isinstance(indicadores, dict):
+            indicadores = list(indicadores.values()) if indicadores else []
+        elif not isinstance(indicadores, list):
+            indicadores = [str(indicadores)] if indicadores else []
 
         if not indicadores and senales:
             indicadores = senales
