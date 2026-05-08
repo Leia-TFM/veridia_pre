@@ -3,7 +3,6 @@ from streamlit_modal import Modal
 from streamlit_scroll_navigation import scroll_navbar  # CAMBIO: navegación por secciones
 import requests
 import time
-import asyncio
 from deep_translator import GoogleTranslator
 
 API_DETECTAR_IDIOMA = "http://127.0.0.1:8000/api/detectar_idioma"
@@ -397,7 +396,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "config_title": "Configuración",
         "select_language_title": "Selecciona idioma",
         "continue_phrase": "Continuar",
-        "about_us": "¿Quiénes somos?"
+        "about_us": "¿Quiénes somos?",
+        "social_media": "Nuestras Redes Sociales"
     },
     "en":{
         "result":" ✔ Analysis Result",
@@ -421,7 +421,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "config_title": "Configuration",
         "select_language_title": "Choose Language", 
         "continue_phrase": "Continue",
-        "about_us": "About us" 
+        "about_us": "About us",
+        "social_media": "Our Social Media" 
     },
     "fr":{
         "result":" ✔ Résultat de l'analyse",
@@ -445,7 +446,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "config_title": "Configuration",
         "select_language_title": "Choisir la langue", 
         "continue_phrase": "Continuer",
-        "about_us": "Qui sommes-nous?"
+        "about_us": "Qui sommes-nous?",
+        "social_media": "Nos Réseaux Sociaux" 
     },
     "de": {
         "result": " ✔ Analyseergebnis",
@@ -469,7 +471,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "config_title": "Konfiguration",
         "select_language_title": "Sprache auswählen", 
         "continue_phrase": "Weiter",
-        "about_us": "Über uns"
+        "about_us": "Über uns",
+        "social_media": "Unsere Sozialen Medien" 
     },
     "it": {
         "result": " ✔ Risultato dell'analisi",
@@ -493,7 +496,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "config_title": "Configurazione",
         "select_language_title": "Seleziona lingua", 
         "continue_phrase": "Continua",
-        "about_us": "Chi siamo?"
+        "about_us": "Chi siamo?",
+        "social_media": "I nostri Social Media" 
     },
     "pt": {
         "result": " ✔ Resultado da análise",
@@ -517,7 +521,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "config_title": "Configuração",
         "select_language_title": "Selecionar idioma", 
         "continue_phrase": "Continuar",
-        "about_us": "Quem somos?"
+        "about_us": "Quem somos?",
+        "social_media": "As nossas Redes Sociais" 
     },
     "ru": {
         "result": " ✔ Результат анализа",
@@ -541,7 +546,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "config_title": "Настройки",
         "select_language_title": "Выберите язык", 
         "continue_phrase": "Продолжить",
-        "about_us": "Кто мы?"
+        "about_us": "Кто мы?",
+        "social_media": "Наши социальные сети" 
     },
     "ar": {
         "result": " ✔ نتيجة التحليل",
@@ -565,7 +571,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "config_title": "الإعدادات",
         "select_language_title": "اختر اللغة", 
         "continue_phrase": "متابعة",
-        "about_us": "من نحن؟"
+        "about_us": "من نحن؟",
+        "social_media": "حساباتنا على مواقع التواصل الاجتماعي"
     },
     "ro": {
         "result": " ✔ Rezultatul analizei",
@@ -589,7 +596,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "config_title": "Configurare",
         "select_language_title": "Selectați limba", 
         "continue_phrase": "Continuați",
-        "about_us": "Cine suntem?"
+        "about_us": "Cine suntem?",
+        "social_media": "Rețelele noastre sociale" 
     },
     "nl": {
         "result": " ✔ Analyseresultaat",
@@ -613,7 +621,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "config_title": "Instellingen",
         "select_language_title": "Taal kiezen", 
         "continue_phrase": "Doorgaan",
-        "about_us": "Wie zijn wij?"
+        "about_us": "Wie zijn wij?",
+        "social_media": "Onze Sociale Media"
     },
     "ca": {
         "result": " ✔ Resultat de l'anàlisi",
@@ -637,7 +646,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "config_title": "Configuració",
         "select_language_title": "Selecciona l'idioma", 
         "continue_phrase": "Continuar",
-        "about_us": "Qui som?"
+        "about_us": "Qui som?",
+        "social_media": "Les nostres Xarxes Socials"
     },
     "pl": {
         "result": " ✔ Wynik analizy",
@@ -661,7 +671,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "config_title": "Ustawienia",
         "select_language_title": "Wybierz język", 
         "continue_phrase": "Kontynuuj",
-        "about_us": "Kim jesteśmy?"
+        "about_us": "Kim jesteśmy?",
+        "social_media": "Nasze Media Społecznościowe"
     },
     "uk": {
         "result": " ✔ Результат аналізу",
@@ -685,7 +696,8 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "config_title": "Налаштування",
         "select_language_title": "Оберіть мову", 
         "continue_phrase": "Продовжити",
-        "about_us": "Хто ми?"
+        "about_us": "Хто ми?",
+        "social_media": "Наші соціальні мережі"
     },
 }
 translations = {  #Diccionario y funcion para traducir el mensaje desde el backend
@@ -825,7 +837,7 @@ def render_modal_quienes_somos(idioma_destino: str = "es"):
         "Somos un equipo comprometido con la lucha contra el fraude laboral. Proyecto Verid.IA nace para ayudar a las personas a identificar ofertas de trabajo falsas mediante inteligencia artificial.",
         "¿Qué hacemos?",
         "Analizamos anuncios de trabajo (texto, URL o imagen) y evaluamos el riesgo de que sean fraudulentos, protegiendo a los usuarios de posibles estafas.",
-        "Síguenos"
+        "Política de privacidad"
     ]
 
     if idioma_destino != "es":
@@ -838,7 +850,7 @@ def render_modal_quienes_somos(idioma_destino: str = "es"):
             st.session_state[cache_key] = partes
         textos = st.session_state[cache_key]
 
-    t = textos
+    t = textos   # HAY QUE CAMBIAR EL LINK PARA LA POLÍTICA DE PRIVACIDAD
     st.markdown(f"""
         <div style="background-color:#f9fbf2; border:2px solid #ddb6fc; border-radius:16px 16px 0 0;
             padding:32px; max-width:700px; margin:20px auto 0 auto;
@@ -848,12 +860,9 @@ def render_modal_quienes_somos(idioma_destino: str = "es"):
             <h3 style="color:#9b5fcf; text-align:center;">🎯 {t[2]}</h3>
             <p style="font-size:16px; color:#555; text-align:center;">{t[3]}</p>
             <hr style="border-color:#ddb6fc; margin:20px 0;">
-            <h3 style="color:#9b5fcf; text-align:center;">🌐 {t[4]}</h3>
+            <h3 style="color:#9b5fcf; text-align:center;">📖 {t[4]}</h3>
             <div style="text-align:center; font-size:18px;">
-                <a href="https://twitter.com/TU_USUARIO" target="_blank" style="margin:0 12px; color:#1da1f2; text-decoration:none;">🐦 Twitter / X</a>
-                <a href="https://instagram.com/TU_USUARIO" target="_blank" style="margin:0 12px; color:#e1306c; text-decoration:none;">📸 Instagram</a>
-                <a href="https://linkedin.com/in/TU_USUARIO" target="_blank" style="margin:0 12px; color:#0077b5; text-decoration:none;">💼 LinkedIn</a>
-                <a href="https://github.com/TU_USUARIO" target="_blank" style="margin:0 12px; color:#333; text-decoration:none;">🐙 GitHub</a>
+                <a href="https://twitter.com/TU_USUARIO" target="_blank" style="margin:0 12px; color:#1da1f2; text-decoration:none;">📄 PDF</a>
             </div>
         </div>
     """, unsafe_allow_html=True)
@@ -907,17 +916,42 @@ def pagina_inicio():
     with col_center:
         if st.button(f"ℹ️ {UI_TEXTS[idioma_actual]['about_us']}", key="btn_sobre_nosotros", use_container_width=True):
             st.session_state["mostrar_sobre_nosotros"] = True
+    
+    # CAMBIAR EL LINK DE LAS REDES SOCIALES
+    st.markdown(f"""
+    <div style="text-align:center; margin-top:10px;">
+        <h3 style="color:#9b5fcf;">🌐 {UI_TEXTS[idioma_actual]['social_media']}</h3>
+        <div style="font-size:18px;">
+            <a href="https://twitter.com/TU_USUARIO" target="_blank" style="margin:0 12px; color:#1da1f2; text-decoration:none;">🐦 Twitter / X</a>
+            <a href="https://instagram.com/TU_USUARIO" target="_blank" style="margin:0 12px; color:#e1306c; text-decoration:none;">📸 Instagram</a>
+            <a href="https://linkedin.com/in/TU_USUARIO" target="_blank" style="margin:0 12px; color:#0077b5; text-decoration:none;">💼 LinkedIn</a>
+            <a href="https://github.com/TU_USUARIO" target="_blank" style="margin:0 12px; color:#333; text-decoration:none;">🐙 GitHub</a>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     # ---- MODAL SOBRE NOSOTROS ----
     if st.session_state.get("mostrar_sobre_nosotros", False):
         render_modal_quienes_somos(idioma_destino=idioma_actual)
 
+        st.markdown("""
+        <style>
+        div.st-key-cerrar_sobre_nosotros {
+            margin-top: -20px !important;
+        }
+        div.st-key-cerrar_sobre_nosotros button {
+            width: 160px !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+
         col1, col2, col3 = st.columns([2, 1, 2])
         with col3:
-            if st.button(f"✕ {UI_TEXTS[idioma_actual]['close']}", key="cerrar_sobre_nosotros", use_container_width=True):
+            if st.button(f"✕ {UI_TEXTS[idioma_actual]['close']}", key="cerrar_sobre_nosotros"):
                 st.session_state["mostrar_sobre_nosotros"] = False
                 st.rerun()
-         
+
+    st.divider()     
     st.title("🌍 " + UI_TEXTS[idioma_actual]["select_language_title"])
 
     st.markdown("""
