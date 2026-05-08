@@ -3,6 +3,8 @@ from streamlit_modal import Modal
 from streamlit_scroll_navigation import scroll_navbar  # CAMBIO: navegación por secciones
 import requests
 import time
+import asyncio
+from deep_translator import GoogleTranslator
 
 API_DETECTAR_IDIOMA = "http://127.0.0.1:8000/api/detectar_idioma"
 API_ANALIZAR = "http://127.0.0.1:8000/api/analizar"
@@ -419,7 +421,7 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "config_title": "Configuration",
         "select_language_title": "Choose Language", 
         "continue_phrase": "Continue",
-        "about_us": "Who are we?" 
+        "about_us": "About us" 
     },
     "fr":{
         "result":" ✔ Résultat de l'analyse",
@@ -467,7 +469,7 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "config_title": "Konfiguration",
         "select_language_title": "Sprache auswählen", 
         "continue_phrase": "Weiter",
-        "about_us": "Wer sind wir?"
+        "about_us": "Über uns"
     },
     "it": {
         "result": " ✔ Risultato dell'analisi",
@@ -817,6 +819,45 @@ def animacion(color, luz):
         unsafe_allow_html=True
     )
 
+def render_modal_quienes_somos(idioma_destino: str = "es"):
+    textos = [
+        "¿Quiénes somos?",
+        "Somos un equipo comprometido con la lucha contra el fraude laboral. Proyecto Verid.IA nace para ayudar a las personas a identificar ofertas de trabajo falsas mediante inteligencia artificial.",
+        "¿Qué hacemos?",
+        "Analizamos anuncios de trabajo (texto, URL o imagen) y evaluamos el riesgo de que sean fraudulentos, protegiendo a los usuarios de posibles estafas.",
+        "Síguenos"
+    ]
+
+    if idioma_destino != "es":
+        cache_key = f"modal_{idioma_destino}"
+        if cache_key not in st.session_state:
+            texto_completo = "\n---\n".join(textos)
+            traducido = GoogleTranslator(source="es", target=idioma_destino).translate(texto_completo)
+            partes = traducido.split("\n---\n")
+            partes[-1] = partes[-1].capitalize()  
+            st.session_state[cache_key] = partes
+        textos = st.session_state[cache_key]
+
+    t = textos
+    st.markdown(f"""
+        <div style="background-color:#f9fbf2; border:2px solid #ddb6fc; border-radius:16px 16px 0 0;
+            padding:32px; max-width:700px; margin:20px auto 0 auto;
+            box-shadow:0 5px 20px rgba(192,132,252,0.15);">
+            <h2 style="color:#9b5fcf; text-align:center;">👥 {t[0]}</h2>
+            <p style="font-size:17px; color:#333; text-align:center;">{t[1]}</p>
+            <h3 style="color:#9b5fcf; text-align:center;">🎯 {t[2]}</h3>
+            <p style="font-size:16px; color:#555; text-align:center;">{t[3]}</p>
+            <hr style="border-color:#ddb6fc; margin:20px 0;">
+            <h3 style="color:#9b5fcf; text-align:center;">🌐 {t[4]}</h3>
+            <div style="text-align:center; font-size:18px;">
+                <a href="https://twitter.com/TU_USUARIO" target="_blank" style="margin:0 12px; color:#1da1f2; text-decoration:none;">🐦 Twitter / X</a>
+                <a href="https://instagram.com/TU_USUARIO" target="_blank" style="margin:0 12px; color:#e1306c; text-decoration:none;">📸 Instagram</a>
+                <a href="https://linkedin.com/in/TU_USUARIO" target="_blank" style="margin:0 12px; color:#0077b5; text-decoration:none;">💼 LinkedIn</a>
+                <a href="https://github.com/TU_USUARIO" target="_blank" style="margin:0 12px; color:#333; text-decoration:none;">🐙 GitHub</a>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
+
 def pagina_inicio():
     
     st.markdown("<h1 style='text-align:center; color:#8f9e25; font-size:100px;'>✔ Proyecto Verid.IA</h1>", unsafe_allow_html=True)
@@ -828,24 +869,26 @@ def pagina_inicio():
      # ---- CSS BOTÓN VIOLETA SUAVE ----
     st.markdown("""
     <style>
-    .st-key-btn_sobre_nosotros button {
+    .st-key-btn_sobre_nosotros button,
+    .st-key-btn_sobre_nosotros button p {
         background-color: #ddb6fc !important;
         color: #2d0060 !important;
+        font-size: 20px !important;
     }
     .st-key-cerrar_sobre_nosotros button {
         background-color: #ddb6fc !important;
         color: #2d0060 !important;
-        margin-top: 5px !important;   /* Muy poco espacio con el modal */
+        margin-top: 5px !important;
         margin-bottom: 4px !important;
-        padding: 4px 8px !important;  /* Más pequeño */
-        font-size: 14px !important;   /* Texto reducido */
-        height: 32px !important;      /* Altura compacta */
+        padding: 4px 8px !important;
+        font-size: 14px !important;
+        height: 32px !important;
     }
 
     /* Contenedor del botón cerrar: menos espacio */
     div.stKeyText_cerrar_sobre_nosotros,
     div[class*="st-key-cerrar_sobre_nosotros"] {
-        margin-top: 8px !important;   /* Espacio mínimo desde modal */
+        margin-top: 8px !important;
         margin-bottom: 0 !important;
         padding-top: 4px !important;
         position: relative !important;
@@ -867,40 +910,10 @@ def pagina_inicio():
 
     # ---- MODAL SOBRE NOSOTROS ----
     if st.session_state.get("mostrar_sobre_nosotros", False):
-        st.markdown("""
-        <div style="
-            background-color: #f9fbf2;
-            border: 2px solid #ddb6fc;
-            border-radius: 16px 16px 0 0;
-            padding: 32px 32px 24px 32px;
-            max-width: 700px;
-            margin: 20px auto 0 auto;
-            box-shadow: 0 5px 20px rgba(192,132,252,0.15);
-        ">
-            <h2 style="color: #9b5fcf; text-align:center;">👥 ¿Quiénes somos?</h2>
-            <p style="font-size:17px; color:#333; text-align:center;">
-                Somos un equipo comprometido con la lucha contra el fraude laboral. 
-                <strong>Proyecto Verid.IA</strong> nace para ayudar a las personas a identificar 
-                ofertas de trabajo falsas mediante inteligencia artificial.
-            </p>
-            <h3 style="color: #9b5fcf; text-align:center;">🎯 ¿Qué hacemos?</h3>
-            <p style="font-size:16px; color:#555; text-align:center;">
-                Analizamos anuncios de trabajo (texto, URL o imagen) y evaluamos el riesgo 
-                de que sean fraudulentos, protegiendo a los usuarios de posibles estafas.
-            </p>
-            <hr style="border-color:#ddb6fc; margin: 20px 0;">
-            <h3 style="color: #9b5fcf; text-align:center;">🌐 Síguenos</h3>
-            <div style="text-align:center; font-size:18px;">
-                <a href="https://twitter.com/TU_USUARIO" target="_blank" style="margin: 0 12px; color:#1da1f2; text-decoration:none;">🐦 Twitter / X</a>
-                <a href="https://instagram.com/TU_USUARIO" target="_blank" style="margin: 0 12px; color:#e1306c; text-decoration:none;">📸 Instagram</a>
-                <a href="https://linkedin.com/in/TU_USUARIO" target="_blank" style="margin: 0 12px; color:#0077b5; text-decoration:none;">💼 LinkedIn</a>
-                <a href="https://github.com/TU_USUARIO" target="_blank" style="margin: 0 12px; color:#333; text-decoration:none;">🐙 GitHub</a>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        render_modal_quienes_somos(idioma_destino=idioma_actual)
 
         col1, col2, col3 = st.columns([2, 1, 2])
-        with col2:
+        with col3:
             if st.button(f"✕ {UI_TEXTS[idioma_actual]['close']}", key="cerrar_sobre_nosotros", use_container_width=True):
                 st.session_state["mostrar_sobre_nosotros"] = False
                 st.rerun()
