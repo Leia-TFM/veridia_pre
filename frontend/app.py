@@ -922,10 +922,8 @@ def pagina_inicio():
     <div style="text-align:center; margin-top:10px;">
         <h3 style="color:#9b5fcf;">🌐 {UI_TEXTS[idioma_actual]['social_media']}</h3>
         <div style="font-size:18px;">
-            <a href="https://twitter.com/TU_USUARIO" target="_blank" style="margin:0 12px; color:#1da1f2; text-decoration:none;">🐦 Twitter / X</a>
             <a href="https://instagram.com/TU_USUARIO" target="_blank" style="margin:0 12px; color:#e1306c; text-decoration:none;">📸 Instagram</a>
-            <a href="https://linkedin.com/in/TU_USUARIO" target="_blank" style="margin:0 12px; color:#0077b5; text-decoration:none;">💼 LinkedIn</a>
-            <a href="https://github.com/TU_USUARIO" target="_blank" style="margin:0 12px; color:#333; text-decoration:none;">🐙 GitHub</a>
+            <a href="https://www.linkedin.com/in/proyecto-verid-ia-9390653b8/" target="_blank" style="margin:0 12px; color:#0077b5; text-decoration:none;">💼 LinkedIn</a>   
         </div>
     </div>
     """, unsafe_allow_html=True)
