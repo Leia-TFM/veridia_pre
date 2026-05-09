@@ -7,6 +7,7 @@ from deep_translator import GoogleTranslator
 
 API_DETECTAR_IDIOMA = "http://127.0.0.1:8000/api/detectar_idioma"
 API_ANALIZAR = "http://127.0.0.1:8000/api/analizar"
+API_ESTADISTICAS = "http://127.0.0.1:8000/api/estadisticas"
 
 # ---------- NAVEGACIÓN ----------
 if "page" not in st.session_state:
@@ -1266,6 +1267,69 @@ def mostrar_resultados(res_seg, res_det, lang_ui):
         </div>
         """, unsafe_allow_html=True)
 
+# ---------- ESTADÍSTICAS ----------
+def pagina_estadisticas(lang_ui: str):
+    """Muestra las estadísticas globales obtenidas desde la API con gráficos matplotlib."""
+ 
+    st.markdown(
+        "<h2 style=\'text-align:center; color:#6f4a8e;\'>📊 Estadísticas globales</h2>",
+        unsafe_allow_html=True,
+    )
+    st.divider()
+ 
+    try:
+        response = requests.get(API_ESTADISTICAS, timeout=10)
+    except requests.exceptions.RequestException as e:
+        st.error(f"❌ Error al conectar con la API de estadísticas: {e}")
+        return
+ 
+    if response.status_code != 200:
+        st.error(f"❌ La API devolvió un error ({response.status_code})")
+        return
+ 
+    data = response.json()
+    stats = data.get("estadisticas", {})
+    dist  = stats.get("distribucion_semaforo", {})
+ 
+    # Métricas resumen
+    total    = stats.get("total_analizados", 0)
+    n_verde  = dist.get("verde", 0)
+    n_ambar  = dist.get("amarillo", 0)
+    n_rojo   = dist.get("rojo", 0)
+ 
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("🔍 Total analizados", total)
+    col2.metric("🟢 Bajo riesgo",      n_verde)
+    col3.metric("🟡 Riesgo medio",     n_ambar)
+    col4.metric("🔴 Alto riesgo",      n_rojo)
+ 
+    st.divider()
+ 
+    # Fila 1: semaforo + indicadores
+    col_pie, col_bar = st.columns([1, 1], gap="large")
+ 
+    with col_pie:
+        img_semaforo = data.get("grafico_semaforo", "")
+        if img_semaforo:
+            st.image(f"data:image/png;base64,{img_semaforo}", use_container_width=True)
+        else:
+            st.info("Sin datos de distribución")
+ 
+    with col_bar:
+        img_indicadores = data.get("grafico_indicadores", "")
+        if img_indicadores:
+            st.image(f"data:image/png;base64,{img_indicadores}", use_container_width=True)
+        else:
+            st.info("Sin indicadores frecuentes")
+ 
+    st.divider()
+ 
+    # Fila 2: idiomas centrado
+    img_idiomas = data.get("grafico_idiomas", "")
+    if img_idiomas:
+        _, col_mid, _ = st.columns([1, 2, 1])
+        with col_mid:
+            st.image(f"data:image/png;base64,{img_idiomas}", use_container_width=True)
 
 # ---------- SIDEBAR ----------
 def pagina_analizador():
@@ -1327,7 +1391,12 @@ def pagina_analizador():
         modo = st.radio("Selecciona un modo", [f"{lang_ui_input["mode_label_one"]}", f"{lang_ui_input["mode_label_two"]}"], horizontal=True, label_visibility="hidden")  #CAMBIO CUANDO SE INTRODUZCA EL ESTADISTICAS.PY
 
     st.divider()    #Esto deja un espacio entre el desplegable de los idiomas y el mensaje de funcionalidad
-
+    
+    # ---------- MODO ESTADÍSTICAS ----------
+    # Si el usuario eligió el modo de estadísticas, mostramos la página y salimos
+    if modo == lang_ui_input["mode_label_two"]:
+        pagina_estadisticas(lang_ui)
+        return
 
     # ---------- CSS para botón pequeño ----------
     # Código encargado del diseño del botón de borrar de la web, formato html
@@ -1494,13 +1563,13 @@ def pagina_analizador():
                 luz = st.empty()
 
                 animacion("rojo", luz)
-                time.sleep(2)
+                time.sleep(5)
                 animacion("ambar", luz)
-                time.sleep(1.5)
+                time.sleep(5)
                 animacion("verde", luz)
 
                 response_idioma = llamar_api(API_DETECTAR_IDIOMA, data, files)
-                time.sleep(1.5)
+                time.sleep(5)
 
                 status.update(label="🟢🟢🟢", state="complete", expanded=False)
             
