@@ -832,7 +832,7 @@ def animacion(color, luz):
     )
 
 def render_modal_quienes_somos(idioma_destino: str = "es"):
-    textos = [
+    textos = [   # MODIFICAR EL TEXTO SEGÚN COMUNICACIÓN
         "¿Quiénes somos?",
         "Somos un equipo comprometido con la lucha contra el fraude laboral. Proyecto Verid.IA nace para ayudar a las personas a identificar ofertas de trabajo falsas mediante inteligencia artificial.",
         "¿Qué hacemos?",
