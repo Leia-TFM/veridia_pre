@@ -7,7 +7,7 @@ from deep_translator import GoogleTranslator
 
 API_DETECTAR_IDIOMA = "http://127.0.0.1:8000/api/detectar_idioma"
 API_ANALIZAR = "http://127.0.0.1:8000/api/analizar"
-
+API_ESTADISTICAS = "http://127.0.0.1:8000/api/estadisticas"
 
 # ---------- NAVEGACIÓN ----------
 if "page" not in st.session_state:
@@ -65,6 +65,14 @@ def llamar_api(endpoint, data, files=None):
         st.error(f"❌ Error de conexión: {e}")
         return None
 
+def llamar_api_get(endpoint):
+    try:
+        response = requests.get(endpoint)
+        return response
+    except requests.exceptions.RequestException as e:
+        st.error(f"❌ Error de conexión: {e}")
+        return None
+    
 # ---------- IDIOMAS ----------
 languages = {       #Los idiomas seleccionables en el desplegable
     "🇪🇸 Español": "es",
@@ -1266,6 +1274,117 @@ def mostrar_resultados(res_seg, res_det, lang_ui):
             <table style="width:100%;border-collapse:collapse;">{filas}</table>
         </div>
         """, unsafe_allow_html=True)
+# ---------- ESTADÍSTICAS ----------
+def mostrar_estadisticas(lang_ui):
+    response = llamar_api_get(API_ESTADISTICAS)
+
+    if not response or response.status_code != 200:
+        st.error("❌ Error al obtener estadísticas")
+        return
+
+    stats = response.json()
+
+    resumen   = stats.get("resumen_general", {})
+    por_idioma = stats.get("por_idioma", {})
+    senales   = stats.get("senales_frecuentes", {})
+
+    total      = resumen.get("total", 0)
+    fraudulent = resumen.get("fraudulent", 0)
+    legitimate = resumen.get("legitimate", 0)
+    amarillo   = resumen.get("amarillo", 0)
+
+    # ── TÍTULO ──────────────────────────────────────────────────────────────
+    st.markdown(
+        "<h2 style='text-align:center;color:#8f9e25;'>📊 Estadísticas globales</h2>",
+        unsafe_allow_html=True,
+    )
+    st.divider()
+
+    # ── MÉTRICAS RESUMEN ────────────────────────────────────────────────────
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("🔢 Total analizados", total)
+    col2.metric("✅ Legítimos",   legitimate)
+    col3.metric("⚠️ Con alertas", amarillo)
+    col4.metric("🚨 Fraudulentos", fraudulent)
+
+    st.divider()
+
+    # ── DISTRIBUCIÓN SEMÁFORO ───────────────────────────────────────────────
+    st.markdown("#### 🚦 Distribución por nivel de riesgo")
+
+    if total > 0:
+        pct_verde    = legitimate / total * 100
+        pct_amarillo = amarillo   / total * 100
+        pct_rojo     = fraudulent / total * 100
+
+        barra_html = f"""
+        <div style="border-radius:10px;overflow:hidden;height:28px;display:flex;margin-bottom:8px;">
+            <div style="width:{pct_verde:.1f}%;background:#16a34a;" title="Legítimos {pct_verde:.1f}%"></div>
+            <div style="width:{pct_amarillo:.1f}%;background:#ca8a04;" title="Con alertas {pct_amarillo:.1f}%"></div>
+            <div style="width:{pct_rojo:.1f}%;background:#dc2626;" title="Fraudulentos {pct_rojo:.1f}%"></div>
+        </div>
+        <div style="display:flex;gap:20px;font-size:14px;">
+            <span>🟢 Legítimos &nbsp;<strong>{pct_verde:.1f}%</strong></span>
+            <span>🟡 Con alertas &nbsp;<strong>{pct_amarillo:.1f}%</strong></span>
+            <span>🔴 Fraudulentos &nbsp;<strong>{pct_rojo:.1f}%</strong></span>
+        </div>
+        """
+        st.markdown(barra_html, unsafe_allow_html=True)
+    else:
+        st.info("Sin datos suficientes para mostrar la distribución.")
+
+    st.divider()
+
+    # ── IDIOMAS + SEÑALES ───────────────────────────────────────────────────
+    col_idiomas, col_senales = st.columns(2)
+
+    with col_idiomas:
+        st.markdown("#### 🌍 Idiomas detectados")
+        idiomas_dict = por_idioma.get("idiomas", {})
+        if idiomas_dict:
+            for idioma, count in list(idiomas_dict.items())[:8]:
+                pct = count / total * 100 if total else 0
+                st.markdown(
+                    f"""
+                    <div style="margin-bottom:6px;">
+                        <div style="display:flex;justify-content:space-between;font-size:14px;">
+                            <span><strong>{idioma.upper()}</strong></span>
+                            <span>{count} ({pct:.1f}%)</span>
+                        </div>
+                        <div style="background:#e5e7eb;border-radius:99px;height:8px;overflow:hidden;">
+                            <div style="width:{pct:.1f}%;background:#b6c35d;height:100%;border-radius:99px;"></div>
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+        else:
+            st.info("Sin datos de idioma.")
+
+    with col_senales:
+        st.markdown("#### 🔎 Señales más frecuentes")
+        senales_dict = senales.get("senales", {})
+        if senales_dict:
+            max_val = max(senales_dict.values(), default=1)
+            for senal, count in list(senales_dict.items())[:10]:
+                pct = count / max_val * 100
+                st.markdown(
+                    f"""
+                    <div style="margin-bottom:6px;">
+                        <div style="display:flex;justify-content:space-between;font-size:13px;">
+                            <span style="color:#374151;">{senal}</span>
+                            <span style="font-weight:700;color:#e89a40;">{count}</span>
+                        </div>
+                        <div style="background:#e5e7eb;border-radius:99px;height:8px;overflow:hidden;">
+                            <div style="width:{pct:.1f}%;background:#e89a40;height:100%;border-radius:99px;"></div>
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+        else:
+            st.info("Sin señales registradas.")
+
 
 # ---------- SIDEBAR ----------
 def pagina_analizador():
@@ -1324,9 +1443,13 @@ def pagina_analizador():
     # ---------- MODO ----------        #Traducir también al idioma que se seleccione
     with st.container():
         st.markdown(f"<h3 style='color:#6f4a8e;'>{lang_ui_input["mode_label"]}:</h3>", unsafe_allow_html=True)
-        modo = st.radio("Selecciona un modo", [f"{lang_ui_input["mode_label_one"]}", f"{lang_ui_input["mode_label_two"]}"], horizontal=True, label_visibility="hidden")  #CAMBIO CUANDO SE INTRODUZCA EL ESTADISTICAS.PY
+        modo = st.radio("Selecciona un modo", [f"{lang_ui_input["mode_label_one"]}", f"{lang_ui_input["mode_label_two"]}"], horizontal=True, label_visibility="hidden", key="modo_seleccionado")
 
     st.divider()    #Esto deja un espacio entre el desplegable de los idiomas y el mensaje de funcionalidad
+    # ---------- MODO ESTADÍSTICAS ----------
+    if modo == lang_ui_input["mode_label_two"]:
+        mostrar_estadisticas(lang_ui)
+        return  # No renderizar el resto del formulario de análisis
     
     # ---------- CSS para botón pequeño ----------
     # Código encargado del diseño del botón de borrar de la web, formato html
