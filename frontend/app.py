@@ -1274,6 +1274,7 @@ def mostrar_resultados(res_seg, res_det, lang_ui):
             <table style="width:100%;border-collapse:collapse;">{filas}</table>
         </div>
         """, unsafe_allow_html=True)
+        
 # ---------- ESTADÍSTICAS ----------
 def mostrar_estadisticas(lang_ui):
     response = llamar_api_get(API_ESTADISTICAS)
@@ -1293,24 +1294,64 @@ def mostrar_estadisticas(lang_ui):
     legitimate = resumen.get("legitimate", 0)
     amarillo   = resumen.get("amarillo", 0)
 
+    # ── TRADUCCIÓN DE TEXTOS ESTÁTICOS ──────────────────────────────────────
+    textos_es = [
+        "Estadísticas globales",
+        "Total analizados",
+        "Legítimos",
+        "Con alertas",
+        "Fraudulentos",
+        "Distribución por nivel de riesgo",
+        "Legítimos",
+        "Con alertas",
+        "Fraudulentos",
+        "Sin datos suficientes para mostrar la distribución.",
+        "Idiomas detectados",
+        "Sin datos de idioma.",
+        "Señales más frecuentes",
+        "Sin señales registradas.",
+    ]
+
+    if lang_ui != "es":
+        cache_key = f"estadisticas_{lang_ui}"
+        if cache_key not in st.session_state:
+            texto_completo = "\n---\n".join(textos_es)
+            traducido = GoogleTranslator(source="es", target=lang_ui).translate(texto_completo)
+            partes = traducido.split("\n---\n")
+            st.session_state[cache_key] = partes
+        t = st.session_state[cache_key]
+    else:
+        t = textos_es
+
+    # Asegurar que t tiene suficientes elementos por si la traducción falla
+    while len(t) < len(textos_es):
+        t.append(textos_es[len(t)])
+
+    (
+        txt_titulo, txt_total, txt_legitimos, txt_alertas, txt_fraudulentos,
+        txt_distribucion, txt_leg_barra, txt_alert_barra, txt_fraud_barra,
+        txt_sin_datos, txt_idiomas, txt_sin_idiomas,
+        txt_senales, txt_sin_senales
+    ) = t[:14]
+
     # ── TÍTULO ──────────────────────────────────────────────────────────────
     st.markdown(
-        "<h2 style='text-align:center;color:#8f9e25;'>📊 Estadísticas globales</h2>",
+        f"<h2 style='text-align:center;color:#8f9e25;'>📊 {txt_titulo}</h2>",
         unsafe_allow_html=True,
     )
     st.divider()
 
     # ── MÉTRICAS RESUMEN ────────────────────────────────────────────────────
     col1, col2, col3, col4 = st.columns(4)
-    col1.metric("🔢 Total analizados", total)
-    col2.metric("✅ Legítimos",   legitimate)
-    col3.metric("⚠️ Con alertas", amarillo)
-    col4.metric("🚨 Fraudulentos", fraudulent)
+    col1.metric(f"🔢 {txt_total}", total)
+    col2.metric(f"✅ {txt_legitimos}", legitimate)
+    col3.metric(f"⚠️ {txt_alertas}", amarillo)
+    col4.metric(f"🚨 {txt_fraudulentos}", fraudulent)
 
     st.divider()
 
     # ── DISTRIBUCIÓN SEMÁFORO ───────────────────────────────────────────────
-    st.markdown("#### 🚦 Distribución por nivel de riesgo")
+    st.markdown(f"#### 🚦 {txt_distribucion}")
 
     if total > 0:
         pct_verde    = legitimate / total * 100
@@ -1319,19 +1360,19 @@ def mostrar_estadisticas(lang_ui):
 
         barra_html = f"""
         <div style="border-radius:10px;overflow:hidden;height:28px;display:flex;margin-bottom:8px;">
-            <div style="width:{pct_verde:.1f}%;background:#16a34a;" title="Legítimos {pct_verde:.1f}%"></div>
-            <div style="width:{pct_amarillo:.1f}%;background:#ca8a04;" title="Con alertas {pct_amarillo:.1f}%"></div>
-            <div style="width:{pct_rojo:.1f}%;background:#dc2626;" title="Fraudulentos {pct_rojo:.1f}%"></div>
+            <div style="width:{pct_verde:.1f}%;background:#16a34a;" title="{txt_leg_barra} {pct_verde:.1f}%"></div>
+            <div style="width:{pct_amarillo:.1f}%;background:#ca8a04;" title="{txt_alert_barra} {pct_amarillo:.1f}%"></div>
+            <div style="width:{pct_rojo:.1f}%;background:#dc2626;" title="{txt_fraud_barra} {pct_rojo:.1f}%"></div>
         </div>
         <div style="display:flex;gap:20px;font-size:14px;">
-            <span>🟢 Legítimos &nbsp;<strong>{pct_verde:.1f}%</strong></span>
-            <span>🟡 Con alertas &nbsp;<strong>{pct_amarillo:.1f}%</strong></span>
-            <span>🔴 Fraudulentos &nbsp;<strong>{pct_rojo:.1f}%</strong></span>
+            <span>🟢 {txt_leg_barra} &nbsp;<strong>{pct_verde:.1f}%</strong></span>
+            <span>🟡 {txt_alert_barra} &nbsp;<strong>{pct_amarillo:.1f}%</strong></span>
+            <span>🔴 {txt_fraud_barra} &nbsp;<strong>{pct_rojo:.1f}%</strong></span>
         </div>
         """
         st.markdown(barra_html, unsafe_allow_html=True)
     else:
-        st.info("Sin datos suficientes para mostrar la distribución.")
+        st.info(txt_sin_datos)
 
     st.divider()
 
@@ -1339,7 +1380,7 @@ def mostrar_estadisticas(lang_ui):
     col_idiomas, col_senales = st.columns(2)
 
     with col_idiomas:
-        st.markdown("#### 🌍 Idiomas detectados")
+        st.markdown(f"#### 🌍 {txt_idiomas}")
         idiomas_dict = por_idioma.get("idiomas", {})
         if idiomas_dict:
             for idioma, count in list(idiomas_dict.items())[:8]:
@@ -1359,10 +1400,10 @@ def mostrar_estadisticas(lang_ui):
                     unsafe_allow_html=True,
                 )
         else:
-            st.info("Sin datos de idioma.")
+            st.info(txt_sin_idiomas)
 
     with col_senales:
-        st.markdown("#### 🔎 Señales más frecuentes")
+        st.markdown(f"#### 🔎 {txt_senales}")
         senales_dict = senales.get("senales", {})
         if senales_dict:
             max_val = max(senales_dict.values(), default=1)
@@ -1383,7 +1424,8 @@ def mostrar_estadisticas(lang_ui):
                     unsafe_allow_html=True,
                 )
         else:
-            st.info("Sin señales registradas.")
+            st.info(txt_sin_senales)
+
 
 
 # ---------- SIDEBAR ----------
