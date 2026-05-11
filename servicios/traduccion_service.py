@@ -3,6 +3,7 @@ from fastapi import UploadFile, HTTPException
 import logging   
 import fasttext
 import os
+from difflib import SequenceMatcher
 from servicios.texto_service import process_image_input, process_text_input, process_url_input
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -88,7 +89,13 @@ async def traducir_contenido(target_lang: str, file: UploadFile = None, text: st
     
     # Comprobador de errores: ¿el texto resultante tiene contenido legible?
     if not texto_para_traducir.strip():
-        return "", "", "Unknown"
+        return {
+            "original": "",
+            "traducido": "",
+            "idioma_detectado": "Unknown",
+            "confianza_idioma": 0.0,
+            "confianza_traduccion": 0.0
+        }
 
     # Comprobación de longitud mínima para detectar idioma
     if len(texto_para_traducir.strip()) < 5:
@@ -120,6 +127,7 @@ async def traducir_contenido(target_lang: str, file: UploadFile = None, text: st
     except Exception as e:
         logger.warning(f"No se pudo detectar el idioma de entrada: {e}")
         idioma_detectado = "Unknown"
+        probabilidad = 0.0
 
     # --- Traducción ---
     try:
@@ -127,6 +135,26 @@ async def traducir_contenido(target_lang: str, file: UploadFile = None, text: st
         translator = GoogleTranslator(source=source_lang, target=target_lang)
         # Se limita a 4500 caracteres para evitar bloqueos del servicio de traducción de Google
         translated = translator.translate(texto_para_traducir[:4500])
+
+        # --- Traducción inversa (Comprobadoir de que la traducción es fiable)---
+        back_translator = GoogleTranslator(
+            source=target_lang,
+            target=source_lang
+        )
+
+        retranslated = back_translator.translate(translated)
+
+        # --- Métrica de similitud (mismas métricas que la detección de idioma, no muestra fiabilidad con OCR pero traduce bien)---
+        score = SequenceMatcher(
+            None,
+            texto_para_traducir.lower(),
+            retranslated.lower()
+        ).ratio()
+
+        logger.info(
+            f"Confianza traducción: {round(score, 3)}"
+        )
+
         return texto_para_traducir, translated, idioma_detectado
     
     except Exception as e:
