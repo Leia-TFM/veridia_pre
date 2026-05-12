@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field, field_validator, ValidationError
 from smolagents import ToolCallingAgent, LiteLLMModel, Tool
 from api.config import settings
 from servicios.texto_service import process_text_input, process_url_input
+import asyncio
 
 import logging
 logger = logging.getLogger(__name__)
@@ -231,7 +232,7 @@ class FraudDetectionTool(Tool):
         return "low"
     
 
-    def forward(self, job_posting_json) -> str:
+    async def forward(self, job_posting_json) -> str:
 
         # 1. Deserializar (el dato puede venir como string JSON o como dict)
         try:
@@ -478,7 +479,7 @@ class OrquestadorAgente:
             "Never respond directly with a JSON result without first calling the tool."
         )
 
-    def ejecutar_tarea(self, query: str) -> str:
+    async def ejecutar_tarea(self, query: str) -> str:
         try:
             # 1. Preparar la entrada
             if isinstance(query, str):
@@ -494,7 +495,7 @@ class OrquestadorAgente:
             # 2. EJECUCIÓN TÉCNICA (Tool de confianza)
             # Obtenemos los datos duros que el frontend necesita para el semáforo y gráficas
             logger.info("Obteniendo datos técnicos de la Tool...")
-            tool_result_str = self.tools[0].forward(job_posting_json=job_posting_json)
+            tool_result_str = await self.tools[0].forward(job_posting_json=job_posting_json)
             datos_finales = json.loads(tool_result_str)
 
             if "error" in datos_finales:

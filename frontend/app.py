@@ -1129,36 +1129,6 @@ def mostrar_resultados(res_seg, res_det, lang_ui):
         """, unsafe_allow_html=True)
 
     with col_resultado:
-        nivel_confianza = res_seg.get("nivel_confianza") or ""
-        badge_map = {"high": ("🟢", "Alta"), "medium": ("🟡", "Media"), "low": ("🔴", "Baja")}
-        badge_icon, badge_label = badge_map.get(nivel_confianza, ("", ""))
-        badge_html = (
-            f"<span style='font-size:13px;background:#e5e7eb;border-radius:20px;"
-            f"padding:2px 12px;margin-left:10px;color:#374151;vertical-align:middle;'>"
-            f"{badge_icon} {badge_label}</span>"
-        ) if badge_label else ""
-
-        veredicto = res_seg.get("veredicto", "")
-        if veredicto:
-            veredicto_color = {"FRAUDULENT": "#dc2626", "LEGITIMATE": "#16a34a"}.get(veredicto, "#ca8a04")
-            veredicto_bg = {"FRAUDULENT": "#fff1f2", "LEGITIMATE": "#f0fdf4"}.get(veredicto, "#fefce8")
-            veredicto_icon = {"FRAUDULENT": "🚨", "LEGITIMATE": "✅"}.get(veredicto, "⚠️")
-            veredicto_html = (
-                f"<span style='"
-                f"display:inline-block;"
-                f"background:{veredicto_bg};"
-                f"color:{veredicto_color};"
-                f"border:1.5px solid {veredicto_color};"
-                f"border-radius:20px;"
-                f"padding:3px 14px;"
-                f"font-size:13px;"
-                f"font-weight:700;"
-                f"letter-spacing:1px;"
-                f"text-transform:uppercase;"
-                f"'>{veredicto_icon} {UI_TEXTS[lang_ui]['veredict']}: {veredicto}</span>"
-            )
-        else:
-            veredicto_html = ""
 
         st.markdown(f"""
         <div style="background:{bg};border:2px solid {bd};border-radius:14px;padding:22px 26px;margin-bottom:14px;">
@@ -1170,8 +1140,7 @@ def mostrar_resultados(res_seg, res_det, lang_ui):
                     {icon}
                 </div>
                 <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-                    <div style="font-size:28px;font-weight:700;color:{c};">{lbl}{badge_html}</div>
-                    {veredicto_html}
+                    <div style="font-size:28px;font-weight:700;color:{c};">{lbl}</div>
                 </div>
             </div>
             <div style="display:flex;justify-content:space-between;margin-bottom:7px;">
@@ -1230,50 +1199,7 @@ def mostrar_resultados(res_seg, res_det, lang_ui):
         </div>
         """, unsafe_allow_html=True)
 
-    # --- INDICADORES ---
-    indicadores = res_seg.get("indicadores") or []
-    if indicadores:
-        items_ind = "".join(
-            f"<div style='padding:10px 0;border-bottom:1px solid #f3f4f6;"
-            f"display:flex;gap:10px;align-items:flex-start;'>"
-            f"<span style='color:{c};font-weight:700;font-size:20px;'>›</span>"
-            f"<span style='font-size:17px;color:#374151;line-height:1.6;'>{ind}</span></div>"
-            for ind in indicadores
-        )
-        st.markdown(f"""
-        <div style="background:#f9fafb;border:1.5px solid #e5e7eb;
-                    border-left:4px solid {c};border-radius:12px;
-                    padding:6px 20px 10px;margin-bottom:14px;">
-            <div style="font-size:13px;font-weight:600;letter-spacing:2px;
-                        text-transform:uppercase;color:#111827;padding:12px 0 8px;">
-                {UI_TEXTS[lang_ui]['indicator']}
-            </div>
-            {items_ind}
-        </div>
-        """, unsafe_allow_html=True)
-
-    # --- CARACTERÍSTICAS ---   # A CAMBIAR CUANDO FUNCIONE EL AGENTE
-    caracteristicas = res_seg.get("caracteristicas") or {}
-    if isinstance(caracteristicas, dict) and caracteristicas:
-        filas = "".join(
-            f"<tr>"
-            f"<td style='padding:8px 12px;font-weight:600;color:#6b7280;"
-            f"font-size:14px;border-bottom:1px solid #f3f4f6;'>{k}</td>"
-            f"<td style='padding:8px 12px;color:#374151;font-size:14px;"
-            f"border-bottom:1px solid #f3f4f6;'>{v}</td>"
-            f"</tr>"
-            for k, v in caracteristicas.items()
-        )
-        st.markdown(f"""
-        <div style="background:#f9fafb;border:1.5px solid #e5e7eb;
-                    border-radius:12px;padding:12px 20px;margin-top:4px;">
-            <div style="font-size:13px;font-weight:600;letter-spacing:2px;
-                        text-transform:uppercase;color:#111827;padding-bottom:8px;">
-                📊 Características del anuncio
-            </div>
-            <table style="width:100%;border-collapse:collapse;">{filas}</table>
-        </div>
-        """, unsafe_allow_html=True)
+    
         
 # ---------- ESTADÍSTICAS ----------
 def mostrar_estadisticas(lang_ui):

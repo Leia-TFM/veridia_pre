@@ -27,7 +27,7 @@ router = APIRouter()
 _orquestador = None
 
 
-def _get_orquestador():
+async def _get_orquestador():
     """Obtiene o crea la instancia del orquestador de IA."""
     global _orquestador
     if _orquestador is None:
@@ -75,14 +75,14 @@ async def _procesar_y_analizar(texto_original: str, translated: str, idioma_dete
         data_validada = {"descripcion": texto_limpio}
     
     # Obtener orquestador
-    orquestador = _get_orquestador()
+    orquestador = await _get_orquestador()
     
     if orquestador:
         # Usar agente IA para análisis
         try:
             # Convertir a JSON para el agente
             job_posting_json = json.dumps(data_validada, ensure_ascii=False)
-            resultado_ia = orquestador.ejecutar_tarea(job_posting_json)
+            resultado_ia = await orquestador.ejecutar_tarea(job_posting_json)
             
             logger.info(f"Resultado raw del agente: {resultado_ia[:500]}")
 
