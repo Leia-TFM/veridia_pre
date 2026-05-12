@@ -1,11 +1,9 @@
-import asyncio
 import json
 import re
 import unicodedata
-import httpx
 import numpy as np
-from typing import Any, Dict, List, Optional
-from pydantic import BaseModel, Field, field_validator, ValidationError
+from typing import Optional
+from pydantic import BaseModel, Field, field_validator
 from smolagents import ToolCallingAgent, LiteLLMModel, Tool
 from api.config import settings
 from servicios.texto_service import process_text_input, process_url_input
@@ -464,7 +462,7 @@ class OrquestadorAgente:
         max_steps: int = 6,
         validator=None
     ):
-        self.model = LiteLLMModel(model_id="ollama/qwen2.5:7b")
+        self.model = LiteLLMModel(model_id="ollama/qwen2.5:3b")
         self.tools = [FraudDetectionTool(pipeline_path=pipeline_path)]
         self.validator = validator
 
