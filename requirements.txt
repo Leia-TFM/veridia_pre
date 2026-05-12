@@ -1,7 +1,7 @@
 # ===================================================================
 # PROYECTO TRATA - Requirements.txt
 # ===================================================================
-# Ultima actualizacion: Abril 2026
+# Ultima actualizacion: Mayo 2026
 
 # --- NUCLEO: API Y SERVIDOR (Backend) ---
 fastapi==0.115.0
@@ -10,26 +10,21 @@ pydantic==2.10.5
 pydantic-settings==2.7.1
 requests==2.32.3
 python-multipart==0.0.20
-httpx==0.28.1
-
 # --- INTERFAZ DE USUARIO (Frontend) ---
 streamlit==1.41.1
 streamlit-modal==0.1.2
 streamlit-scroll-navigation==1.2.1
-matplotlib==3.10.0
 
 # --- CIENCIA DE DATOS Y MATEMATICAS ---
-pandas==2.2.3
 numpy==1.26.4
 joblib==1.4.2
 
 # --- INTELIGENCIA ARTIFICIAL Y NLP ---
-scikit-learn==1.6.1
-nltk==3.9.1
 spacy==3.8.2
 trafilatura==2.0.0
 beautifulsoup4==4.12.3
 deep-translator==1.11.4
+sentence-transformers==2.3.2
 
 # --- VISION POR COMPUTADOR (Imagenes) ---
 Pillow==11.1.0
@@ -50,9 +45,6 @@ smolagents==1.21.1
 # 2. Instalar modelo spaCy en español:
 #    python -m spacy download es_core_news_sm
 #
-# 3. Instalar datos NLTK:
-#    python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords'); nltk.download('wordnet')"
-#
-# 4. Instalar Tesseract OCR (sistema):
+# 3. Instalar Tesseract OCR (sistema):
 #    - Windows: https://github.com/UB-Mannheim/tesseract/wiki
 #    - Añadir al PATH del sistema
