@@ -1088,7 +1088,8 @@ def mostrar_resultado_traduccion(res_seg, res_det, lang_ui):  #FUNCIÓN QUE LLAM
                     </p>
                 </div>
             """, unsafe_allow_html=True)
-
+            
+# Traduce el texto del mensaje y las señales al idioma seleccionado            
 def traducir_texto(texto, lang_ui, source="es"):
     if not texto:
         return texto
@@ -1098,7 +1099,7 @@ def traducir_texto(texto, lang_ui, source="es"):
         return GoogleTranslator(source=source, target=lang_ui).translate(texto)
     except Exception:
         return texto
-        
+     
 def mostrar_resultados(res_seg, res_det, lang_ui):
     st.subheader(UI_TEXTS[lang_ui]["result"])
 
@@ -1118,13 +1119,55 @@ def mostrar_resultados(res_seg, res_det, lang_ui):
     col_semaforo, col_resultado = st.columns([1, 4])
 
     with col_semaforo:
-        st.markdown("...tu semáforo...", unsafe_allow_html=True)
+        st.markdown(f"""
+        <div style="display:flex;justify-content:flex-end;align-items:center;height:100%;padding-right:8px;">
+            <div style="display:flex;flex-direction:column;align-items:center;
+                width:70px;padding:12px 8px;background:#111;
+                border-radius:14px;box-shadow:0 5px 20px rgba(0,0,0,0.5);">
+                <div style="width:38px;height:38px;border-radius:50%;margin:6px 0;
+                    background:{'red' if semaforo_nivel=='rojo' else '#2b2b2b'};
+                    box-shadow:{'0 0 25px red' if semaforo_nivel=='rojo' else 'none'};"></div>
+                <div style="width:38px;height:38px;border-radius:50%;margin:6px 0;
+                    background:{'yellow' if semaforo_nivel=='amarillo' else '#2b2b2b'};
+                    box-shadow:{'0 0 25px yellow' if semaforo_nivel=='amarillo' else 'none'};"></div>
+                <div style="width:38px;height:38px;border-radius:50%;margin:6px 0;
+                    background:{'limegreen' if semaforo_nivel=='verde' else '#2b2b2b'};
+                    box-shadow:{'0 0 25px limegreen' if semaforo_nivel=='verde' else 'none'};"></div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
     with col_resultado:
-        st.markdown("...tu tarjeta principal...", unsafe_allow_html=True)
+
+        st.markdown(f"""
+        <div style="background:{bg};border:2px solid {bd};border-radius:14px;padding:22px 26px;margin-bottom:14px;">
+            <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
+                <div style="width:54px;height:54px;border-radius:50%;background:white;
+                            border:2px solid {c};display:flex;align-items:center;
+                            justify-content:center;font-size:26px;color:{c};
+                            font-weight:700;flex-shrink:0;">
+                    {icon}
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                    <div style="font-size:28px;font-weight:700;color:{c};">{lbl}</div>
+                </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:7px;">
+                <span style="font-size:16px;font-weight:600;color:#6b7280;
+                            text-transform:uppercase;letter-spacing:1px;">
+                    {UI_TEXTS[lang_ui]['trust']}
+                </span>
+                <span style="font-size:22px;font-weight:700;color:{c};">{confianza_pct}%</span>
+            </div>
+            <div style="height:10px;background:#e5e7eb;border-radius:99px;overflow:hidden;">
+                <div style="height:100%;width:{confianza_pct}%;background:{c};border-radius:99px;"></div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
     st.divider()
 
+    # --- MENSAJE ---
     mensaje = (res_seg.get("mensaje") or res_seg.get("justificacion") or "").strip()
     if not mensaje:
         mensaje = traducir_mensaje_analisis(lang_ui, res_det.get("idioma_detectado", "es"))
@@ -1145,6 +1188,7 @@ def mostrar_resultados(res_seg, res_det, lang_ui):
     </div>
     """, unsafe_allow_html=True)
 
+    # --- SEÑALES ---
     senales = res_seg.get("senales") or []
     if senales:
         senales_traducidas = [traducir_texto(s, lang_ui, source=res_det.get("idioma_detectado", "es")) for s in senales]
@@ -1554,13 +1598,13 @@ def pagina_analizador():
                 luz = st.empty()
 
                 animacion("rojo", luz)
-                time.sleep(10)
+                time.sleep(5)
                 animacion("ambar", luz)
-                time.sleep(10)
+                time.sleep(5)
                 animacion("verde", luz)
 
                 response_idioma = llamar_api(API_DETECTAR_IDIOMA, data, files)
-                time.sleep(10)
+                time.sleep(5)
 
                 status.update(label="🟢🟢🟢", state="complete", expanded=False)
             
