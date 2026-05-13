@@ -20,10 +20,7 @@ def guardar_datos(anuncio: dict, original_text: str, translated_text: str, idiom
         "tipo_entrada": str(anuncio.get("tipo")) if anuncio.get("tipo") is not None else None,
         "idioma_destino": str(anuncio.get("idioma_destino")) if anuncio.get("idioma_destino") is not None else None,
         "idioma_detectado": idioma_detectado,
-        "url": anuncio.get("url"),
-        "texto_entrada": anuncio.get("texto"),
-        "texto_original": original_text,
-        "texto_traducido": translated_text,
+        "url": anuncio.get("url"),    
         "resultado": resultado,
     }
 
