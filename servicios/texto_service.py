@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 from fastapi import HTTPException, UploadFile
 from pydantic import BaseModel, Field, HttpUrl
 from trafilatura import extract, fetch_url
+from trafilatura.settings import use_config
 from servicios.ocr_service import extraer_texto
 
 
@@ -339,7 +340,8 @@ def _build_result(url: str, domain: str, title: str, text: str) -> dict[str, Any
         "text": text,
     }
 
-
+config = use_config()
+config.set("DEFAULT", "ROBOTS_TXT", "true")  # Respetar robots.txt"
 def extract_from_url(url: str) -> dict[str, Any]:
     """
     Extrae el contenido textual principal desde una URL.
@@ -352,7 +354,7 @@ def extract_from_url(url: str) -> dict[str, Any]:
         raise HTTPException(status_code=403, detail="Dominio no permitido.")
 
     # Intento principal con trafilatura
-    html = fetch_url(url_limpia)
+    html = fetch_url(url_limpia, config=config)
 
     if html:
         # Pedimos la salida en JSON para acceder al texto y al título de forma estructurada

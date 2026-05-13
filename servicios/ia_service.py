@@ -6,7 +6,6 @@ from typing import Optional
 from pydantic import BaseModel, Field, field_validator
 from smolagents import ToolCallingAgent, LiteLLMModel, Tool
 from api.config import settings
-from servicios.texto_service import process_text_input, process_url_input
 import asyncio
 
 import logging
@@ -246,24 +245,15 @@ class FraudDetectionTool(Tool):
             logger.error(f"Error al deserializar entrada: {type(exc).__name__}: {exc}. Input type: {type(job_posting_json).__name__}")
             return json.dumps({"error": f"Formato de entrada inválido: {exc}"}, ensure_ascii=False)
 
-        # 2. Procesamiento de texto
-        # Si hay URL, trafilatura extrae el contenido real de la página.
-        # Si no, concatenamos los campos del anuncio.
-        url_oferta = fields.get("url_oferta")
-        resultado_proc = (
-            process_url_input(str(url_oferta))
-            if url_oferta
-            else process_text_input(_campos_a_texto(fields))
-        )
-
-        if not resultado_proc["exito"]:
+        # 2. Usar resultado ya procesado desde analizar.py
+        resultado_proc = fields.get("resultado_procesado")
+        if not resultado_proc:
             return json.dumps({
-                "error": resultado_proc.get("metadatos", {}).get("mensaje", "Procesamiento fallido."),
+                "error": "No se recibió resultado procesado.",
                 "verdict": None,
                 "probability": None,
                 "confidence_level": None,
             }, ensure_ascii=False)
-
         # 3. Predicción ML
         try:
             texto_para_modelo = resultado_proc.get("texto_normalizado", "")

@@ -3,6 +3,7 @@ import os
 import sys
 import json
 import logging
+from servicios.texto_service import process_text_input, process_url_input
 
 # --- Ajuste de path para poder ejecutar tanto script como uvicorn (inamovible de esta posición) ---
 root_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -54,25 +55,23 @@ async def _procesar_y_analizar(texto_original: str, translated: str, idioma_dete
     Procesa el texto y lo analiza mediante el agente de IA.
     Retorna el resultado del análisis.
     """
-    # Limpiar y preparar el texto para análisis
-    from servicios.texto_service import clean_text
     
     # Usar el texto traducido si está en español, si no el original
     texto_para_analisis = translated if idioma_detectado == "es" else texto_original
     
     # Limpiar texto
-    resultado_limpio = clean_text(texto_para_analisis)
-    texto_limpio = resultado_limpio.get("texto_limpio", texto_para_analisis)
+    resultado_procesado = process_text_input(texto_para_analisis)
+
     
     # Validar estructura del anuncio
     try:
         data_validada = await validar_anuncio({
-            "descripcion": texto_limpio,
+            "descripcion": resultado_procesado["texto_limpio"],
             "url_oferta": None
         })
     except Exception as e:
         logger.warning(f"Error en validación: {e}")
-        data_validada = {"descripcion": texto_limpio}
+        data_validada = {"descripcion": resultado_procesado["texto_limpio"]}
     
     # Obtener orquestador
     orquestador = await _get_orquestador()
@@ -81,7 +80,7 @@ async def _procesar_y_analizar(texto_original: str, translated: str, idioma_dete
         # Usar agente IA para análisis
         try:
             # Convertir a JSON para el agente
-            job_posting_json = json.dumps(data_validada, ensure_ascii=False)
+            job_posting_json = json.dumps({**data_validada,"resultado_procesado": resultado_procesado}, ensure_ascii=False)
             resultado_ia = await orquestador.ejecutar_tarea(job_posting_json)
             
             logger.info(f"Resultado raw del agente: {resultado_ia[:500]}")
@@ -91,10 +90,10 @@ async def _procesar_y_analizar(texto_original: str, translated: str, idioma_dete
         except Exception as e:
             logger.error(f"Error en análisis IA: {e}")
             # Fallback a análisis por reglas
-            return _analisis_por_reglas(texto_limpio, tipo, idioma_detectado)
+            return _analisis_por_reglas(resultado_procesado["texto_limpio"], tipo, idioma_detectado)
     else:
         # Fallback: análisis por reglas simples
-        return _analisis_por_reglas(texto_limpio, tipo, idioma_detectado)
+        return _analisis_por_reglas(resultado_procesado["texto_limpio"], tipo, idioma_detectado)
 
 
 def _parsear_resultado_ia(resultado: str, tipo: TipoEntrada, idioma_detectado: str) -> ResultadoAnalisis:
