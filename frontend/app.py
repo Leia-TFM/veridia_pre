@@ -1,30 +1,44 @@
+# "El archivo app.py es el Frontend principal de la aplicación. Se encarga de construir
+# la interfaz web con Streamlit, gestionar la navegación entre páginas, el sistema de idiomas,
+# los inputs del usuario (texto, URL e imagen) y comunicarse con el Backend a través de las APIs
+# siguiendo los criterios de los diferentes grupos del proyecto (estilo, colores, disposición, etc...)"
+
+# "Librerías principales: streamlit para la interfaz, requests para las llamadas a la API,
+# deep_translator para traducciones en tiempo real de textos estáticos de la UI"
 import streamlit as st
 from streamlit_modal import Modal
-from streamlit_scroll_navigation import scroll_navbar  # CAMBIO: navegación por secciones
+from streamlit_scroll_navigation import scroll_navbar  
 import requests
 import time
 from deep_translator import GoogleTranslator
 
+##### LAS FRASES EN MAYÚSCULA SON PARA COSAS QUE HAY QUE CAMBIAR
+
+# "URLs de los tres endpoints del Backend con los que se comunica el Frontend"
 API_DETECTAR_IDIOMA = "http://127.0.0.1:8000/api/detectar_idioma"
 API_ANALIZAR = "http://127.0.0.1:8000/api/analizar"
 API_ESTADISTICAS = "http://127.0.0.1:8000/api/estadisticas"
 
-# ---------- NAVEGACIÓN ----------
+# "NAVEGACIÓN"
+# "Inicialización del estado de navegación: si es la primera vez que carga la app,
+# se establece la página de inicio y el idioma como None hasta que el usuario seleccione uno"
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
 if "idioma" not in st.session_state:
     st.session_state.idioma = None
 
-# ---------- CONFIG ----------
-st.set_page_config(                 #Define el título de la página y su icono en la pestaña del navegador (modificable)
+# "CONFIG"
+# "Define el título de la página y su icono en la pestaña del navegador"
+st.set_page_config(                  
     page_title="Proyecto Verid.IA",
     page_icon="✔",
     layout="wide"
 )
 
-# ---------- CSS ----------  
-# Código encargado del diseño (colores, tipo de celda, botones, área de texto) de la web en ese orden, formato html, botón principal
+# "CSS" 
+# "Código encargado del diseño (colores, tipo de celda, botones, área de texto y modal de la detección/traducción) 
+# de la web en ese orden, formato html, botón principal"
 st.markdown("""     
 <style>
 
@@ -56,7 +70,9 @@ textarea {
 </style>
 """, unsafe_allow_html=True)
 
-# ---------- FUNCIÓN API ----------
+# "FUNCIONES API"
+# "Función genérica para hacer llamadas POST al Backend, admite datos de formulario y archivos opcionales.
+# En caso de error de conexión muestra un mensaje en pantalla y devuelve None para manejarlo desde fuera"
 def llamar_api(endpoint, data, files=None):
     try:
         response = requests.post(endpoint, data=data, files=files)
@@ -65,6 +81,7 @@ def llamar_api(endpoint, data, files=None):
         st.error(f"❌ Error de conexión: {e}")
         return None
 
+# "Versión GET de la función anterior, usada principalmente para obtener las estadísticas globales"
 def llamar_api_get(endpoint):
     try:
         response = requests.get(endpoint)
@@ -73,8 +90,9 @@ def llamar_api_get(endpoint):
         st.error(f"❌ Error de conexión: {e}")
         return None
     
-# ---------- IDIOMAS ----------
-languages = {       #Los idiomas seleccionables en el desplegable
+# "IDIOMAS"
+# "Los idiomas seleccionables en el desplegable"
+languages = {       
     "🇪🇸 Español": "es",
     "🇬🇧 English": "en",
     "🇫🇷 Français": "fr",
@@ -90,7 +108,8 @@ languages = {       #Los idiomas seleccionables en el desplegable
     "🇺🇦 Ucraniano": "uk",
 }
 
-languages_input = {     #La traducción de todos los elementos visibles por pantalla a los demás idiomas (faltan idiomas)
+# "Diccionario con la traducción de todos los elementos visibles por pantalla a los demás idiomas"
+languages_input = {     
     "Español": {
         "text_label": "Texto del anuncio",
         "url_label": "URL del anuncio",
@@ -381,13 +400,15 @@ languages_input = {     #La traducción de todos los elementos visibles por pant
     }
 }
 
-# ---------- TEXTOS RESULTADO ----------
-UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por pantalla dependiendo del idioma que haya seleccionado (falta rellenar más)
+# "TEXTOS RESULTADO"
+# "Diccionario con todos los textos que aparecen en los resultados del análisis traducidos a cada idioma soportado.
+# Se accede a él siempre mediante el código de idioma de dos letras (ej: 'es', 'en', 'fr'...)"
+UI_TEXTS = {    
     "es":{
         "result":" ✔ Resultado del análisis",
         "spanish_only_error": "Solo se permiten anuncios en español. Inténtalo de nuevo.",
-        "data": "Introduce texto, url o sube una imagen", #MODIFICADO
-        "data_add": "Solo puedes introducir una opción: texto, URL o imagen", #EXTRA
+        "data": "Introduce texto, url o sube una imagen", 
+        "data_add": "Solo puedes introducir una opción: texto, URL o imagen", 
         "mode": "Detectar Idioma / Traducción",
         "lang_phrase": "Idioma detectado",
         "valid_phrase": "Texto válido para análisis",
@@ -709,7 +730,9 @@ UI_TEXTS = {    #Diccionario que recoje los resultados que vería el usuario por
         "social_media": "Наші соціальні мережі"
     },
 }
-translations = {  #Diccionario y funcion para traducir el mensaje desde el backend
+
+# "Diccionario para traducir el mensaje desde el backend a cada uno de los idiomas posibles."
+translations = {  
     "es": {
         "valid": "El texto es en español ({idioma}) y es analizable.",
         "invalid": "Idioma no soportado. El idioma detectado es ({idioma}). Solo se admite español (es)."
@@ -763,13 +786,17 @@ translations = {  #Diccionario y funcion para traducir el mensaje desde el backe
         "invalid": "Непідтримувана мова. Виявлена мова: ({idioma}). Дозволено лише іспанську (es)."
     }
 }
+
+# "Función que selecciona el mensaje correcto del diccionario de traducciones según el idioma de la UI
+# y si el texto es analizable o no, reemplazando el marcador {idioma} por el código real detectado"
 def traducir_mensaje(lang, idioma_detectado, es_analizable):
     key = "valid" if es_analizable else "invalid"
     
     texto = translations.get(lang, translations["en"])[key]
     return texto.format(idioma=idioma_detectado)
 
-translations_analisis = {  #Diccionario y funcion para traducir el mensaje desde el backend
+# "Diccionario para traducir el mensaje de validez del idioma desde el backend a cada uno de los idiomas posibles."
+translations_analisis = {  
     "es": {
         "valid": "El anuncio requiere atención debido a posibles riesgos.",
         "invalid": "Idioma no soportado. El idioma detectado es ({idioma}). Solo se admite español (es)."
@@ -823,12 +850,17 @@ translations_analisis = {  #Diccionario y funcion para traducir el mensaje desde
         "invalid": "Непідтримувана мова. Виявлена мова: ({idioma}). Дозволено лише іспанську (es)."
     }
 }
+
+# "Variante de traducir_mensaje para el resultado del análisis de seguridad.
+# Si el idioma detectado no es español directamente devuelve el mensaje de idioma no soportado"
 def traducir_mensaje_analisis(lang, idioma_detectado):  
     key = "invalid" if idioma_detectado != "es" else "valid"
     
     texto = translations_analisis.get(lang, translations_analisis["en"])[key]
     return texto.format(idioma=idioma_detectado)
 
+# "Función de animación visual del semáforo: recibe el color activo y un placeholder de Streamlit
+# donde renderiza los tres círculos (rojo, ámbar, verde) con el seleccionado encendido"
 def animacion(color, luz):
     luces = {
         "rojo":  "🔴 ⚫ ⚫",
@@ -840,6 +872,9 @@ def animacion(color, luz):
         unsafe_allow_html=True
     )
 
+# "Función que renderiza el modal de 'Quiénes Somos' con los textos del equipo y la política de privacidad.
+# Si el idioma de la UI no es español, traduce todo el bloque de golpe usando GoogleTranslator
+# y lo cachea en session_state para no repetir la llamada en cada rerender"
 def render_modal_quienes_somos(idioma_destino: str = "es"):
     textos = [   # MODIFICAR EL TEXTO SEGÚN COMUNICACIÓN
         "¿Quiénes somos?",
@@ -876,15 +911,17 @@ def render_modal_quienes_somos(idioma_destino: str = "es"):
         </div>
     """, unsafe_allow_html=True)
 
+# "Función que construye la página de inicio: muestra el título del proyecto, el selector de idioma,
+# el botón de 'Sobre Nosotros' con su modal desplegable y los enlaces a redes sociales.
+# Cuando el usuario elige idioma y pulsa 'Continuar' se redirige a la página del analizador"
 def pagina_inicio():
-    
     st.markdown("<h1 style='text-align:center; color:#8f9e25; font-size:100px;'>✔ Proyecto Verid.IA</h1>", unsafe_allow_html=True)
     st.divider()
 
-    # Idioma actual para traducir la UI
+    # "Idioma actual para traducir la UI"
     idioma_actual = languages.get(st.session_state.get("idioma", "🇪🇸 Español"), "es")
 
-     # ---- CSS BOTÓN VIOLETA SUAVE ----
+     # "CSS BOTÓN VIOLETA SUAVE"
     st.markdown("""
     <style>
     .st-key-btn_sobre_nosotros button,
@@ -920,7 +957,7 @@ def pagina_inicio():
     </style>
     """, unsafe_allow_html=True)
 
-    # ---- BOTÓN "SOBRE NOSOTROS" ----
+    # "BOTÓN "SOBRE NOSOTROS""
     col_left, col_center, col_right = st.columns([2, 1, 2])
     with col_center:
         if st.button(f"ℹ️ {UI_TEXTS[idioma_actual]['about_us']}", key="btn_sobre_nosotros", use_container_width=True):
@@ -937,7 +974,7 @@ def pagina_inicio():
     </div>
     """, unsafe_allow_html=True)
 
-    # ---- MODAL SOBRE NOSOTROS ----
+    # "MODAL SOBRE NOSOTROS"
     if st.session_state.get("mostrar_sobre_nosotros", False):
         render_modal_quienes_somos(idioma_destino=idioma_actual)
 
@@ -994,6 +1031,7 @@ def pagina_inicio():
     </style>
     """, unsafe_allow_html=True)
 
+    # "Función que actualiza el idioma si se cambia en el selector, gracias a los session_state"
     def actualizar_idioma():
         st.session_state.idioma = st.session_state.selector_idioma
 
@@ -1012,11 +1050,14 @@ def pagina_inicio():
         st.session_state.page = "analizador"
         st.rerun()
 
-def mostrar_resultado_traduccion(res_seg, res_det, lang_ui):  #FUNCIÓN QUE LLAMA A LA API DETECTAR IDIOMA PARA MOSTRAR LOS RESULTADOS
-    # Contenedor principal con borde
+# "Función que muestra dentro del modal los resultados de detección de idioma y traducción del anuncio.
+# Presenta el idioma detectado, si el texto es analizable, el texto original y el texto traducido en columnas paralelas"
+def mostrar_resultado_traduccion(res_seg, res_det, lang_ui):  
+    
+    # "Contenedor principal con borde"
     with st.container(border=True):
 
-        # --- CABECERA / IDIOMA DETECTADO ---
+        # "Cabecera/Idioma detectado"
         st.markdown(f"""
             <div style="
                 background-color: #f9fbf2; 
@@ -1034,14 +1075,14 @@ def mostrar_resultado_traduccion(res_seg, res_det, lang_ui):  #FUNCIÓN QUE LLAM
             </div>
         """, unsafe_allow_html=True)
 
-        # --- MENSAJE DINÁMICO ---
+        # "Mensaje dinámico"
         mensaje = traducir_mensaje(
             lang_ui,
             res_det["idioma_detectado"],
             res_det["es_analizable"]
         )
 
-        # --- VALIDACIÓN ---
+        # "Validación del resultado de la traducción"
         color_box = "#b6c35d"
         texto_validacion = f"✅ {UI_TEXTS[lang_ui]['valid_phrase']}"
 
@@ -1062,7 +1103,7 @@ def mostrar_resultado_traduccion(res_seg, res_det, lang_ui):  #FUNCIÓN QUE LLAM
             </p>
         """, unsafe_allow_html=True)
 
-        # --- COMPARATIVA ---
+        # "Comparador original/traducido"
         col_orig, col_trad = st.columns(2)
 
         with col_orig:
@@ -1090,6 +1131,8 @@ def mostrar_resultado_traduccion(res_seg, res_det, lang_ui):  #FUNCIÓN QUE LLAM
             """, unsafe_allow_html=True)
             
 # Traduce el texto del mensaje y las señales al idioma seleccionado            
+# "Si el idioma destino es español no hace nada (ya viene en español del backend).
+# Para el resto de idiomas usa GoogleTranslator y devuelve el original si la traducción falla"           
 def traducir_texto(texto, lang_ui, source="es"):
     if not texto:
         return texto
@@ -1099,7 +1142,10 @@ def traducir_texto(texto, lang_ui, source="es"):
         return GoogleTranslator(source=source, target=lang_ui).translate(texto)
     except Exception:
         return texto
-     
+
+# "Función principal de visualización del resultado del análisis de seguridad.
+# Muestra el semáforo visual (rojo/ámbar/verde), el porcentaje de confianza, el mensaje
+# explicativo del Backend y la lista de señales de fraude detectadas si las hay"     
 def mostrar_resultados(res_seg, res_det, lang_ui):
     st.subheader(UI_TEXTS[lang_ui]["result"])
 
@@ -1118,6 +1164,7 @@ def mostrar_resultados(res_seg, res_det, lang_ui):
 
     col_semaforo, col_resultado = st.columns([1, 4])
 
+    # "Donde se ve el semáforo"
     with col_semaforo:
         st.markdown(f"""
         <div style="display:flex;justify-content:flex-end;align-items:center;height:100%;padding-right:8px;">
@@ -1137,6 +1184,7 @@ def mostrar_resultados(res_seg, res_det, lang_ui):
         </div>
         """, unsafe_allow_html=True)
 
+    # "Donde se ven los resultados internos del análisis"
     with col_resultado:
 
         st.markdown(f"""
@@ -1167,7 +1215,7 @@ def mostrar_resultados(res_seg, res_det, lang_ui):
 
     st.divider()
 
-    # --- MENSAJE ---
+    # "Mensaje que devuelve el agente"
     mensaje = (res_seg.get("mensaje") or res_seg.get("justificacion") or "").strip()
     if not mensaje:
         mensaje = traducir_mensaje_analisis(lang_ui, res_det.get("idioma_detectado", "es"))
@@ -1188,7 +1236,7 @@ def mostrar_resultados(res_seg, res_det, lang_ui):
     </div>
     """, unsafe_allow_html=True)
 
-    # --- SEÑALES ---
+    # "Señales detectadas por la tool"
     senales = res_seg.get("senales") or []
     if senales:
         senales_traducidas = [traducir_texto(s, lang_ui, source=res_det.get("idioma_detectado", "es")) for s in senales]
@@ -1215,7 +1263,10 @@ def mostrar_resultados(res_seg, res_det, lang_ui):
 
     
         
-# ---------- ESTADÍSTICAS ----------
+# "ESTADÍSTICAS"
+# "Función que consulta la API de estadísticas y pinta en pantalla un resumen global con métricas,
+# una barra de distribución por nivel de riesgo y dos columnas con idiomas detectados y señales más frecuentes.
+# Traduce todos los textos estáticos al idioma seleccionado cacheando el resultado en session_state"
 def mostrar_estadisticas(lang_ui):
     response = llamar_api_get(API_ESTADISTICAS)
 
@@ -1234,7 +1285,7 @@ def mostrar_estadisticas(lang_ui):
     legitimate = resumen.get("legitimate", 0)
     amarillo   = resumen.get("amarillo", 0)
 
-    # ── TRADUCCIÓN DE TEXTOS ESTÁTICOS ──────────────────────────────────────
+    # "Traducción de textos estáticos de este modo"
     textos_es = [
         "Estadísticas globales",
         "Total analizados",
@@ -1263,7 +1314,7 @@ def mostrar_estadisticas(lang_ui):
     else:
         t = textos_es
 
-    # Asegurar que t tiene suficientes elementos por si la traducción falla
+    # "Asegurar que t tiene suficientes elementos por si la traducción falla"
     while len(t) < len(textos_es):
         t.append(textos_es[len(t)])
 
@@ -1274,14 +1325,14 @@ def mostrar_estadisticas(lang_ui):
         txt_senales, txt_sin_senales
     ) = t[:14]
 
-    # ── TÍTULO ──────────────────────────────────────────────────────────────
+    # "Título"
     st.markdown(
         f"<h2 style='text-align:center;color:#8f9e25;'>📊 {txt_titulo}</h2>",
         unsafe_allow_html=True,
     )
     st.divider()
 
-    # ── MÉTRICAS RESUMEN ────────────────────────────────────────────────────
+    # "Resumen de métricas"
     col1, col2, col3, col4 = st.columns(4)
     col1.metric(f"🔢 {txt_total}", total)
     col2.metric(f"✅ {txt_legitimos}", legitimate)
@@ -1290,7 +1341,7 @@ def mostrar_estadisticas(lang_ui):
 
     st.divider()
 
-    # ── DISTRIBUCIÓN SEMÁFORO ───────────────────────────────────────────────
+    # "Distribución del semáforo"
     st.markdown(f"#### 🚦 {txt_distribucion}")
 
     if total > 0:
@@ -1316,7 +1367,7 @@ def mostrar_estadisticas(lang_ui):
 
     st.divider()
 
-    # ── IDIOMAS + SEÑALES ───────────────────────────────────────────────────
+    # "Idiomas y señales más comunes"
     col_idiomas, col_senales = st.columns(2)
 
     with col_idiomas:
@@ -1368,28 +1419,35 @@ def mostrar_estadisticas(lang_ui):
 
 
 
-# ---------- SIDEBAR ----------
+# "SIDEBAR"
+# "Función que construye la página principal del analizador. Contiene el sidebar con la configuración,
+# el selector de modo (analizar / estadísticas), el formulario de entrada del anuncio y la lógica
+# completa de llamada a las APIs de detección e análisis con la animación del semáforo incluida"
 def pagina_analizador():
 
-    # ---------- SIDEBAR ----------
-    with st.sidebar:    #Aquí es donde se ve el desplegable de los idiomas en el lateral izquierdo
+    # "Aquí es donde se ven los elementos en el lateral izquierdo"
+    with st.sidebar:    
 
-        st.header("⚙️ " + UI_TEXTS[languages[st.session_state.idioma]]["config_title"])       #Cabecera de configuración donde de momento solo están los idiomas (modificable)
+        st.header("⚙️ " + UI_TEXTS[languages[st.session_state.idioma]]["config_title"])       
 
         selected_name = st.session_state.idioma
 
-        idioma_select = languages[selected_name]    #Variable que guarda el idioma seleccionado de todos los posibles
-        lang_ui = idioma_select                     #Variable que guarda el idioma seleccionado de todos los posibles
-        idioma_input = languages_input[selected_name.split(" ")[1]]     #Variable que guarda según el idioma seleccionado los elementos visibles por pantalla
-        lang_ui_input = idioma_input        #Variable que guarda según el idioma seleccionado los elementos visibles por pantalla
+        # "Variable que guarda el idioma seleccionado de todos los posibles"
+        idioma_select = languages[selected_name]   
+        lang_ui = idioma_select  
+
+        # "Variable que guarda según el idioma seleccionado los elementos visibles por pantalla"                   
+        idioma_input = languages_input[selected_name.split(" ")[1]]     
+        lang_ui_input = idioma_input        
         
-        st.divider()        #Esto deja un espacio entre el desplegable de los idiomas y el mensaje de funcionalidad
+        st.divider()      
 
         if st.button(f"↩️{lang_ui_input['idioma_label']}"):
             st.session_state.page = "home"
             st.rerun()
         
-        st.markdown(        #CAMBIO DE COLOR AL VIOLETA
+        # "Markdown con color violeta"
+        st.markdown(        
         f"""
         <div style="
             background-color: #D9CCEE;     
@@ -1406,8 +1464,8 @@ def pagina_analizador():
         unsafe_allow_html=True
         )
 
-        # CAMBIO: menú de navegación para saltar a cada sección del formulario
-        # El usuario puede pulsar los botones para ir directamente a Texto, URL o Imagen
+        # "Menú de navegación para saltar a cada sección del formulario.
+        # El usuario puede pulsar los botones para ir directamente a Texto, URL o Imagen"
         st.markdown("---")
         st.markdown(f"#### 🧭 {lang_ui_input['seccion_label']}")
         scroll_navbar(
@@ -1416,24 +1474,25 @@ def pagina_analizador():
             key="nav"
         )
 
-# ---------- HEADER ----------
+    # "HEADER"
     with st.container():
-        #Este markdown hace de st.title()
-        st.markdown("<h1 style='text-align:center; color:#8f9e25; font-size:60px;'>✔ Proyecto Verid.IA</h1>",unsafe_allow_html=True) #Título de la web en la cabecera (modificable) 
-        st.caption(lang_ui_input["info_label"])     #Mensaje informativo
+        #"Este markdown hace de st.title()"
+        st.markdown("<h1 style='text-align:center; color:#8f9e25; font-size:60px;'>✔ Proyecto Verid.IA</h1>",unsafe_allow_html=True) 
+        st.caption(lang_ui_input["info_label"])     
 
-    # ---------- MODO ----------        #Traducir también al idioma que se seleccione
+    # "MODO"
     with st.container():
         st.markdown(f"<h3 style='color:#6f4a8e;'>{lang_ui_input["mode_label"]}:</h3>", unsafe_allow_html=True)
         modo = st.radio("Selecciona un modo", [f"{lang_ui_input["mode_label_one"]}", f"{lang_ui_input["mode_label_two"]}"], horizontal=True, label_visibility="hidden", key="modo_seleccionado")
 
-    st.divider()    #Esto deja un espacio entre el desplegable de los idiomas y el mensaje de funcionalidad
-    # ---------- MODO ESTADÍSTICAS ----------
+    st.divider()    
+    # "MODO ESTADÍSTICAS"
     if modo == lang_ui_input["mode_label_two"]:
         mostrar_estadisticas(lang_ui)
-        return  # No renderizar el resto del formulario de análisis
+        # "No renderizar el resto del formulario de análisis"
+        return  
     
-    # ---------- CSS para botón pequeño ----------
+    # "CSS para botón pequeño"
     # Código encargado del diseño del botón de borrar de la web, formato html
     st.markdown("""
     <style>
@@ -1446,29 +1505,30 @@ def pagina_analizador():
     </style>
     """, unsafe_allow_html=True)
 
-    # ---------- Layout ----------
+    # "LAYOUT"
 
-    st.subheader(f"📄 {lang_ui_input["info_anuncio_label"]}")   #Subcabecera del comprobador de anuncios (modificable)
+    st.subheader(f"📄 {lang_ui_input["info_anuncio_label"]}")   
 
-    # Inicializar session_state si no existe
+    # "Inicializar session_state si no existe"
     if "texto" not in st.session_state:
         st.session_state["texto"] = ""
     if "url" not in st.session_state:
         st.session_state["url"] = ""
-    if "res_seg" not in st.session_state:       #CAMBIO 
+    if "res_seg" not in st.session_state:       
         st.session_state["res_seg"] = None
     if "res_det" not in st.session_state:
         st.session_state["res_det"] = None
     if "lang_ui_resultado" not in st.session_state:
         st.session_state["lang_ui_resultado"] = None
     if "expanded_ad_info" not in st.session_state:
-        st.session_state["expanded_ad_info"] = True  # Abierto por defecto al inicio
+        st.session_state["expanded_ad_info"] = True  
 
 
     with st.expander(f"📋 {lang_ui_input['copiar_label']}", expanded=st.session_state["expanded_ad_info"]):
         
-        # ---------- TEXTO DEL ANUNCIO ----------
-        st.markdown('<div id="seccion-texto"></div>', unsafe_allow_html=True)  # ancla para navegación
+        # "TEXTO DEL ANUNCIO"
+        # "Ancla para navegación"
+        st.markdown('<div id="seccion-texto"></div>', unsafe_allow_html=True)  
         col_text_label, col_text_btn = st.columns([9, 1])
         
         with col_text_label:
@@ -1477,15 +1537,16 @@ def pagina_analizador():
             if st.button("🧹", key="clear_text", help=lang_ui_input["borrar_texto_label"]):
                 st.session_state["texto"] = ""
         
-        # Input
+        # "Input"
         text_input = st.text_area(
             "Text",
             key="texto",
             height=150
         )
         
-        # ---------- URL DEL ANUNCIO ----------
-        st.markdown('<div id="seccion-url"></div>', unsafe_allow_html=True)  # ancla para navegación
+        # "URL DEL ANUNCIO"
+        # "Ancla para navegación"
+        st.markdown('<div id="seccion-url"></div>', unsafe_allow_html=True)  
         col_url_label, col_url_btn = st.columns([9, 1])
         
         with col_url_label:
@@ -1494,14 +1555,15 @@ def pagina_analizador():
             if st.button("🧹", key="clear_url", help=lang_ui_input["borrar_url_label"]):
                 st.session_state["url"] = ""
         
-        # Input
+        # "Input"
         url_input = st.text_input(
             "URL",
             key="url"
         )
         
-        # Parte donde se podía subir la imagen
-        st.markdown('<div id="seccion-imagen"></div>', unsafe_allow_html=True)  # ancla para navegación
+        # "IMAGEN DEL ANUNCIO"
+        # "Ancla para navegación"
+        st.markdown('<div id="seccion-imagen"></div>', unsafe_allow_html=True)  
         col_img_label, col_img_btn = st.columns([9, 1])
 
         with col_img_label:
@@ -1512,18 +1574,18 @@ def pagina_analizador():
                 st.session_state["imagen"] = None
                 st.rerun()
 
-        # uploader
+        # "Uploader de la imagen"
         uploaded_file = st.file_uploader(
             label=f"{lang_ui_input['info_imagen_label']}",
             key="imagen_uploader",
             type=["jpg", "jpeg", "png", "tiff"]
         )
 
-        # guardar en session_state
+        # "Guardar en session_state"
         if uploaded_file is not None:
             st.session_state["imagen"] = uploaded_file
 
-        # mostrar imagen si existe
+        # "Mostrar imagen si existe"
         if st.session_state.get("imagen") is not None:
             st.image(st.session_state["imagen"], use_container_width=True)
         else:
@@ -1545,32 +1607,33 @@ def pagina_analizador():
                 unsafe_allow_html=True
             )
 
-    # ---------- BOTÓN ANALIZAR ----------
+    # "Botón de analizar"
     st.divider()
     st.markdown("<div id='seccion-analisis'></div>", unsafe_allow_html=True)
     analyze = st.button(f"🔎 {lang_ui_input['anuncio_label']}")
 
-    # ---------- ANÁLISIS ----------
+    # "ANÁLISIS"
     if analyze:
-        # Validar que hay datos
-        inputs_filled = sum([           #CAMBIO PARA MENSAJE DE ERROR (SOLO SE ELIGE UNA OPCION)
+        # "Validar que hay datos"
+        inputs_filled = sum([          
             bool(text_input.strip()),
             bool(url_input.strip()),
             bool(uploaded_file)
         ])
 
-        if inputs_filled == 0:      #CAMBIO PARA MENSAJE DE ERROR (SOLO SE ELIGE UNA OPCION)
+        # "Mensajes de error, solo se escoge una opción (Texto o URL o Imagen)"
+        if inputs_filled == 0:      
             st.warning(f"⚠️ {UI_TEXTS[lang_ui]['data']}")
             st.stop()
 
-        if inputs_filled > 1:       #CAMBIO PARA MENSAJE DE ERROR (SOLO SE ELIGE UNA OPCION)
+        if inputs_filled > 1:       
             st.warning(f"⚠️ {UI_TEXTS[lang_ui]['data_add']}")
             st.stop()
         
-        # Cerrar el expander
+        # "Cerrar el expander"
         st.session_state["expanded_ad_info"] = False
         
-        # Definir tipo de entrada
+        # "Definir tipo de entrada"
         if uploaded_file:
             tipo = "IMAGEN"
         elif url_input:
@@ -1578,7 +1641,7 @@ def pagina_analizador():
         else:
             tipo = "TEXTO"
         
-        # Preparar datos
+        # "Preparar datos"
         data = {"idioma_destino": idioma_select, "tipo": tipo}
 
         if text_input and not uploaded_file and not url_input:
@@ -1591,9 +1654,9 @@ def pagina_analizador():
         if uploaded_file:
             files = {"file": (uploaded_file.name, uploaded_file, uploaded_file.type)}
 
-        #DESDE ESTE IF AL FINAL TODO CAMBIO !!!
-        if modo == f"{lang_ui_input['mode_label_one']}":  #CONDICIÓN PARA EL ANÁLISIS DEL ANUNCIO (MODO 1)
-            # Mostrar spinner mientras se analiza
+        # "Condición para el análisis del anuncio (Modo 1)"
+        if modo == f"{lang_ui_input['mode_label_one']}":  
+            # "Mostrar spinner mientras se analiza"
             with st.status(f"{idioma_input['spinner_label']}", expanded=True) as status:
                 luz = st.empty()
 
@@ -1608,13 +1671,13 @@ def pagina_analizador():
 
                 status.update(label="🟢🟢🟢", state="complete", expanded=False)
             
-            # Procesar respuesta
+            # "Procesar respuesta"
             if response_idioma and response_idioma.status_code == 200:
                 res_det = response_idioma.json()
                 
-                # Verificar si es analizable PRIMERO
+                # "Paso 1: Verificar si es analizable primero"
                 if res_det.get("es_analizable"):
-                    # PASO 2: Analizar seguridad (sin mostrar nada todavía)
+                    # "Paso 2: Analizar seguridad (sin mostrar nada todavía)"
                     files = None
                     if uploaded_file:
                         uploaded_file.seek(0)
@@ -1625,14 +1688,14 @@ def pagina_analizador():
                     if response_seguridad and response_seguridad.status_code == 200:
                         res_seg = response_seguridad.json()
                         
-                        # ========== MOSTRAR PRIMERO: RESULTADOS DEL ANÁLISIS ==========
+                        # "Mostrar resultados del análisis"
                         st.divider()
                         mostrar_resultados(res_seg, res_det, lang_ui)
                         
-                        # ========== MOSTRAR DESPUÉS: INFORMACIÓN DE TRADUCCIÓN ==========
+                        # "Mostrar información de la detección/traducción (si el usuario quiere)"
                         st.divider()
 
-                        # Guardamos resultados en session_state para que sobrevivan al rerender
+                        # "Guardamos resultados en session_state para que sobrevivan al rerender"
                         st.session_state["res_seg"] = res_seg
                         st.session_state["res_det"] = res_det
                         st.session_state["lang_ui_resultado"] = lang_ui
@@ -1647,7 +1710,7 @@ def pagina_analizador():
                             st.write(f"Código de estado: {response_seguridad.status_code}")
                 
                 else:
-                    # Idioma no analizable - mostrar warning en popup
+                    # "Idioma no analizable - mostrar warning en popup"
                     idioma_detectado = res_det.get('idioma_detectado', 'desconocido')
                     st.markdown(f"""
                     <div style="
@@ -1670,7 +1733,7 @@ def pagina_analizador():
                     </div>
                     """, unsafe_allow_html=True)
                     
-                    #CAMBIO COLOR DEL BOTÓN DE CIERRE 
+                    # "Botón de cierre"
                     st.markdown("""     
                         <style>
 
@@ -1693,13 +1756,15 @@ def pagina_analizador():
                 if response_idioma:
                     st.write(f"Código de estado: {response_idioma.status_code}")
 
+# "Enrutamiento principal: según el valor de session_state.page se renderiza una función u otra"
 if st.session_state.page == "home":
     pagina_inicio()
 
 elif st.session_state.page == "analizador":
     pagina_analizador() 
 
-# Detectar cambios de idioma o texto y limpiar el modal si cambian
+# "Bloque de detección de cambios: si el usuario cambia el idioma o modifica el input después de analizar,
+# se limpian los resultados guardados en session_state para evitar mostrar datos obsoletos"
 _lang_actual = st.session_state.get("_ultimo_lang_ui")
 _texto_actual = st.session_state.get("_ultimo_texto")
 _url_actual = st.session_state.get("_ultima_url")
@@ -1718,8 +1783,10 @@ if st.session_state.get("res_seg") is not None:
         st.session_state["res_det"] = None
         st.session_state["open_modal"] = False
 
-# ---------- MODAL TRADUCCIÓN ----------
-# Este bloque vive FUERA del if analyze: para sobrevivir al rerender
+# "MODAL TRADUCCIÓN"
+# "Este bloque vive fuera del if analyze: para sobrevivir al rerender"
+# "Gestiona el modal de detección/traducción: se crea una sola vez y se abre o cierra
+# controlando st.session_state.open_modal en lugar de depender del estado interno del widget"
 if st.session_state.get("res_seg") is not None:
     _lang = st.session_state.get("lang_ui_resultado", "es")
 
@@ -1729,11 +1796,11 @@ if st.session_state.get("res_seg") is not None:
         max_width=700
     )
 
-    #estado único de apertura (no del widget)
+    # "Estado único de apertura (no del widget)"
     if "open_modal" not in st.session_state:
         st.session_state.open_modal = False
     
-    #CAMBIO COLOR DEL BOTÓN DE VER ANÁLISIS
+    # "Botón de apertura del Modal"
     st.markdown("""
     <style>
     .st-key-abrir_modal_btn button {
@@ -1756,7 +1823,7 @@ if st.session_state.get("res_seg") is not None:
         ):
             st.session_state.open_modal = True
 
-        #RESET automático cuando cambia el texto/idioma
+        # "Reset automático cuando cambia el texto/idioma"
     if "prev_res_seg" not in st.session_state:
         st.session_state.prev_res_seg = None
 
@@ -1766,7 +1833,7 @@ if st.session_state.get("res_seg") is not None:
         st.session_state.prev_res_seg = current
         st.session_state.open_modal = False
 
-    #RENDER CONTROLADO (SIN is_open)
+    # "Render controlado (sin is_open)"
     if st.session_state.open_modal:
         with modal.container():
 
@@ -1786,7 +1853,4 @@ if st.session_state.get("res_seg") is not None:
                 st.session_state["res_det"] = None
                 st.rerun()
 
-
-#Ejecución (local): streamlit run app.py
 #Ejecución del streamlit: streamlit run frontend/app.py
-#Ejecución del archivo si en la otra terminal se está ejecutando el uvicorn de traduccion.py: python frontend/app.py
