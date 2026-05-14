@@ -1,20 +1,28 @@
+# "El archivo traduccion.py se encarga de gestionar la traducción y detección de un texto
+# (en formato string, url o imagen) en español. Es uno de los tres archivos encargados
+# para conectar el Backend con el Frontend mediante un APIRouter"
+
+# "Librerías y funciones que gestionan la lógica de traducción, principalmente a través de traduccion_service.py"
 from fastapi import APIRouter, Depends, UploadFile, File
 import os
 import sys
-# --- Ajuste de path para poder ejecutar tanto script como uvicorn (inamovible de esta posición) ---
+
+# "Ajuste de path para poder ejecutar tanto script como uvicorn (inamovible de esta posición)"
 root_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 if root_path not in sys.path:
     sys.path.append(root_path)
 
-from api.models.schemas import TextoDetectar, ResultadoDeteccion        #Entrega final:  from api.models.schemas import TextoDetectar, ResultadoDeteccion
-from servicios.traduccion_service import traducir_contenido       #from servicios.traduccion_service import traducir_contenido 
+from api.models.schemas import TextoDetectar, ResultadoDeteccion        
+from servicios.traduccion_service import traducir_contenido       
 
 router = APIRouter()
 
+# "Función que define una ruta POST en FastAPI para detectar y traducir el idioma de un texto
+# y opcionalmente un archivo subido por el usuario usando las clases definidas para ello."
 @router.post("/detectar_idioma", response_model=ResultadoDeteccion)
 async def detectar_idioma(texto: TextoDetectar = Depends(TextoDetectar.as_form), file: UploadFile = File(None)):
     
-    # Extrae contenido y detecta idioma
+    # "Extrae contenido y detecta idioma usando la función de traduccion_service.py"
     original, translated, idioma_detectado = await traducir_contenido(
         target_lang=texto.idioma_destino,
         file=file,
@@ -22,7 +30,7 @@ async def detectar_idioma(texto: TextoDetectar = Depends(TextoDetectar.as_form),
         url=texto.url
     )
 
-    # Verificar que el idioma detectado es español
+    # "Verificar que el idioma detectado es español para devolver el resultado de la detección/traducción"
     if idioma_detectado != "es":
         return ResultadoDeteccion(
             idioma_detectado=idioma_detectado,
@@ -41,9 +49,3 @@ async def detectar_idioma(texto: TextoDetectar = Depends(TextoDetectar.as_form),
     )
 
     return resultado
-
-#PASO 1: COMANDO CON EL REQUIREMENTS
-#requirements:  pip install -r requirements.txt
-
-# Ejecución: uvicorn api.routes.traduccion:app --reload + en otra terminal el streamlit de app.py
-# Ejecución (local): uvicorn traduccion:app --reload + en otra terminal el streamlit de app.py
