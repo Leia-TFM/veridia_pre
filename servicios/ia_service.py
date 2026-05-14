@@ -16,7 +16,6 @@ logger = logging.getLogger(__name__)
 # SECCIÓN 1 – CONSTANTES Y REGEX DE SEGURIDAD
 # =============================================================================
 
-MAX_BYTES_TITULO = 300
 MAX_BYTES_DESCRIPCION = 8000
 
 # Detecta intentos de manipular al LLM embebiendo instrucciones en los campos.
@@ -91,24 +90,14 @@ class JobAdInput(BaseModel):
     Ningún campo es obligatorio — el pipeline ML trabaja con lo que haya.
     """
 
-    titulo:        Optional[str] = Field(default=None, max_length=120)
-    empresa:       Optional[str] = Field(default=None, max_length=100)
     descripcion:   Optional[str] = Field(default=None, max_length=3000)
-    salario_min:   Optional[float] = Field(default=None, gt=0, lt=30_000)
-    salario_max:   Optional[float] = Field(default=None, gt=0, lt=30_000)
-    jornada_horas: Optional[int]   = Field(default=None, ge=1, le=60)
-    ubicacion:     Optional[str]   = Field(default=None, max_length=100)
-    contacto:      Optional[str]   = Field(default=None, max_length=100)
-    tipo_contrato: Optional[str]   = Field(default=None, max_length=60)
     url_oferta:    Optional[str]   = Field(default=None, max_length=300)
 
     # Captura cualquier campo extra que venga en el anuncio
-    model_config = {"extra": "allow"}
 
-    @field_validator("titulo", "empresa", "descripcion",
-                    "ubicacion", "tipo_contrato", "contacto", mode="before")
+    @field_validator("descripcion", mode="before")
     @classmethod
-    def sanitize_text_fields(cls, v, info):
+    def sanitize_descripcion(cls, v, info):
         if v is None:
             return v
         return _sanitize(str(v), field_name=info.field_name)
@@ -129,35 +118,6 @@ async def validar_anuncio(data: dict) -> dict:
     ad = JobAdInput(**data)
     return ad.model_dump()
 
-# =============================================================================
-# SECCIÓN 6 – HELPER DE TEXTO
-# =============================================================================
-
-# Campos en orden de relevancia semántica para el modelo ML.
-# Campos conocidos con orden de relevancia
-_CAMPOS_TEXTO = [
-    "titulo", "empresa", "descripcion",
-    "tipo_contrato", "ubicacion",
-    "jornada_horas", "salario_min", "salario_max", "contacto",
-]
-
-def _campos_a_texto(fields: dict) -> str:
-    partes = []
-    
-    # Primero los campos conocidos en orden
-    for campo in _CAMPOS_TEXTO:
-        valor = fields.get(campo)
-        if valor is not None and str(valor).strip():
-            partes.append(f"{campo}: {valor}")
-    
-    # Luego cualquier campo extra que haya llegado
-    campos_extra = set(fields.keys()) - set(_CAMPOS_TEXTO) - {"url_oferta"}
-    for campo in sorted(campos_extra):
-        valor = fields.get(campo)
-        if valor is not None and str(valor).strip():
-            partes.append(f"{campo}: {valor}")
-    
-    return "\n".join(partes)
 
 # =============================================================================
 # SECCIÓN 7 – TOOL DE DETECCIÓN ML
@@ -229,95 +189,93 @@ class FraudDetectionTool(Tool):
         return "low"
     
 
-async def forward(self, job_posting_json) -> str:
+    async def forward(self, job_posting_json) -> str:
 
-    # 1. Deserializar
-    try:
-        fields = json.loads(job_posting_json)
-    except (json.JSONDecodeError, TypeError, ValueError) as exc:
-        logger.error(f"Error al deserializar entrada: {exc}")
-        return json.dumps({"error": f"Formato de entrada inválido: {exc}"}, ensure_ascii=False)
-
-    # 2. Usar resultado ya procesado
-    resultado_proc = fields.get("resultado_procesado")
-    if not resultado_proc:
-        return json.dumps({"error": "No se recibió resultado procesado."}, ensure_ascii=False)
-
-    # 3. Predicción ML
-    try:
-        texto_para_modelo = resultado_proc.get("texto_normalizado", "")
-        if not texto_para_modelo:
-            return json.dumps({"error": "Texto inválido para procesamiento"}, ensure_ascii=False)
-
-        self._load_pipeline()
-
-        encoder = self._get_encoder()
-        embedding = encoder.encode([texto_para_modelo])
-        logger.debug(f"Embedding generado, shape: {embedding.shape}")
-
-        if embedding.ndim == 1:
-            embedding = embedding.reshape(1, -1)
-
-        predicciones = self._pipeline["model"].predict_proba(embedding)
-        logger.debug(f"Predicciones recibidas, shape: {predicciones.shape}")
-
-        proba_fraud = float(predicciones[0, 1])
-        logger.debug(f"Probabilidad extraída: {proba_fraud}")
-
-        label = 1 if proba_fraud >= self._pipeline["threshold"] else 0
-
-
-            
-        # Procesar señales de forma segura
+        # 1. Deserializar
         try:
-            senales = resultado_proc.get("senales", {})
-            if isinstance(senales, dict):
-                raw_list = list(senales.values())
-            else:
-                raw_list = senales if isinstance(senales, list) else []
+            fields = json.loads(job_posting_json)
+        except (json.JSONDecodeError, TypeError, ValueError) as exc:
+            logger.error(f"Error al deserializar entrada: {exc}")
+            return json.dumps({"error": f"Formato de entrada inválido: {exc}"}, ensure_ascii=False)
+
+        # 2. Usar resultado ya procesado
+        resultado_proc = fields.get("resultado_procesado")
+        if not resultado_proc:
+            return json.dumps({"error": "No se recibió resultado procesado."}, ensure_ascii=False)
+
+        # 3. Predicción ML
+        try:
+            texto_para_modelo = resultado_proc.get("texto_normalizado", "")
+            if not texto_para_modelo:
+                return json.dumps({"error": "Texto inválido para procesamiento"}, ensure_ascii=False)
+
+            self._load_pipeline()
+
+            encoder = self._get_encoder()
+            embedding = encoder.encode([texto_para_modelo])
+            logger.debug(f"Embedding generado, shape: {embedding.shape}")
+
+            if embedding.ndim == 1:
+                embedding = embedding.reshape(1, -1)
+
+            predicciones = self._pipeline["model"].predict_proba(embedding)
+            logger.debug(f"Predicciones recibidas, shape: {predicciones.shape}")
+
+            proba_fraud = float(predicciones[0, 1])
+            logger.debug(f"Probabilidad extraída: {proba_fraud}")
+
+            label = 1 if proba_fraud >= self._pipeline["threshold"] else 0
             
-            # Aplanamos y limpiamos: extraemos el string si es ['texto'] y quitamos vacíos
-            senales_list = []
-            for s in raw_list:
-                if isinstance(s, list) and len(s) > 0:
-                    item = str(s[0]).strip()
+            # Procesar señales de forma segura
+            try:
+                senales = resultado_proc.get("senales", {})
+                if isinstance(senales, dict):
+                    raw_list = list(senales.values())
                 else:
-                    item = str(s).strip()
+                    raw_list = senales if isinstance(senales, list) else []
                 
-                if item and item not in ["[]", "None", ""]:
-                    senales_list.append(item)
+                # Aplanamos y limpiamos: extraemos el string si es ['texto'] y quitamos vacíos
+                senales_list = []
+                for s in raw_list:
+                    if isinstance(s, list) and len(s) > 0:
+                        item = str(s[0]).strip()
+                    else:
+                        item = str(s).strip()
                     
+                    if item and item not in ["[]", "None", ""]:
+                        senales_list.append(item)
+                        
+            except Exception as e:
+                logger.warning(f"Error procesando señales: {e}")
+                senales_list = []
+
+            return json.dumps({
+                "verdict"         : "FRAUDULENT" if label == 1 else "LEGITIMATE",
+                "probability"     : round(proba_fraud, 4),
+                "confidence_level": self._get_confidence_level(proba_fraud),
+                "fuente"          : resultado_proc.get("fuente", "desconocida"),
+                "senales"         : senales_list,
+                "caracteristicas" : resultado_proc.get("caracteristicas", {}),
+                "estadisticas"    : resultado_proc.get("estadisticas", {}),
+                "justificacion"   : _generar_justificacion(label, proba_fraud, senales_list)
+            }, ensure_ascii=False)
+        
         except Exception as e:
-            logger.warning(f"Error procesando señales: {e}")
-            senales_list = []
+            logger.error(f"Error inesperado en forward(): {type(e).__name__}: {e}", exc_info=True)
+            return json.dumps({
+                "error": f"Error inesperado: {type(e).__name__}",
+                "verdict": None,
+                "probability": None,
+                "confidence_level": None,
+            }, ensure_ascii=False)
 
-        return json.dumps({
-            "verdict"         : "FRAUDULENT" if label == 1 else "LEGITIMATE",
-            "probability"     : round(proba_fraud, 4),
-            "confidence_level": self._get_confidence_level(proba_fraud),
-            "fuente"          : resultado_proc.get("fuente", "desconocida"),
-            "senales"         : senales_list,
-            "caracteristicas" : resultado_proc.get("caracteristicas", {}),
-            "estadisticas"    : resultado_proc.get("estadisticas", {}),
-            "justificacion"   : _generar_justificacion(label, proba_fraud, senales_list)
-        }, ensure_ascii=False)
-    
-    except Exception as e:
-        logger.error(f"Error inesperado en forward(): {type(e).__name__}: {e}", exc_info=True)
-        return json.dumps({
-            "error": f"Error inesperado: {type(e).__name__}",
-            "verdict": None,
-            "probability": None,
-            "confidence_level": None,
-        }, ensure_ascii=False)
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        state["_pipeline"] = None
+        return state
 
-def __getstate__(self):
-    state = self.__dict__.copy()
-    state["_pipeline"] = None
-    return state
-
-def __setstate__(self, state):
-    self.__dict__.update(state)
+    def __setstate__(self, state):
+        self.__dict__.update(state)
 
 
 # =============================================================================
