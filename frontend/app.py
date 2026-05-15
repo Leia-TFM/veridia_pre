@@ -1261,6 +1261,26 @@ def mostrar_resultados(res_seg, res_det, lang_ui):
         </div>
         """, unsafe_allow_html=True)
 
+    # "Aviso de generación por IA"
+    aviso_ia_es = "Los resultados de este análisis han sido generados por un agente de inteligencia artificial y pueden contener errores. No sustituyen el criterio de un profesional."
+
+    if lang_ui != "es":
+        cache_key = f"aviso_ia_{lang_ui}"
+        if cache_key not in st.session_state:
+            st.session_state[cache_key] = GoogleTranslator(source="es", target=lang_ui).translate(aviso_ia_es)
+        aviso_ia = st.session_state[cache_key]
+    else:
+        aviso_ia = aviso_ia_es
+
+    st.markdown(f"""
+    <div style="margin-top:18px;padding:12px 18px;border-radius:10px;
+                background:#f1f5f9;border:1px solid #cbd5e1;
+                display:flex;align-items:flex-start;gap:10px;">
+        <span style="font-size:20px;">🤖</span>
+        <span style="font-size:17px;color:#111827;line-height:1.6;">{aviso_ia}</span>
+    </div>
+    """, unsafe_allow_html=True)
+
     
         
 # "ESTADÍSTICAS"
