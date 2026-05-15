@@ -1,12 +1,10 @@
 import json
 import re
 import unicodedata
-import numpy as np
 from typing import Optional
 from pydantic import BaseModel, Field, field_validator
 from smolagents import ToolCallingAgent, LiteLLMModel, Tool
 from api.config import settings
-import asyncio
 
 import logging
 logger = logging.getLogger(__name__)
@@ -227,10 +225,12 @@ class FraudDetectionTool(Tool):
             label = 1 if proba_fraud >= self._pipeline["threshold"] else 0
             
             # Procesar señales de forma segura
+            # Procesar señales de forma segura
             try:
                 senales = resultado_proc.get("senales", {})
                 if isinstance(senales, dict):
-                    raw_list = list(senales.values())
+                    senales_sin_fuente = {k: v for k, v in senales.items() if k != "fuente"}
+                    raw_list = list(senales_sin_fuente.values())
                 else:
                     raw_list = senales if isinstance(senales, list) else []
                 
@@ -339,7 +339,12 @@ class OrquestadorAgente:
 
             logger.info("Iniciando razonamiento narrativo del agente...")
             # Aquí capturamos la respuesta del agente como un string simple
-            mensaje_agente = str(self.agent.run(tarea)).strip()
+            import litellm
+            respuesta = litellm.completion(
+                model="ollama/qwen2.5:3b",
+                messages=[{"role": "user", "content": tarea}]
+            )
+            mensaje_agente = respuesta.choices[0].message.content.strip()
 
             # 4. ENSAMBLAJE FINAL
             # Sustituimos la justificación genérica de la tool por la narrativa rica del agente

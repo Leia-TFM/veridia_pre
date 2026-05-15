@@ -243,11 +243,15 @@ def extraer_urls(texto: str) -> list[str]:
 
 
 def extraer_empresas(texto: str) -> list[str]:
-    return _re_signals.findall(r"\b[A-Z][a-zA-Z0-9]+\b", texto)
+    doc = nlp(texto)
+    return list({ent.text for ent in doc.ents 
+                if ent.label_ == "ORG" and len(ent.text) > 3})
 
 
 def extraer_lugares(texto: str) -> list[str]:
-    return _re_signals.findall(r"\b[A-Z][a-zA-Z0-9\s]+\b", texto)
+    doc = nlp(texto)
+    return list({ent.text for ent in doc.ents 
+                if ent.label_ in ("LOC", "GPE") and len(ent.text) > 3})
 
 
 def extraer_urgencia(texto: str) -> list[str]:

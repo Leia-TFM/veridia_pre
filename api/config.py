@@ -17,7 +17,7 @@ class Settings(BaseSettings):
 
     
     # Configuración de HuggingFace
-    API_KEY: str = "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"
+    API_KEY: str = ""
     MODELO: str = "Qwen/Qwen2.5-72B-Instruct"
     
     PROMPT: str = f"""
