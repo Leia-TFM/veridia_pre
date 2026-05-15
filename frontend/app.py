@@ -1271,19 +1271,19 @@ def mostrar_estadisticas(lang_ui):
     response = llamar_api_get(API_ESTADISTICAS)
 
     if not response or response.status_code != 200:
-        st.error("❌ Error al obtener estadísticas")
+        st.error("❌ Error")
         return
 
     stats = response.json()
 
-    resumen   = stats.get("resumen_general", {})
-    por_idioma = stats.get("por_idioma", {})
-    senales   = stats.get("senales_frecuentes", {})
-
-    total      = resumen.get("total", 0)
-    fraudulent = resumen.get("fraudulent", 0)
-    legitimate = resumen.get("legitimate", 0)
-    amarillo   = resumen.get("amarillo", 0)
+    # "Leer estructura real de la API"
+    total      = stats.get("total_analizados", 0)
+    dist       = stats.get("distribucion_semaforo", {})
+    legitimate = dist.get("verde", 0)
+    amarillo   = dist.get("amarillo", 0)
+    fraudulent = dist.get("rojo", 0)
+    idiomas_dict = stats.get("idiomas_frecuentes", {})
+    senales_dict = stats.get("indicadores_frecuentes", {})
 
     # "Traducción de textos estáticos de este modo"
     textos_es = [
@@ -1314,7 +1314,6 @@ def mostrar_estadisticas(lang_ui):
     else:
         t = textos_es
 
-    # "Asegurar que t tiene suficientes elementos por si la traducción falla"
     while len(t) < len(textos_es):
         t.append(textos_es[len(t)])
 
@@ -1372,7 +1371,6 @@ def mostrar_estadisticas(lang_ui):
 
     with col_idiomas:
         st.markdown(f"#### 🌍 {txt_idiomas}")
-        idiomas_dict = por_idioma.get("idiomas", {})
         if idiomas_dict:
             for idioma, count in list(idiomas_dict.items())[:8]:
                 pct = count / total * 100 if total else 0
@@ -1395,7 +1393,6 @@ def mostrar_estadisticas(lang_ui):
 
     with col_senales:
         st.markdown(f"#### 🔎 {txt_senales}")
-        senales_dict = senales.get("senales", {})
         if senales_dict:
             max_val = max(senales_dict.values(), default=1)
             for senal, count in list(senales_dict.items())[:10]:
@@ -1416,8 +1413,6 @@ def mostrar_estadisticas(lang_ui):
                 )
         else:
             st.info(txt_sin_senales)
-
-
 
 # "SIDEBAR"
 # "Función que construye la página principal del analizador. Contiene el sidebar con la configuración,
@@ -1483,7 +1478,7 @@ def pagina_analizador():
     # "MODO"
     with st.container():
         st.markdown(f"<h3 style='color:#6f4a8e;'>{lang_ui_input["mode_label"]}:</h3>", unsafe_allow_html=True)
-        modo = st.radio("Selecciona un modo", [f"{lang_ui_input["mode_label_one"]}", f"{lang_ui_input["mode_label_two"]}"], horizontal=True, label_visibility="hidden", key="modo_seleccionado")
+        modo = st.radio("Selecciona un modo", [f"{lang_ui_input["mode_label_one"]}", f"{lang_ui_input["mode_label_two"]}"], horizontal=True, label_visibility="hidden", key=f"modo_seleccionado_{lang_ui}")
 
     st.divider()    
     # "MODO ESTADÍSTICAS"
@@ -1702,7 +1697,7 @@ def pagina_analizador():
                         st.session_state["_ultimo_lang_ui"] = lang_ui
                         st.session_state["_ultimo_texto"] = text_input
                         st.session_state["_ultima_url"] = url_input
-                        st.session_state["_ultima_imagen"] = uploaded_file.name if uploaded_file else None
+                        st.session_state["_ultima_imagen"] = uploaded_file.name if uploaded_file else None  
                         
                     else:
                         st.error("❌ Error al conectar con la API de Análisis")
