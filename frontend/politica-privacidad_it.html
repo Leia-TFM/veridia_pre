@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Informativa sulla Privacy — Progetto IAM-UAM 2025-2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cera+Pro:wght@400;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --black: #1a1a1a;
+      --gray-dark: #3a3a3a;
+      --gray-mid: #6b6b6b;
+      --gray-light: #e8e8e8;
+      --gray-bg: #f6f6f6;
+      --white: #ffffff;
+      --uam-blue: #003b71;
+      --uam-accent: #005aad;
+      --border: 1px solid #d0d0d0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-weight: 300;
+      color: var(--black);
+      background: var(--white);
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    /* ─── TOP BAR ─── */
+    .topbar {
+      background: var(--uam-blue);
+      color: white;
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      padding: 10px 48px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .topbar a { color: rgba(255,255,255,0.75); text-decoration: none; }
+    .topbar a:hover { color: white; }
+    .topbar .sep { color: rgba(255,255,255,0.4); }
+
+    /* ─── HEADER ─── */
+    header {
+      border-bottom: var(--border);
+      padding: 28px 48px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .logo-mark {
+      width: 48px; height: 48px;
+      background: var(--uam-blue);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      color: white;
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
+    }
+    .logo-text {
+      font-family: 'Cera Pro', Arial, sans-serif;
+    }
+    .logo-text .institution {
+      font-size: 13px;
+      color: var(--gray-mid);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .logo-text .project {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--uam-blue);
+    }
+
+    /* ─── LAYOUT ─── */
+    .page-wrapper {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 48px;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 0;
+    }
+
+    /* ─── SIDEBAR NAV ─── */
+    .sidebar {
+      border-right: var(--border);
+      padding: 40px 32px 40px 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    .sidebar-title {
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gray-mid);
+      margin-bottom: 20px;
+    }
+    .nav-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 0;
+      border-top: var(--border);
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--black);
+    }
+    .nav-item:first-of-type { border-top: none; }
+    .nav-item .arrow {
+      font-size: 10px;
+      margin-top: 4px;
+      color: var(--gray-mid);
+      flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+    .nav-item:hover .arrow { transform: translateX(3px); }
+    .nav-item .nav-label {
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      line-height: 1.4;
+    }
+    .nav-item:hover .nav-label { color: var(--uam-accent); }
+
+    /* ─── MAIN CONTENT ─── */
+    .content {
+      padding: 40px 0 80px 48px;
+    }
+
+    .content-header {
+      margin-bottom: 48px;
+      padding-bottom: 32px;
+      border-bottom: 2px solid var(--black);
+    }
+    .content-header h1 {
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--black);
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .content-header .meta {
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-size: 13px;
+      color: var(--gray-mid);
+    }
+
+    /* ─── SECTION ─── */
+    .policy-section {
+      margin-bottom: 56px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--black);
+      cursor: pointer;
+    }
+    .section-header .toggle-arrow {
+      font-size: 12px;
+      color: var(--black);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .section-header h2 {
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--black);
+    }
+
+    .subsection {
+      margin-bottom: 36px;
+    }
+    .subsection h3 {
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--black);
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+    .subsection p {
+      margin-bottom: 14px;
+      color: var(--gray-dark);
+    }
+    .subsection ul {
+      margin: 14px 0 14px 20px;
+    }
+    .subsection ul li {
+      margin-bottom: 10px;
+      color: var(--gray-dark);
+    }
+    .subsection ul li strong {
+      font-weight: 600;
+      color: var(--black);
+    }
+
+    /* ─── NOTICE BOX ─── */
+    .notice-box {
+      background: var(--gray-bg);
+      border-left: 4px solid var(--uam-blue);
+      padding: 20px 24px;
+      margin: 24px 0;
+      border-radius: 0 4px 4px 0;
+    }
+    .notice-box p {
+      font-size: 14px;
+      color: var(--gray-dark);
+      margin: 0;
+    }
+    .notice-box strong { color: var(--black); }
+
+    /* ─── TAG ─── */
+    .tag {
+      display: inline-block;
+      background: var(--uam-blue);
+      color: white;
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 3px;
+      margin-bottom: 12px;
+    }
+
+    /* ─── TABLE ─── */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+    .data-table th {
+      background: var(--black);
+      color: white;
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 10px 16px;
+      text-align: left;
+    }
+    .data-table td {
+      padding: 12px 16px;
+      border-bottom: var(--border);
+      color: var(--gray-dark);
+      vertical-align: top;
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:nth-child(even) td { background: var(--gray-bg); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--black);
+      color: rgba(255,255,255,0.6);
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-size: 12px;
+      padding: 32px 48px;
+      margin-top: 60px;
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+    footer a { color: rgba(255,255,255,0.6); text-decoration: underline; }
+    footer .footer-brand { color: white; font-weight: 700; font-size: 13px; }
+
+    @media (max-width: 860px) {
+      .page-wrapper { grid-template-columns: 1fr; padding: 0 24px; }
+      .sidebar { position: static; height: auto; border-right: none; border-bottom: var(--border); padding: 24px 0; }
+      .content { padding: 32px 0 60px; }
+      .topbar, header, footer { padding-left: 24px; padding-right: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="#">UAM</a>
+  <span class="sep">›</span>
+  <a href="#">Master in IA</a>
+  <span class="sep">›</span>
+  <span>Informativa sulla Privacy</span>
+</div>
+
+<header>
+  <div class="logo-mark">UAM</div>
+  <div class="logo-text">
+    <div class="institution">Università Autonoma di Madrid</div>
+    <div class="project">Piattaforma di Annunci IA — Master 2025–2026</div>
+  </div>
+</header>
+
+<div class="page-wrapper">
+
+  <nav class="sidebar">
+    <div class="sidebar-title">Indice</div>
+    <a href="#s1" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">Sezione 1: Legislazione sulla privacy dei dati e i tuoi diritti digitali</span>
+    </a>
+    <a href="#s2" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">Sezione 2: Dati personali</span>
+    </a>
+    <a href="#s3" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">Sezione 3: Come utilizziamo i tuoi dati</span>
+    </a>
+    <a href="#s4" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">Sezione 4: Annunci e conservazione dei dati</span>
+    </a>
+    <a href="#s5" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">Sezione 5: Sicurezza e responsabilità</span>
+    </a>
+    <a href="#s6" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">Sezione 6: I tuoi diritti e contatti</span>
+    </a>
+    <a href="#s7" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">Legge Organica sulla Protezione dei Dati: sviluppo completo</span>
+    </a>
+  </nav>
+
+  <main class="content">
+
+    <div class="content-header">
+      <h1>Informativa sulla Privacy</h1>
+      <div class="meta">Ultima modifica: 21 aprile 2026</div>
+    </div>
+
+    <section class="policy-section" id="s1">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>Sezione 1: Legislazione sulla privacy dei dati e i tuoi diritti digitali</h2>
+      </div>
+
+      <div class="subsection">
+        <h3>Di cosa tratta questa Informativa?</h3>
+        <p>Benvenuto/a nella nostra Informativa sulla Privacy. Questo documento ti spiega come trattiamo le informazioni generate quando utilizzi la nostra piattaforma pubblicitaria sviluppata nell'ambito del <strong>Master in Intelligenza Artificiale (anno accademico 2025–2026)</strong> dell'Università Autonoma di Madrid.</p>
+        <p>Questa piattaforma ha carattere accademico e di ricerca scientifica. Consente di pubblicare e visualizzare annunci pubblicitari verificati mediante tecniche di intelligenza artificiale. L'accesso alla piattaforma avviene <strong>senza necessità di previa registrazione</strong>, pertanto non raccogliamo direttamente dati personali identificativi.</p>
+        <p>Questa Informativa ti informa inoltre sui tuoi diritti alla privacy ai sensi del Regolamento Generale sulla Protezione dei Dati (GDPR) dell'Unione Europea e della Legge Organica spagnola 3/2018 sulla Protezione dei Dati Personali e la garanzia dei diritti digitali (LOPDGDD).</p>
+      </div>
+
+      <div class="subsection">
+        <h3>Chi si assume la responsabilità?</h3>
+        <p>La responsabilità formale di questa piattaforma ricade sull'<strong>Università Autonoma di Madrid (UAM)</strong>, con sede in:</p>
+        <div class="notice-box">
+          <p>
+            <strong>Università Autonoma di Madrid</strong><br>
+            Ciudad Universitaria de Cantoblanco<br>
+            28049 Madrid, Spagna<br>
+            <br>
+            Progetto sviluppato dagli studenti del <strong>Master in Intelligenza Artificiale, anno 2025–2026</strong>.
+          </p>
+        </div>
+        <p>L'UAM agisce in qualità di ente accademico supervisore. Tuttavia, <strong>l'Università non si assume alcuna responsabilità per la veridicità, la sicurezza o l'esattezza degli annunci pubblicati sulla piattaforma</strong>. La verifica degli annunci ha un carattere puramente orientativo e non costituisce un avallo istituzionale.</p>
+      </div>
+
+      <div class="subsection">
+        <h3>Quadro legale applicabile</h3>
+        <ul>
+          <li><strong>Regolamento (UE) 2016/679 (GDPR)</strong> — Regolamento Generale sulla Protezione dei Dati.</li>
+          <li><strong>Legge Organica 3/2018 (LOPDGDD)</strong> — Protezione dei Dati Personali e garanzia dei diritti digitali in Spagna.</li>
+          <li><strong>Legge 34/2002 (LSSI-CE)</strong> — Legge sui Servizi della Società dell'Informazione e del Commercio Elettronico.</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3>I tuoi diritti alla privacy</h3>
+        <p>In conformità con il GDPR, disponi dei seguenti diritti in relazione a qualsiasi dato che potremmo elaborare:</p>
+        <ul>
+          <li><strong>Accesso:</strong> Puoi richiedere informazioni sui dati in nostro possesso.</li>
+          <li><strong>Rettifica:</strong> Puoi richiedere la correzione di dati inesatti o incompleti.</li>
+          <li><strong>Cancellazione ("diritto all'oblio"):</strong> Puoi chiedere l'eliminazione dei tuoi dati quando non sono più necessari.</li>
+          <li><strong>Limitazione del trattamento:</strong> Puoi richiedere di limitare l'uso dei tuoi dati in determinate circostanze.</li>
+          <li><strong>Opposizione:</strong> Puoi opporti al trattamento basato sul legittimo interesse.</li>
+          <li><strong>Portabilità:</strong> Hai il diritto di ricevere i tuoi dati in un formato leggibile da un dispositivo automatico.</li>
+          <li><strong>Reclamo:</strong> Puoi presentare un reclamo all'<strong>Agenzia Spagnola per la Protezione dei Dati (AEPD)</strong>.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="policy-section" id="s2">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>Sezione 2: Dati personali</h2>
+      </div>
+
+      <div class="subsection">
+        <h3>Quali dati personali raccogliamo?</h3>
+        <div class="tag">Accesso senza registrazione</div>
+        <p>La nostra piattaforma è progettata secondo il principio della <strong>privacy per impostazione predefinita (Privacy by Default)</strong>: gli utenti possono accedere e interagire con gli annunci <strong>senza dover creare un account o fornire dati personali</strong>.</p>
+        <p>Non richiediamo né memorizziamo:</p>
+        <ul>
+          <li>Nome, cognome o alias.</li>
+          <li>Indirizzo e-mail.</li>
+          <li>Numero di telefono.</li>
+          <li>Documenti d'identità.</li>
+          <li>Informazioni di pagamento.</li>
+        </ul>
+        <p>Il sistema di autenticazione, qualora disponibile, funziona tramite <strong>autenticazione tramite token o sessione anonima</strong>, senza collegare l'attività a un'identità personale diretta.</p>
+      </div>
+
+      <div class="subsection">
+        <h3>Tipi di dati inviati per l'analisi</h3>
+        <p>Gli utenti inviano contenuti alla piattaforma per la verifica. Esistono due modalità di inserimento, entrambe trattate in modo anonimo:</p>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Tipo di input</th>
+              <th>Descrizione</th>
+              <th>Finalità</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Tipo 1 — Annuncio scritto</strong></td>
+              <td>L'utente inserisce direttamente il testo dell'annuncio pubblicitario che desidera verificare.</td>
+              <td>Analisi e verifica orientativa tramite IA</td>
+            </tr>
+            <tr>
+              <td><strong>Tipo 2 — URL dell'annuncio</strong></td>
+              <td>L'utente fornisce un collegamento URL all'annuncio o alla pagina che desidera verificare. La piattaforma accede al contenuto pubblico di tale URL.</td>
+              <td>Analisi e verifica orientativa tramite IA</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+    <section class="policy-section" id="s3">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>Sezione 3: Come utilizziamo i tuoi dati</h2>
+      </div>
+
+      <div class="subsection">
+        <h3>Finalità del trattamento</h3>
+        <p>I dati tecnici raccolti vengono utilizzati esclusivamente per:</p>
+        <ul>
+          <li><strong>Funzionamento della piattaforma:</strong> Garantiamo la disponibilità e il corretto funzionamento tecnico del servizio. Ciò include la corretta elaborazione da parte della piattaforma delle richieste inviate dagli utenti e la restituzione di un risultato di verifica. <em>Questa garanzia si riferisce al funzionamento tecnico del servizio, non alla veridicità del contenuto degli annunci analizzati.</em></li>
+          <li><strong>Verifica orientativa degli annunci:</strong> Applicazione di modelli di IA per analizzare il contenuto degli annunci (testo scritto o URL). Il risultato è un indicatore di probabilità, non una certificazione di autenticità.</li>
+          <li><strong>Miglioramento del sistema:</strong> Analisi aggregate e anonime per migliorare i modelli di intelligenza artificiale nell'ambito del progetto accademico.</li>
+          <li><strong>Sicurezza:</strong> Rilevare e prevenire usi fraudolenti o dannosi.</li>
+        </ul>
+        <div class="notice-box">
+          <p><strong>Importante:</strong> La piattaforma garantisce il servizio di analisi, ma <strong>non garantisce né certifica la veridicità, l'esattezza o la legittimità degli annunci inviati</strong>. I risultati devono essere interpretati come orientamento e non come un parere definitivo.</p>
+        </div>
+        <p><strong>Non utilizziamo i dati per scopi commerciali, né li condividiamo con terze parti per scopi pubblicitari.</strong></p>
+      </div>
+
+      <div class="subsection">
+        <h3>Trasferimenti internazionali di dati</h3>
+        <p>Non vengono effettuati trasferimenti di dati al di fuori dello Spazio Economico Europeo (SEE). Tutta l'infrastruttura del progetto opera all'interno degli ambienti accademici dell'Università Autonoma di Madrid o su server situati nell'UE.</p>
+      </div>
+    </section>
+
+    <section class="policy-section" id="s4">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>Sezione 4: Annunci e conservazione dei dati</h2>
+      </div>
+
+      <div class="subsection">
+        <h3>Natura degli annunci verificati</h3>
+        <p>La piattaforma applica tecniche di intelligenza artificiale per analizzare e classificare gli annunci pubblicati. Tuttavia, <strong>questa verifica ha un carattere puramente orientativo</strong>:</p>
+        <ul>
+          <li>Non garantisce la veridicità del contenuto dell'annuncio.</li>
+          <li>Non certifica l'identità dell'inserzionista.</li>
+          <li>Non costituisce un sostegno istituzionale da parte dell'UAM.</li>
+          <li>I modelli di IA possono commettere errori o presentare distorsioni (bias) intrinseche al loro addestramento.</li>
+        </ul>
+        <p>Gli utenti devono esercitare il proprio giudizio prima di agire in base a qualsiasi annuncio pubblicato sulla piattaforma.</p>
+      </div>
+    </section>
+
+    <section class="policy-section" id="s5">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>Sezione 5: Sicurezza e responsabilità</h2>
+      </div>
+
+      <div class="subsection">
+        <h3>Limiti di responsabilità dell'UAM</h3>
+        <div class="notice-box">
+          <p><strong>L'Università Autonoma di Madrid non si assume alcuna responsabilità</strong> per il livello di sicurezza, veridicità o idoneità degli annunci pubblicati sulla piattaforma, né per eventuali danni derivanti dall'interazione con tali annunci. Questa piattaforma è un progetto accademico sperimentale e deve essere intesa come tale.</p>
+        </div>
+        <p>L'UAM supervisiona il progetto da un punto di vista accademico e di ricerca, ma non può garantire l'assenza di errori, interruzioni del servizio o violazioni della sicurezza. In caso di incidente di sicurezza che riguardi dati personali, informeremo l'AEPD entro i termini stabiliti dal GDPR (72 ore).</p>
+      </div>
+    </section>
+
+    <section class="policy-section" id="s6">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>Sezione 6: I tuoi diritti e contatti</h2>
+      </div>
+    </section>
+
+    <section class="policy-section" id="s7">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>Legge Organica sulla Protezione dei Dati Personali e garanzia dei diritti digitali</h2>
+      </div>
+
+      <div class="subsection">
+        <h3>1. Oggetto e titolare del trattamento</h3>
+        <p>La presente Informativa sulla Privacy ha lo scopo di regolare il trattamento dei dati generati durante l'uso della piattaforma accademica di verifica degli annunci pubblicitari mediante intelligenza artificiale, sviluppata nell'ambito del Master in Intelligenza Artificiale (anno 2025–2026) dell'Università Autonoma di Madrid (UAM).</p>
+      </div>
+
+      <div class="subsection">
+        <h3>2. Quadro legale applicabile</h3>
+        <p>Il trattamento dei dati effettuato nell'ambito di questa piattaforma è regolato dalla seguente normativa vigente:</p>
+        <ul>
+          <li>Regolamento (UE) 2016/679 del Parlamento Europeo e del Consiglio, del 27 aprile 2016, relativo alla protezione delle persone fisiche con riguardo al trattamento dei dati personali (GDPR).</li>
+          <li>Legge Organica 3/2018, del 5 dicembre, sulla Protezione dei Dati Personali e la garanzia dei diritti digitali (LOPDGDD).</li>
+          <li>Legge 34/2002, dell'11 luglio, sui Servizi della Società dell'Informazione e del Commercio Elettronico (LSSI-CE).</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3>3. Dati personali raccolti</h3>
+        <p>La piattaforma è stata progettata in conformità con il principio della privacy per impostazione predefinita, riconosciuto dall'articolo 25 del GDPR. L'accesso al servizio non richiede una registrazione preventiva e non vengono richiesti o memorizzati dati identificativi di alcun tipo, quali nome, cognome, indirizzo e-mail, numero di telefono, documenti d'identità o informazioni di pagamento.</p>
+      </div>
+
+      <div class="subsection">
+        <h3>5. Finalità del trattamento dei dati</h3>
+        <p>I dati tecnici raccolti durante l'uso della piattaforma vengono utilizzati esclusivamente per le seguenti finalità:</p>
+        <ul>
+          <li>Garantire la disponibilità e il corretto funzionamento tecnico del servizio.</li>
+          <li>Applicare modelli di intelligenza artificiale al fine di fornire una verifica orientativa sul contenuto degli annunci analizzati.</li>
+          <li>Migliorare i modelli di verifica attraverso analisi aggregate e anonime, nel contesto del progetto di ricerca accademica.</li>
+          <li>Rilevare e prevenire usi fraudolenti o contrari ai termini del servizio.</li>
+          <li>Raccolta di informazioni linguistiche che forniranno agli utenti e alle ONG informazioni statistiche per valutare modelli rappresentativi, al fine di favorire una possibile sradicazione degli annunci fraudolenti.</li>
+          <li>Grazie ai dati ottenuti, puntare alla scalabilità del programma per poter incorporare successivamente eventuali modifiche che aiutino a migliorare il codice.</li>
+        </ul>
+        <p>I dati non vengono utilizzati per scopi commerciali, né vengono ceduti o comunicati a terzi per scopi pubblicitari. Non vengono inoltre effettuati trasferimenti internazionali di dati al di fuori dello Spazio Economico Europeo (SEE).</p>
+        <p>Tutto ciò è tutelato dalla legge sulla proprietà intellettuale spagnola, Articolo 32 relativo a citazioni, recensioni e illustrazioni a fini didattici o di ricerca scientifica, il quale stabilisce che se il progetto è esente da scopi commerciali ed è utilizzato con la mera finalità di ricerca/fini educativi, i contenuti possono essere utilizzati.</p>
+      </div>
+
+      <div class="subsection">
+        <h3>6. Diritti dell'utente</h3>
+        <p>In conformità con le disposizioni del Capo III del Regolamento (UE) 2016/679, l'utente potrà esercitare, in qualsiasi momento, i seguenti diritti in relazione al trattamento dei propri dati:</p>
+        <ul>
+          <li><strong>Diritto di accesso:</strong> ottenere la conferma che sia o meno in corso un trattamento di dati che lo riguardano e accedere agli stessi.</li>
+          <li><strong>Diritto di rettifica:</strong> richiedere la correzione di dati inesatti o incompleti.</li>
+          <li><strong>Diritto di cancellazione:</strong> richiedere l'eliminazione dei dati quando, tra i vari motivi, non sono più necessari per la finalità che ha motivato la loro raccolta.</li>
+          <li><strong>Diritto alla limitazione del trattamento:</strong> richiedere la sospensione del trattamento nei casi previsti dall'articolo 18 del GDPR.</li>
+          <li><strong>Diritto di opposizione:</strong> opporti al trattamento dei dati basato sul legittimo interesse del titolare.</li>
+          <li><strong>Diritto alla portabilità:</strong> ricevere i dati forniti in un formato strutturato, di uso comune e leggibile da dispositivo automatico.</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div>
+    <div class="footer-brand">UAM — Master IA 2025–2026</div>
+    <div>© 2026 Università Autonoma di Madrid. Progetto accademico.</div>
+  </div>
+  <div style="display:flex; gap: 24px; flex-wrap: wrap;">
+    <a href="#">Informativa sui Cookie</a>
+    <a href="#">Note Legali</a>
+    <a href="#">Contatti</a>
+    <a href="https://www.aepd.es" target="_blank">AEPD</a>
+  </div>
+</footer>
+
+<script>
+  // Smooth scroll for nav links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

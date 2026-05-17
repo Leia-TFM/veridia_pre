@@ -876,12 +876,33 @@ def animacion(color, luz):
 # Si el idioma de la UI no es español, traduce todo el bloque de golpe usando GoogleTranslator
 # y lo cachea en session_state para no repetir la llamada en cada rerender"
 def render_modal_quienes_somos(idioma_destino: str = "es"):
+    # "Diccionario con los enlaces a las políticas de privacidad por idioma"
+    links_privacidad = {
+        "es": "http://localhost:8000/privacidad/politica-privacidad_es.html",
+        "en": "http://localhost:8000/privacidad/politica-privacidad_en.html",
+        "fr": "http://localhost:8000/privacidad/politica-privacidad_fr.html",
+        "de": "http://localhost:8000/privacidad/politica-privacidad_de.html",
+        "it": "http://localhost:8000/privacidad/politica-privacidad_it.html",
+        "pt": "http://localhost:8000/privacidad/politica-privacidad_pt.html",
+        "ru": "http://localhost:8000/privacidad/politica-privacidad_ru.html",
+        "ar": "http://localhost:8000/privacidad/politica-privacidad_ar.html",
+        "ro": "http://localhost:8000/privacidad/politica-privacidad_ro.html",
+        "nl": "http://localhost:8000/privacidad/politica-privacidad_nl.html",
+        "ca": "http://localhost:8000/privacidad/politica-privacidad_ca.html",
+        "pl": "http://localhost:8000/privacidad/politica-privacidad_pl.html",
+        "uk": "http://localhost:8000/privacidad/politica-privacidad_uk.html",
+    }
+    
+    # "Si el idioma seleccionado no está en el diccionario, redirige por defecto a la versión en español (o inglés)"
+    url_privacidad = links_privacidad.get(idioma_destino, links_privacidad["es"])
+
     textos = [   # MODIFICAR EL TEXTO SEGÚN COMUNICACIÓN
         "¿Quiénes somos?",
         "Somos un equipo comprometido con la lucha contra el fraude laboral. Proyecto Verid.IA nace para ayudar a las personas a identificar ofertas de trabajo falsas mediante inteligencia artificial.",
         "¿Qué hacemos?",
         "Analizamos anuncios de trabajo (texto, URL o imagen) y evaluamos el riesgo de que sean fraudulentos, protegiendo a los usuarios de posibles estafas.",
-        "Política de privacidad"
+        "Política de privacidad",
+        "Si lo desea, clique el siguiente enlace para leer la política de privacidad."
     ]
 
     if idioma_destino != "es":
@@ -894,7 +915,7 @@ def render_modal_quienes_somos(idioma_destino: str = "es"):
             st.session_state[cache_key] = partes
         textos = st.session_state[cache_key]
 
-    t = textos   # HAY QUE CAMBIAR EL LINK PARA LA POLÍTICA DE PRIVACIDAD
+    t = textos   
     st.markdown(f"""
         <div style="background-color:#f9fbf2; border:2px solid #ddb6fc; border-radius:16px 16px 0 0;
             padding:32px; max-width:700px; margin:20px auto 0 auto;
@@ -905,8 +926,9 @@ def render_modal_quienes_somos(idioma_destino: str = "es"):
             <p style="font-size:16px; color:#555; text-align:center;">{t[3]}</p>
             <hr style="border-color:#ddb6fc; margin:20px 0;">
             <h3 style="color:#9b5fcf; text-align:center;">📖 {t[4]}</h3>
+            <p style="font-size:16px; color:#555; text-align:center;">{t[5]}</p>
             <div style="text-align:center; font-size:18px;">
-                <a href="https://twitter.com/TU_USUARIO" target="_blank" style="margin:0 12px; color:#1da1f2; text-decoration:none;">📄 PDF</a>
+                <a href="{url_privacidad}" target="_blank" style="margin:0 12px; color:#9b5fcf; font-weight:bold; text-decoration:none;">📄 {t[4]}</a>
             </div>
         </div>
     """, unsafe_allow_html=True)
@@ -1022,7 +1044,7 @@ def pagina_inicio():
     <div style="text-align:center; margin-top:10px;">
         <h3 style="color:#9b5fcf;">🌐 {UI_TEXTS[idioma_actual]['social_media']}</h3>
         <div style="font-size:18px;">
-            <a href="https://instagram.com/TU_USUARIO" target="_blank" style="margin:0 12px; color:#e1306c; text-decoration:none;">📸 Instagram</a>
+            <a href="https://www.instagram.com/proyectoverid.ia/" target="_blank" style="margin:0 12px; color:#e1306c; text-decoration:none;">📸 Instagram</a>
             <a href="https://www.linkedin.com/in/proyecto-verid-ia-9390653b8/" target="_blank" style="margin:0 12px; color:#0077b5; text-decoration:none;">💼 LinkedIn</a>   
         </div>
     </div>
