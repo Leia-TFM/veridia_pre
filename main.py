@@ -12,6 +12,7 @@ app = FastAPI(
 )
 
 app.mount("/privacidad", StaticFiles(directory="frontend", html=True), name="privacidad")
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
 # Incluir los routers de las rutas
 app.include_router(estadisticas.router, prefix="/api")

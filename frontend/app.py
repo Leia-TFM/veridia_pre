@@ -937,7 +937,12 @@ def render_modal_quienes_somos(idioma_destino: str = "es"):
 # el botón de 'Sobre Nosotros' con su modal desplegable y los enlaces a redes sociales.
 # Cuando el usuario elige idioma y pulsa 'Continuar' se redirige a la página del analizador"
 def pagina_inicio():
-    st.markdown("<h1 style='text-align:center; color:#8f9e25; font-size:100px;'>✔erid.IA</h1>", unsafe_allow_html=True)
+    st.markdown("""
+    <div style="text-align:center; overflow:hidden; height:200px;">
+        <img src="http://localhost:8000/static/logo.png" 
+             style="width:650px; height:280px; object-fit:cover; object-position:center; margin-top:-10px;">
+    </div>
+    """, unsafe_allow_html=True)
     st.divider()
 
     # "Idioma actual para traducir la UI"
@@ -997,6 +1002,7 @@ def pagina_inicio():
         st.session_state.page = "analizador"
         st.rerun()
     
+    st.divider()
     # "CSS BOTÓN VIOLETA SUAVE"
     st.markdown("""
     <style>
@@ -1513,7 +1519,13 @@ def pagina_analizador():
     # "HEADER"
     with st.container():
         #"Este markdown hace de st.title()"
-        st.markdown("<h1 style='text-align:center; color:#8f9e25; font-size:60px;'>✔erid.IA</h1>",unsafe_allow_html=True) 
+        st.markdown("""
+        <div style="text-align:center; overflow:hidden;">
+            <img src="http://localhost:8000/static/logo.png" width="400"
+                style="margin-top:-60px; margin-bottom:-60px;">
+        </div>
+        """, unsafe_allow_html=True)
+        st.divider()
         st.caption(lang_ui_input["info_label"])     
 
     # "MODO"
