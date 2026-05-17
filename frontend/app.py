@@ -1625,6 +1625,45 @@ def pagina_analizador():
     # "Botón de analizar"
     st.divider()
     st.markdown("<div id='seccion-analisis'></div>", unsafe_allow_html=True)
+    
+    # "Texto informativo para contexto previo del análisis"
+    info_texto_es = """
+    ℹ️ Información:
+    El sistema analizará el anuncio para detectar posibles señales de fraude laboral mediante IA. Devuelve el nivel
+    de riesgo detectado, con un nivel de confianza (0-100) siendo 0 confianza mínima y 100 confianza máxima. Después, 
+    devuelve un mensaje definitivo y las señales detectadas para determinar el veredicto.
+    """
+
+    # "Traducción automática según idioma de la UI"
+    if lang_ui != "es":
+        cache_key = f"info_analisis_{lang_ui}"
+
+        if cache_key not in st.session_state:
+            st.session_state[cache_key] = GoogleTranslator(
+                source="es",
+                target=lang_ui
+            ).translate(info_texto_es)
+
+        info_texto = st.session_state[cache_key]
+
+    else:
+        info_texto = info_texto_es
+
+    # "Caja visual informativa"
+    st.markdown(f"""
+    <div style="
+        background-color:#f9fbf2;
+        padding:15px;
+        border-radius:10px;
+        border-left:5px solid #b6c35d;
+        margin-bottom:20px;
+        font-size:18px;
+        line-height:1.7;
+        color:#333333;
+    ">
+        {info_texto.replace(chr(10), "<br>")}
+    </div>
+    """, unsafe_allow_html=True)
     analyze = st.button(f"🔎 {lang_ui_input['anuncio_label']}")
 
     # "ANÁLISIS"
