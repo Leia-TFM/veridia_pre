@@ -1491,7 +1491,7 @@ def pagina_analizador():
     # "HEADER"
     with st.container():
         #"Este markdown hace de st.title()"
-        st.markdown("<h1 style='text-align:center; color:#8f9e25; font-size:60px;'>✔ Proyecto Verid.IA</h1>",unsafe_allow_html=True) 
+        st.markdown("<h1 style='text-align:center; color:#8f9e25; font-size:60px;'>✔erid.IA</h1>",unsafe_allow_html=True) 
         st.caption(lang_ui_input["info_label"])     
 
     # "MODO"
