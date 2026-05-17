@@ -915,13 +915,67 @@ def render_modal_quienes_somos(idioma_destino: str = "es"):
 # el botón de 'Sobre Nosotros' con su modal desplegable y los enlaces a redes sociales.
 # Cuando el usuario elige idioma y pulsa 'Continuar' se redirige a la página del analizador"
 def pagina_inicio():
-    st.markdown("<h1 style='text-align:center; color:#8f9e25; font-size:100px;'>✔ Proyecto Verid.IA</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align:center; color:#8f9e25; font-size:100px;'>✔erid.IA</h1>", unsafe_allow_html=True)
     st.divider()
 
     # "Idioma actual para traducir la UI"
     idioma_actual = languages.get(st.session_state.get("idioma", "🇪🇸 Español"), "es")
 
-     # "CSS BOTÓN VIOLETA SUAVE"
+    st.title("🌍 " + UI_TEXTS[idioma_actual]["select_language_title"])
+
+    st.markdown("""
+    <style>
+    div[data-baseweb="select"] > div {
+        font-size: 26px !important;
+        padding: 20px 20px !important;
+        min-height: 80px !important;
+        border-radius: 12px !important;
+        align-items: center !important;
+        display: flex !important;
+    }
+    div[data-baseweb="select"] span {
+        font-size: 26px !important;
+        line-height: 80px !important;
+        white-space: nowrap !important;
+        overflow: visible !important;
+        text-overflow: unset !important;
+    }
+    ul[role="listbox"] {
+        max-height: 600px !important;
+        overflow-y: auto !important;
+    }
+    div[data-baseweb="popover"] li {
+        font-size: 22px !important;
+        padding: 14px 20px !important;
+        line-height: 1.5 !important;
+    }
+    div[data-testid="stSelectbox"] label {
+        font-size: 22px !important;
+        font-weight: bold !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # "Función que actualiza el idioma si se cambia en el selector, gracias a los session_state"
+    def actualizar_idioma():
+        st.session_state.idioma = st.session_state.selector_idioma
+
+    idioma_guardado = st.session_state.get("idioma") or "🇪🇸 Español"
+
+    selected_name = st.selectbox(
+        UI_TEXTS[idioma_actual]["select_language_title"],
+        list(languages.keys()),
+        index=list(languages.keys()).index(idioma_guardado if idioma_guardado in languages else "🇪🇸 Español"),
+        key="selector_idioma",
+        on_change=actualizar_idioma
+)
+
+    if st.button(UI_TEXTS[idioma_actual]["continue_phrase"]):
+        st.session_state.idioma = selected_name
+        st.session_state.page = "analizador"
+        st.rerun()
+    
+    # "CSS BOTÓN VIOLETA SUAVE"
     st.markdown("""
     <style>
     .st-key-btn_sobre_nosotros button,
@@ -994,61 +1048,6 @@ def pagina_inicio():
             if st.button(f"✕ {UI_TEXTS[idioma_actual]['close']}", key="cerrar_sobre_nosotros"):
                 st.session_state["mostrar_sobre_nosotros"] = False
                 st.rerun()
-
-    st.divider()     
-    st.title("🌍 " + UI_TEXTS[idioma_actual]["select_language_title"])
-
-    st.markdown("""
-    <style>
-    div[data-baseweb="select"] > div {
-        font-size: 26px !important;
-        padding: 20px 20px !important;
-        min-height: 80px !important;
-        border-radius: 12px !important;
-        align-items: center !important;
-        display: flex !important;
-    }
-    div[data-baseweb="select"] span {
-        font-size: 26px !important;
-        line-height: 80px !important;
-        white-space: nowrap !important;
-        overflow: visible !important;
-        text-overflow: unset !important;
-    }
-    ul[role="listbox"] {
-        max-height: 600px !important;
-        overflow-y: auto !important;
-    }
-    div[data-baseweb="popover"] li {
-        font-size: 22px !important;
-        padding: 14px 20px !important;
-        line-height: 1.5 !important;
-    }
-    div[data-testid="stSelectbox"] label {
-        font-size: 22px !important;
-        font-weight: bold !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-    # "Función que actualiza el idioma si se cambia en el selector, gracias a los session_state"
-    def actualizar_idioma():
-        st.session_state.idioma = st.session_state.selector_idioma
-
-    idioma_guardado = st.session_state.get("idioma") or "🇪🇸 Español"
-
-    selected_name = st.selectbox(
-        UI_TEXTS[idioma_actual]["select_language_title"],
-        list(languages.keys()),
-        index=list(languages.keys()).index(idioma_guardado if idioma_guardado in languages else "🇪🇸 Español"),
-        key="selector_idioma",
-        on_change=actualizar_idioma
-)
-
-    if st.button(UI_TEXTS[idioma_actual]["continue_phrase"]):
-        st.session_state.idioma = selected_name
-        st.session_state.page = "analizador"
-        st.rerun()
 
 # "Función que muestra dentro del modal los resultados de detección de idioma y traducción del anuncio.
 # Presenta el idioma detectado, si el texto es analizable, el texto original y el texto traducido en columnas paralelas"
