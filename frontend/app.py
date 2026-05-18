@@ -111,23 +111,23 @@ languages = {
 # "Diccionario con la traducción de todos los elementos visibles por pantalla a los demás idiomas"
 languages_input = {     
     "Español": {
-        "text_label": "Texto del anuncio",
-        "url_label": "URL del anuncio",
-        "imagen_label": "Imagen del anuncio",
-        "anuncio_label": "Analizar anuncio",
-        "file_label": "📷Sube una imagen del anuncio. Para mejores resultados, recorta la foto encuadrando el anuncio de forma nítida.",
-        "func_label": "Introduce un anuncio para detectar posibles fraudes.",
-        "info_label": "Detecta anuncios de trabajo potencialmente fraudulentos. Puede elegir una de las siguientes tres opciones (Copiar Texto / Copiar URL / Subir una imagen) para comprobarlo.",
-        "info_anuncio_label": "Información del anuncio",
-        "copiar_label": "Copia aquí tu anuncio (Texto/URL/Imagen)",
+        "text_label": "Texto de la oferta de empleo",
+        "url_label": "URL de la oferta de empleo",
+        "imagen_label": "Imagen de la oferta de empleo",
+        "anuncio_label": "Analizar la oferta de empleo",
+        "file_label": "📷Sube una imagen de la oferta de empleo. Para mejores resultados, recorta la foto encuadrando el anuncio de forma nítida.",
+        "func_label": "Introduce una oferta de empleo para detectar posibles fraudes.",
+        "info_label": "Detecta ofertas de empleo potencialmente fraudulentos. Puede elegir una de las siguientes tres opciones (Copiar Texto / Copiar URL / Subir una imagen) para comprobarlo.",
+        "info_anuncio_label": "Información de la oferta de empleo",
+        "copiar_label": "Copia aquí tu oferta de empleo (Texto/URL/Imagen)",
         "previa_label": "Vista previa",
         "info_imagen_label": "Sube una imagen para verla aquí.",
         "borrar_texto_label": "Borrar texto",
         "borrar_url_label": "Borrar URL",
         "borrar_imagen_label": "Borrar imagen",
-        "spinner_label": "Analizando anuncio...",
+        "spinner_label": "Analizando oferta de empleo...",
         "mode_label": "Seleccione un modo de uso",
-        "mode_label_one": "Analizar anuncio",
+        "mode_label_one": "Analizar oferta de empleo",
         "mode_label_two": "Mostrar estadísticas",
         "idioma_label": "Cambiar idioma",
         "seccion_label": "Ir a sección"
@@ -406,7 +406,7 @@ languages_input = {
 UI_TEXTS = {    
     "es":{
         "result":" ✔ Resultado del análisis",
-        "spanish_only_error": "Solo se permiten anuncios en español. Inténtalo de nuevo.",
+        "spanish_only_error": "Solo se permiten ofertas de empleo en español. Inténtalo de nuevo.",
         "data": "Introduce texto, url o sube una imagen", 
         "data_add": "Solo puedes introducir una opción: texto, URL o imagen", 
         "mode": "Detectar Idioma / Traducción",
@@ -798,7 +798,7 @@ def traducir_mensaje(lang, idioma_detectado, es_analizable):
 # "Diccionario para traducir el mensaje de validez del idioma desde el backend a cada uno de los idiomas posibles."
 translations_analisis = {  
     "es": {
-        "valid": "El anuncio requiere atención debido a posibles riesgos.",
+        "valid": "La oferta de empleo requiere atención debido a posibles riesgos.",
         "invalid": "Idioma no soportado. El idioma detectado es ({idioma}). Solo se admite español (es)."
     },
     "en": {
@@ -900,7 +900,7 @@ def render_modal_quienes_somos(idioma_destino: str = "es"):
         "¿Quiénes somos?",
         "Somos un equipo comprometido con la lucha contra el fraude laboral. Proyecto Verid.IA nace para ayudar a las personas a identificar ofertas de trabajo falsas mediante inteligencia artificial.",
         "¿Qué hacemos?",
-        "Analizamos anuncios de trabajo (texto, URL o imagen) y evaluamos el riesgo de que sean fraudulentos, protegiendo a los usuarios de posibles estafas.",
+        "Analizamos ofertas de empleo (texto, URL o imagen) y evaluamos el riesgo de que sean fraudulentos, protegiendo a los usuarios de posibles estafas.",
         "Política de privacidad",
         "Si lo desea, clique el siguiente enlace para leer la política de privacidad."
     ]
@@ -1666,7 +1666,7 @@ def pagina_analizador():
     # "Texto informativo para contexto previo del análisis"
     info_texto_es = """
         INFORMACIÓN:
-        El sistema analizará el anuncio para detectar posibles señales de fraude laboral mediante IA. Muestra un semáforo que, dependiendo del análisis del anuncio, puede ser ROJO (Fradulento), AMARILLO (Poco fiable) o VERDE (Legítimo). Además, devuelve el nivel de riesgo detectado, con un nivel de confianza (0-100) siendo 0 confianza mínima y 100 confianza máxima. Por último, enseña un mensaje definitivo y las señales detectadas para determinar el veredicto.
+        El sistema analizará la oferta de empleo para detectar posibles señales de fraude laboral mediante IA. Muestra un semáforo que, dependiendo del análisis de la oferta de empleo, puede ser ROJO (Fradulento), AMARILLO (Poco fiable) o VERDE (Legítimo). Además, devuelve el nivel de riesgo detectado, con un nivel de confianza (0-100) siendo 0 confianza mínima y 100 confianza máxima. Por último, enseña un mensaje definitivo y las señales detectadas para determinar el veredicto.
     """
 
     # "Traducción automática según idioma de la UI"
