@@ -115,7 +115,7 @@ languages_input = {
         "url_label": "URL de la oferta de empleo",
         "imagen_label": "Imagen de la oferta de empleo",
         "anuncio_label": "Analizar la oferta de empleo",
-        "file_label": "📷Sube una imagen de la oferta de empleo. Para mejores resultados, recorta la foto encuadrando el anuncio de forma nítida.",
+        "file_label": "Sube una imagen de la oferta de empleo. Para mejores resultados, recorta la foto encuadrando el anuncio de forma nítida.",
         "func_label": "Introduce una oferta de empleo para detectar posibles fraudes.",
         "info_label": "Detecta ofertas de empleo potencialmente fraudulentos. Puede elegir una de las siguientes tres opciones (Copiar Texto / Copiar URL / Subir una imagen) para comprobarlo.",
         "info_anuncio_label": "Información de la oferta de empleo",
@@ -138,7 +138,7 @@ languages_input = {
         "url_label": "Advertisement URL",
         "imagen_label": "Advertisement image",
         "anuncio_label": "Analyse advertisement",
-        "file_label": "📷Upload an image of the advertisement. For best results, crop the photo so that the ad is clearly framed.",
+        "file_label": "Upload an image of the advertisement. For best results, crop the photo so that the ad is clearly framed.",
         "func_label": "Insert an advertisement to detect potential fraud.",
         "info_label": "Detects potentially fraudulent job postings. You may select one of the following three options (Copy Text / Copy URL / Upload an image) to verify this.",
         "info_anuncio_label": "Advertisement´s information",
@@ -161,7 +161,7 @@ languages_input = {
         "url_label": "URL de l'annonce",
         "imagen_label": "Image de l'annonce",
         "anuncio_label": "Analyser l'annonce",
-        "file_label": "📷Téléchargez une image de l’annonce. Pour de meilleurs résultats, recadrez la photo afin que l’annonce soit clairement cadrée.",
+        "file_label": "Téléchargez une image de l’annonce. Pour de meilleurs résultats, recadrez la photo afin que l’annonce soit clairement cadrée.",
         "func_label": "Insérer un annonce pour détecter les fraudes potentielles.",
         "info_label": "Détecte les offres d'emploi potentiellement frauduleuses. Vous pouvez choisir l'une des trois options suivantes (Copier le texte / Copier l'URL / Télécharger une image) pour le vérifier.",
         "info_anuncio_label": "Information de l'annonce",
@@ -183,7 +183,7 @@ languages_input = {
         "url_label": "URL des Stellenangebots",
         "imagen_label": "Bild des Stellenangebots",
         "anuncio_label": "Stellenangebot analysieren",
-        "file_label": "📷Laden Sie ein Bild der Anzeige hoch. Für beste Ergebnisse, schneiden Sie das Foto so zu, dass die Anzeige klar eingerahmt ist.",
+        "file_label": "Laden Sie ein Bild der Anzeige hoch. Für beste Ergebnisse, schneiden Sie das Foto so zu, dass die Anzeige klar eingerahmt ist.",
         "func_label": "Ein Stellenangebot einfügen, um potenzielle Betrugsfälle zu erkennen",
         "info_label": "Erkennt potenziell betrügerische Stellenangebote. Sie können eine der folgenden drei Optionen auswählen (Text kopieren / URL kopieren / Bild hochladen), um dies zu überprüfen",
         "info_anuncio_label": "Informationen zum Stellenangebot",
@@ -205,7 +205,7 @@ languages_input = {
         "url_label": "URL dell'offerta di lavoro",
         "imagen_label": "Immagine dell'offerta di lavoro",
         "anuncio_label": "Analizza offerta di lavoro",
-        "file_label": "📷Carica un'immagine dell'annuncio. Per ottenere risultati migliori, ritaglia la foto in modo che l'annuncio sia chiaramente inquadrato.",
+        "file_label": "Carica un'immagine dell'annuncio. Per ottenere risultati migliori, ritaglia la foto in modo che l'annuncio sia chiaramente inquadrato.",
         "func_label": "Inserisci un'offerta di lavoro per rilevare potenziali frodi",
         "info_label": "Rileva potenziali offerte di lavoro fraudolente. Puoi selezionare una delle seguenti tre opzioni (Copia testo / Copia URL / Carica un'immagine) per verificarla",
         "info_anuncio_label": "Informazioni sull'offerta di lavoro",
@@ -227,7 +227,7 @@ languages_input = {
         "url_label": "URL da oferta de emprego",
         "imagen_label": "Imagem da oferta de emprego",
         "anuncio_label": "Analisar a oferta de emprego",
-        "file_label": "📷Envie uma imagem do anúncio. Para melhores resultados, recorte a foto para que o anúncio fique claramente enquadrado.",
+        "file_label": "Envie uma imagem do anúncio. Para melhores resultados, recorte a foto para que o anúncio fique claramente enquadrado.",
         "func_label": "Inserir uma oferta de emprego para detectar possíveis fraudes",
         "info_label": "Deteta potenciais ofertas de emprego fraudulentas. Pode selecionar uma das três opções seguintes (Copiar texto / Copiar URL / Carregar imagem) para verificá-la",
         "info_anuncio_label": "Informações sobre a oferta de emprego",
@@ -249,7 +249,7 @@ languages_input = {
         "url_label": "URL объявления о вакансии",
         "imagen_label": "изображение объявления о вакансии",
         "anuncio_label": "Проанализировать объявление о вакансии",
-        "file_label": "📷Загрузите изображение объявления. Для наилучших результатов, обрежьте фото так, чтобы объявление было чётко в кадре.",
+        "file_label": "Загрузите изображение объявления. Для наилучших результатов, обрежьте фото так, чтобы объявление было чётко в кадре.",
         "func_label": "Вставить объявление о вакансии, чтобы обнаружить возможное мошенничество",
         "info_label": "Обнаруживает потенциально мошеннические объявления о вакансиях. Вы можете выбрать один из следующих трех вариантов («Копировать текст» / «Копировать URL» / «Загрузить изображение») для проверки",
         "info_anuncio_label": "Информация о вакансии",
@@ -271,7 +271,7 @@ languages_input = {
         "url_label": "رابط عرض العمل",
         "imagen_label": "صورة عرض العمل",
         "anuncio_label": "تحليل عرض العمل",
-        "file_label": "📷قم بتحميل صورة للإعلان. للحصول على أفضل النتائج، قم بقص الصورة بحيث يظهر الإعلان بوضوح داخل الإطار",
+        "file_label": "قم بتحميل صورة للإعلان. للحصول على أفضل النتائج، قم بقص الصورة بحيث يظهر الإعلان بوضوح داخل الإطار",
         "func_label": "أدخل عرض العمل لاكتشاف الاحتيال المحتمل",
         "info_label": "عروض العمل الاحتيالية المحتملة. يمكنك اختيار أحد الخيارات الثلاثة التالية (نسخ النص / نسخ الرابط / تحميل صورة) للتحقق من ذلك",
         "info_anuncio_label": "معلومات عرض العمل",
@@ -293,7 +293,7 @@ languages_input = {
         "url_label": "URL-ul ofertei de angajare",
         "imagen_label": "Imaginea ofertei de angajare",
         "anuncio_label": "Analizați oferta de angajare",
-        "file_label": "📷Încarcă o imagine a anunțului. Pentru rezultate mai bune și pentru, decupează fotografia astfel încât anunțul să fie clar încadrat.",
+        "file_label": "Încarcă o imagine a anunțului. Pentru rezultate mai bune și pentru, decupează fotografia astfel încât anunțul să fie clar încadrat.",
         "func_label": "Introduceți o ofertă de angajare pentru a depista eventualele fraude",
         "info_label": "Detectează ofertele de angajare potențial frauduloase. Puteți selecta una dintre următoarele trei opțiuni (Copiați textul / Copiați URL-ul / Încărcați o imagine) pentru a verifica acest lucru",
         "info_anuncio_label": "Detalii despre oferta de angajare",
@@ -315,7 +315,7 @@ languages_input = {
         "url_label": "URL van de advertentie",
         "imagen_label": "Afbeelding van de advertentie",
         "anuncio_label": "Advertentie analyseren",
-        "file_label": "📷Upload een afbeelding van de advertentie. Voor de beste resultaten, snijd de foto bij zodat de advertentie duidelijk in beeld is.",
+        "file_label": "Upload een afbeelding van de advertentie. Voor de beste resultaten, snijd de foto bij zodat de advertentie duidelijk in beeld is.",
         "func_label": "Voer een advertentie in om mogelijke fraude te detecteren.",
         "info_label": "Detecteert mogelijk frauduleuze vacatures. U kunt een van de volgende drie opties kiezen (Tekst kopiëren / URL kopiëren / Afbeelding uploaden) om dit te controleren.",
         "info_anuncio_label": "Advertentie-informatie",
@@ -337,7 +337,7 @@ languages_input = {
         "url_label": "URL de l'oferta de treball",
         "imagen_label": "Imatge de l'oferta de treball",
         "anuncio_label": "Analitzar oferta de treball",
-        "file_label": "📷Puja una imatge de l’anunci. Per obtenir millors resultats, retalla la foto de manera que l’anunci quedi clarament enquadrat.",
+        "file_label": "Puja una imatge de l’anunci. Per obtenir millors resultats, retalla la foto de manera que l’anunci quedi clarament enquadrat.",
         "func_label": "Introdueix una oferta de treball per detectar possibles fraus",
         "info_label": "Detecta ofertes de treball potencialment fraudulentes. Pot escollir una de les següents tres opcions (Copiar text / Copiar URL / Puja una imatge) per comprovar-ho", #normalmente se gasta más triar (aunque creo que es más con cosas físicas que con decisiones) pero creo que escollir es más correcto (es más similar a seleccionar, lo que no se gasta 100% son seleccionar o elegir porque son castellanismos o en el caso de elegir es SOLO en contexto post elecciones), va en función de zonas y costumbres.
         "info_anuncio_label": "Informació de l'oferta de treball",
@@ -359,7 +359,7 @@ languages_input = {
         "url_label": "URL ogłoszenia",
         "imagen_label": "Obraz ogłoszenia",
         "anuncio_label": "Analizuj ogłoszenie",
-        "file_label": "📷Prześlij obraz reklamy. Aby uzyskać najlepsze wyniki, przytnij zdjęcie tak, aby reklama była wyraźnie w kadrze.",
+        "file_label": "Prześlij obraz reklamy. Aby uzyskać najlepsze wyniki, przytnij zdjęcie tak, aby reklama była wyraźnie w kadrze.",
         "func_label": "Wprowadź ogłoszenie, aby wykryć możliwe oszustwa.",
         "info_label": "Wykrywa potencjalnie fałszywe oferty pracy. Możesz wybrać jedną z trzech opcji (Skopiuj tekst / Skopiuj URL / Prześlij obraz), aby to sprawdzić.",
         "info_anuncio_label": "Informacje o ogłoszeniu",
@@ -381,7 +381,7 @@ languages_input = {
         "url_label": "URL оголошення",
         "imagen_label": "Зображення оголошення",
         "anuncio_label": "Аналізувати оголошення",
-        "file_label": "📷Завантажте зображення оголошення. Для найкращих результатів, обріжте фото так, щоб оголошення було чітко в кадрі.",
+        "file_label": "Завантажте зображення оголошення. Для найкращих результатів, обріжте фото так, щоб оголошення було чітко в кадрі.",
         "func_label": "Введіть оголошення для виявлення можливого шахрайства.",
         "info_label": "Виявляє потенційно шахрайські вакансії. Ви можете вибрати один із трьох варіантів (Скопіювати текст / Скопіювати URL / Завантажити зображення) для перевірки.",
         "info_anuncio_label": "Інформація про оголошення",
@@ -920,15 +920,15 @@ def render_modal_quienes_somos(idioma_destino: str = "es"):
         <div style="background-color:#f9fbf2; border:2px solid #ddb6fc; border-radius:16px 16px 0 0;
             padding:32px; max-width:700px; margin:20px auto 0 auto;
             box-shadow:0 5px 20px rgba(192,132,252,0.15);">
-            <h2 style="color:#9b5fcf; text-align:center;">👥 {t[0]}</h2>
+            <h2 style="color:#9b5fcf; text-align:center;">{t[0]}</h2>
             <p style="font-size:17px; color:#333; text-align:center;">{t[1]}</p>
-            <h3 style="color:#9b5fcf; text-align:center;">🎯 {t[2]}</h3>
+            <h3 style="color:#9b5fcf; text-align:center;">{t[2]}</h3>
             <p style="font-size:16px; color:#555; text-align:center;">{t[3]}</p>
             <hr style="border-color:#ddb6fc; margin:20px 0;">
-            <h3 style="color:#9b5fcf; text-align:center;">📖 {t[4]}</h3>
+            <h3 style="color:#9b5fcf; text-align:center;">{t[4]}</h3>
             <p style="font-size:16px; color:#555; text-align:center;">{t[5]}</p>
             <div style="text-align:center; font-size:18px;">
-                <a href="{url_privacidad}" target="_blank" style="margin:0 12px; color:#9b5fcf; font-weight:bold; text-decoration:none;">📄 {t[4]}</a>
+                <a href="{url_privacidad}" target="_blank" style="margin:0 12px; color:#9b5fcf; font-weight:bold; text-decoration:none;">{t[4]}</a>
             </div>
         </div>
     """, unsafe_allow_html=True)
@@ -948,7 +948,7 @@ def pagina_inicio():
     # "Idioma actual para traducir la UI"
     idioma_actual = languages.get(st.session_state.get("idioma", "🇪🇸 Español"), "es")
 
-    st.title("🌍 " + UI_TEXTS[idioma_actual]["select_language_title"])
+    st.title(f"🗺️ {UI_TEXTS[idioma_actual]['select_language_title']}")
 
     st.markdown("""
     <style>
@@ -994,8 +994,9 @@ def pagina_inicio():
         list(languages.keys()),
         index=list(languages.keys()).index(idioma_guardado if idioma_guardado in languages else "🇪🇸 Español"),
         key="selector_idioma",
-        on_change=actualizar_idioma
-)
+        on_change=actualizar_idioma,
+        label_visibility="collapsed"
+    )
 
     if st.button(UI_TEXTS[idioma_actual]["continue_phrase"]):
         st.session_state.idioma = selected_name
@@ -1042,13 +1043,13 @@ def pagina_inicio():
     # "BOTÓN "SOBRE NOSOTROS""
     col_left, col_center, col_right = st.columns([2, 1, 2])
     with col_center:
-        if st.button(f"ℹ️ {UI_TEXTS[idioma_actual]['about_us']}", key="btn_sobre_nosotros", use_container_width=True):
+        if st.button(f"{UI_TEXTS[idioma_actual]['about_us']}", key="btn_sobre_nosotros", use_container_width=True):
             st.session_state["mostrar_sobre_nosotros"] = True
     
     # CAMBIAR EL LINK DE LAS REDES SOCIALES
     st.markdown(f"""
     <div style="text-align:center; margin-top:10px;">
-        <h3 style="color:#9b5fcf;">🌐 {UI_TEXTS[idioma_actual]['social_media']}</h3>
+        <h3 style="color:#9b5fcf;">{UI_TEXTS[idioma_actual]['social_media']}</h3>
         <div style="font-size:18px;">
             <a href="https://www.instagram.com/proyectoverid.ia/" target="_blank" style="margin:0 12px; color:#e1306c; text-decoration:none;">📸 Instagram</a>
             <a href="https://www.linkedin.com/in/proyecto-verid-ia-9390653b8/" target="_blank" style="margin:0 12px; color:#0077b5; text-decoration:none;">💼 LinkedIn</a>   
@@ -1303,7 +1304,6 @@ def mostrar_resultados(res_seg, res_det, lang_ui):
     <div style="margin-top:18px;padding:12px 18px;border-radius:10px;
                 background:#f1f5f9;border:1px solid #cbd5e1;
                 display:flex;align-items:flex-start;gap:10px;">
-        <span style="font-size:20px;">🤖</span>
         <span style="font-size:17px;color:#111827;line-height:1.6;">{aviso_ia}</span>
     </div>
     """, unsafe_allow_html=True)
@@ -1484,7 +1484,7 @@ def pagina_analizador():
         
         st.divider()      
 
-        if st.button(f"↩️{lang_ui_input['idioma_label']}"):
+        if st.button(f"{lang_ui_input['idioma_label']}"):
             st.session_state.page = "home"
             st.rerun()
         
@@ -1555,7 +1555,7 @@ def pagina_analizador():
 
     # "LAYOUT"
 
-    st.subheader(f"📄 {lang_ui_input["info_anuncio_label"]}")   
+    st.subheader(f"{lang_ui_input["info_anuncio_label"]}")   
 
     # "Inicializar session_state si no existe"
     if "texto" not in st.session_state:
@@ -1688,18 +1688,18 @@ def pagina_analizador():
     st.markdown(f"""
     <div style="
         background-color:#f9fbf2;
-        padding:15px;
-        border-radius:10px;
-        border-left:5px solid #b6c35d;
-        margin-bottom:20px;
-        font-size:18px;
-        line-height:1.7;
+        padding:10px 12px;
+        border-radius:8px;
+        border-left:4px solid #b6c35d;
+        margin-bottom:12px;
+        font-size:15px;
+        line-height:1.8;
         color:#333333;
     ">
         {info_texto.replace(chr(10), "<br>")}
     </div>
     """, unsafe_allow_html=True)
-    analyze = st.button(f"🔎 {lang_ui_input['anuncio_label']}")
+    analyze = st.button(f"🔍 {lang_ui_input['anuncio_label']}")
 
     # "ANÁLISIS"
     if analyze:
@@ -1907,7 +1907,7 @@ if st.session_state.get("res_seg") is not None:
 
     with col_btn1:
         if st.button(
-            f"🔎 {UI_TEXTS[_lang]['detect']}",
+            f"🔍 {UI_TEXTS[_lang]['detect']}",
             key="abrir_modal_btn"
         ):
             st.session_state.open_modal = True
