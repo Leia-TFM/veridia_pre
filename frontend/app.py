@@ -1661,10 +1661,8 @@ def pagina_analizador():
     
     # "Texto informativo para contexto previo del análisis"
     info_texto_es = """
-    ℹ️ Información:
-    El sistema analizará el anuncio para detectar posibles señales de fraude laboral mediante IA. Devuelve el nivel
-    de riesgo detectado, con un nivel de confianza (0-100) siendo 0 confianza mínima y 100 confianza máxima. Después, 
-    devuelve un mensaje definitivo y las señales detectadas para determinar el veredicto.
+        INFORMACIÓN:
+        El sistema analizará el anuncio para detectar posibles señales de fraude laboral mediante IA. Muestra un semáforo que, dependiendo del análisis del anuncio, puede ser ROJO (Fradulento), AMARILLO (Poco fiable) o VERDE (Legítimo). Además, devuelve el nivel de riesgo detectado, con un nivel de confianza (0-100) siendo 0 confianza mínima y 100 confianza máxima. Por último, enseña un mensaje definitivo y las señales detectadas para determinar el veredicto.
     """
 
     # "Traducción automática según idioma de la UI"
