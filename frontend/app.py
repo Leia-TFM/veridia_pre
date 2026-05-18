@@ -1,16 +1,23 @@
-# "El archivo app.py es el Frontend principal de la aplicación. Se encarga de construir
-# la interfaz web con Streamlit, gestionar la navegación entre páginas, el sistema de idiomas,
-# los inputs del usuario (texto, URL e imagen) y comunicarse con el Backend a través de las APIs
-# siguiendo los criterios de los diferentes grupos del proyecto (estilo, colores, disposición, etc...)"
+"""
+Interfaz frontend basada en Streamlit.
 
+Este módulo construye la UI, gestiona estado de sesión y realiza las
+llamadas HTTP a los endpoints del backend (`/api/detectar_idioma`, `/api/analizar`,
+`/api/estadisticas`). Mantiene los textos traducidos para los distintos idiomas
+soportados por la aplicación.
+"""
+
+# "Librerías principales: streamlit para la interfaz, requests para las llamadas a la API,
+
+import time
+
+import requests
 # "Librerías principales: streamlit para la interfaz, requests para las llamadas a la API,
 # deep_translator para traducciones en tiempo real de textos estáticos de la UI"
 import streamlit as st
-from streamlit_modal import Modal
-from streamlit_scroll_navigation import scroll_navbar  
-import requests
-import time
 from deep_translator import GoogleTranslator
+from streamlit_modal import Modal
+from streamlit_scroll_navigation import scroll_navbar
 
 ##### LAS FRASES EN MAYÚSCULA SON PARA COSAS QUE HAY QUE CAMBIAR
 
@@ -30,16 +37,13 @@ if "idioma" not in st.session_state:
 
 # "CONFIG"
 # "Define el título de la página y su icono en la pestaña del navegador"
-st.set_page_config(                  
-    page_title="Proyecto Verid.IA",
-    page_icon="✔",
-    layout="wide"
-)
+st.set_page_config(page_title="Proyecto Verid.IA", page_icon="✔", layout="wide")
 
-# "CSS" 
-# "Código encargado del diseño (colores, tipo de celda, botones, área de texto y modal de la detección/traducción) 
+# "CSS"
+# "Código encargado del diseño (colores, tipo de celda, botones, área de texto y modal de la detección/traducción)
 # de la web en ese orden, formato html, botón principal"
-st.markdown("""     
+st.markdown(
+    """     
 <style>
 
 .main {
@@ -68,7 +72,10 @@ textarea {
 }
             
 </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
+
 
 # "FUNCIONES API"
 # "Función genérica para hacer llamadas POST al Backend, admite datos de formulario y archivos opcionales.
@@ -81,6 +88,7 @@ def llamar_api(endpoint, data, files=None):
         st.error(f"❌ Error de conexión: {e}")
         return None
 
+
 # "Versión GET de la función anterior, usada principalmente para obtener las estadísticas globales"
 def llamar_api_get(endpoint):
     try:
@@ -89,10 +97,11 @@ def llamar_api_get(endpoint):
     except requests.exceptions.RequestException as e:
         st.error(f"❌ Error de conexión: {e}")
         return None
-    
+
+
 # "IDIOMAS"
 # "Los idiomas seleccionables en el desplegable"
-languages = {       
+languages = {
     "🇪🇸 Español": "es",
     "🇬🇧 English": "en",
     "🇫🇷 Français": "fr",
@@ -109,7 +118,7 @@ languages = {
 }
 
 # "Diccionario con la traducción de todos los elementos visibles por pantalla a los demás idiomas"
-languages_input = {     
+languages_input = {
     "Español": {
         "text_label": "Texto de la oferta de empleo",
         "url_label": "URL de la oferta de empleo",
@@ -130,8 +139,7 @@ languages_input = {
         "mode_label_one": "Analizar oferta de empleo",
         "mode_label_two": "Mostrar estadísticas",
         "idioma_label": "Cambiar idioma",
-        "seccion_label": "Ir a sección"
-
+        "seccion_label": "Ir a sección",
     },
     "English": {
         "text_label": "Advertisement's text",
@@ -153,8 +161,7 @@ languages_input = {
         "mode_label_one": "Analyse advertisement",
         "mode_label_two": "Show statistics",
         "idioma_label": "Change language",
-        "seccion_label": "Go to section"
-
+        "seccion_label": "Go to section",
     },
     "Français": {
         "text_label": "Texte de l'annonce",
@@ -176,7 +183,7 @@ languages_input = {
         "mode_label_one": "Analyser l'annonce",
         "mode_label_two": "Afficher les statistiques",
         "idioma_label": "Changer de langue",
-        "seccion_label": "Accéder à la section"
+        "seccion_label": "Accéder à la section",
     },
     "Deutsch": {
         "text_label": "Text des Stellenangebots",
@@ -198,7 +205,7 @@ languages_input = {
         "mode_label_one": "Stellenangebot analysieren",
         "mode_label_two": "Statistiken anzeigen",
         "idioma_label": "Sprache ändern",
-        "seccion_label": "Zum Abschnitt gehen"
+        "seccion_label": "Zum Abschnitt gehen",
     },
     "Italiano": {
         "text_label": "Testo dell'offerta di lavoro",
@@ -220,7 +227,7 @@ languages_input = {
         "mode_label_one": "Analizza annuncio",
         "mode_label_two": "Mostra statistiche",
         "idioma_label": "Cambia lingua",
-        "seccion_label": "Vai alla sezione"
+        "seccion_label": "Vai alla sezione",
     },
     "Português": {
         "text_label": "Texto da oferta de emprego",
@@ -242,7 +249,7 @@ languages_input = {
         "mode_label_one": "Analisar anúncio",
         "mode_label_two": "Mostrar estatísticas",
         "idioma_label": "Mudar idioma",
-        "seccion_label": "Ir para a secção"
+        "seccion_label": "Ir para a secção",
     },
     "Русский": {
         "text_label": "Текст объявления о вакансии",
@@ -264,7 +271,7 @@ languages_input = {
         "mode_label_one": "Анализировать объявление",
         "mode_label_two": "Показать статистику",
         "idioma_label": "Сменить язык",
-        "seccion_label": "Перейти к разделу"
+        "seccion_label": "Перейти к разделу",
     },
     "العربية": {
         "text_label": "نص عرض العمل",
@@ -286,7 +293,7 @@ languages_input = {
         "mode_label_one": "تحليل الإعلان",
         "mode_label_two": "عرض الإحصائيات",
         "idioma_label": "تغيير اللغة",
-        "seccion_label": "الذهاب إلى القسم"
+        "seccion_label": "الذهاب إلى القسم",
     },
     "Română": {
         "text_label": "Textul ofertei de angajare",
@@ -308,7 +315,7 @@ languages_input = {
         "mode_label_one": "Analizați anunțul",
         "mode_label_two": "Afișează statistici",
         "idioma_label": "Schimbă limba",
-        "seccion_label": "Mergi la secțiune"
+        "seccion_label": "Mergi la secțiune",
     },
     "Neerlandés": {
         "text_label": "Tekst van de advertentie",
@@ -330,7 +337,7 @@ languages_input = {
         "mode_label_one": "Advertentie analyseren",
         "mode_label_two": "Statistieken tonen",
         "idioma_label": "Taal wijzigen",
-        "seccion_label": "Ga naar sectie"
+        "seccion_label": "Ga naar sectie",
     },
     "Catalán": {
         "text_label": "Text de l'oferta de treball",
@@ -339,7 +346,7 @@ languages_input = {
         "anuncio_label": "Analitzar oferta de treball",
         "file_label": "Puja una imatge de l’anunci. Per obtenir millors resultats, retalla la foto de manera que l’anunci quedi clarament enquadrat.",
         "func_label": "Introdueix una oferta de treball per detectar possibles fraus",
-        "info_label": "Detecta ofertes de treball potencialment fraudulentes. Pot escollir una de les següents tres opcions (Copiar text / Copiar URL / Puja una imatge) per comprovar-ho", #normalmente se gasta más triar (aunque creo que es más con cosas físicas que con decisiones) pero creo que escollir es más correcto (es más similar a seleccionar, lo que no se gasta 100% son seleccionar o elegir porque son castellanismos o en el caso de elegir es SOLO en contexto post elecciones), va en función de zonas y costumbres.
+        "info_label": "Detecta ofertes de treball potencialment fraudulentes. Pot escollir una de les següents tres opcions (Copiar text / Copiar URL / Puja una imatge) per comprovar-ho",  # normalmente se gasta más triar (aunque creo que es más con cosas físicas que con decisiones) pero creo que escollir es más correcto (es más similar a seleccionar, lo que no se gasta 100% son seleccionar o elegir porque son castellanismos o en el caso de elegir es SOLO en contexto post elecciones), va en función de zonas y costumbres.
         "info_anuncio_label": "Informació de l'oferta de treball",
         "copiar_label": "Pega aquí el teu anunci (Text, URL, Imatge)",
         "previa_label": "Vista prèvia",
@@ -352,7 +359,7 @@ languages_input = {
         "mode_label_one": "Analitzar anunci",
         "mode_label_two": "Mostra estadístiques",
         "idioma_label": "Canviar idioma",
-        "seccion_label": "Anar a la secció"
+        "seccion_label": "Anar a la secció",
     },
     "Polaco": {
         "text_label": "Treść ogłoszenia",
@@ -374,7 +381,7 @@ languages_input = {
         "mode_label_one": "Analizuj ogłoszenie",
         "mode_label_two": "Pokaż statystyki",
         "idioma_label": "Zmień język",
-        "seccion_label": "Przejdź do sekcji"
+        "seccion_label": "Przejdź do sekcji",
     },
     "Ucraniano": {
         "text_label": "Текст оголошення",
@@ -396,19 +403,19 @@ languages_input = {
         "mode_label_one": "Аналізувати оголошення",
         "mode_label_two": "Показати статистику",
         "idioma_label": "Змінити мову",
-        "seccion_label": "Перейти до розділу"
-    }
+        "seccion_label": "Перейти до розділу",
+    },
 }
 
 # "TEXTOS RESULTADO"
 # "Diccionario con todos los textos que aparecen en los resultados del análisis traducidos a cada idioma soportado.
 # Se accede a él siempre mediante el código de idioma de dos letras (ej: 'es', 'en', 'fr'...)"
-UI_TEXTS = {    
-    "es":{
-        "result":" ✔ Resultado del análisis",
+UI_TEXTS = {
+    "es": {
+        "result": " ✔ Resultado del análisis",
         "spanish_only_error": "Solo se permiten ofertas de empleo en español. Inténtalo de nuevo.",
-        "data": "Introduce texto, url o sube una imagen", 
-        "data_add": "Solo puedes introducir una opción: texto, URL o imagen", 
+        "data": "Introduce texto, url o sube una imagen",
+        "data_add": "Solo puedes introducir una opción: texto, URL o imagen",
         "mode": "Detectar Idioma / Traducción",
         "lang_phrase": "Idioma detectado",
         "valid_phrase": "Texto válido para análisis",
@@ -421,19 +428,19 @@ UI_TEXTS = {
         "green": "Riesgo bajo",
         "yellow": "Riesgo medio",
         "red": "Riesgo alto",
-        "close": "Entendido", #EXTRA
-        "detect": "Mostrar Detección/Traducción",  #EXTRA
+        "close": "Entendido",  # EXTRA
+        "detect": "Mostrar Detección/Traducción",  # EXTRA
         "config_title": "Configuración",
         "select_language_title": "Selecciona idioma",
         "continue_phrase": "Continuar",
         "about_us": "¿Quiénes somos?",
-        "social_media": "Nuestras Redes Sociales"
+        "social_media": "Nuestras Redes Sociales",
     },
-    "en":{
-        "result":" ✔ Analysis Result",
+    "en": {
+        "result": " ✔ Analysis Result",
         "spanish_only_error": "Only advertisements in Spanish are allowed. Try again.",
         "data": "Enter text, url or upload an image",
-        "data_add": "You can only enter one option: text, URL or image",  
+        "data_add": "You can only enter one option: text, URL or image",
         "mode": "Detect Language / Translation",
         "lang_phrase": "Language detected",
         "valid_phrase": "Text suitable for analysis",
@@ -449,16 +456,16 @@ UI_TEXTS = {
         "close": "Understood",
         "detect": "Check Detection/Translation",
         "config_title": "Configuration",
-        "select_language_title": "Choose Language", 
+        "select_language_title": "Choose Language",
         "continue_phrase": "Continue",
         "about_us": "About us",
-        "social_media": "Our Social Media" 
+        "social_media": "Our Social Media",
     },
-    "fr":{
-        "result":" ✔ Résultat de l'analyse",
+    "fr": {
+        "result": " ✔ Résultat de l'analyse",
         "spanish_only_error": "Seules les annonces en espagnol sont autorisées. Réessayez.",
         "data": "Saisissez du texte, une URL ou téléchargez une image",
-        "data_add": "Vous ne pouvez saisir qu'un seul élément : du texte, une URL ou une image",  
+        "data_add": "Vous ne pouvez saisir qu'un seul élément : du texte, une URL ou une image",
         "mode": "Détection de la langue / Traduction",
         "lang_phrase": "Langue détectée",
         "valid_phrase": "Texte valable pour l'analyse",
@@ -474,16 +481,16 @@ UI_TEXTS = {
         "close": "Compris",
         "detect": "Vérifier Détection/Traduction",
         "config_title": "Configuration",
-        "select_language_title": "Choisir la langue", 
+        "select_language_title": "Choisir la langue",
         "continue_phrase": "Continuer",
         "about_us": "Qui sommes-nous?",
-        "social_media": "Nos Réseaux Sociaux" 
+        "social_media": "Nos Réseaux Sociaux",
     },
     "de": {
         "result": " ✔ Analyseergebnis",
         "spanish_only_error": "Nur Anzeigen auf Spanisch sind erlaubt. Versuche es erneut.",
         "data": "Gib Text oder eine URL ein oder lade ein Bild hoch",
-        "data_add": "Du kannst nur eine Option eingeben: Text, URL oder Bilde", 
+        "data_add": "Du kannst nur eine Option eingeben: Text, URL oder Bilde",
         "mode": "Sprache erkennen / Übersetzen",
         "lang_phrase": "Erkannte Sprache",
         "valid_phrase": "Text geeignet für die Analyse",
@@ -499,16 +506,16 @@ UI_TEXTS = {
         "close": "Verstanden",
         "detect": "Erkennung/Übersetzung anzeigen",
         "config_title": "Konfiguration",
-        "select_language_title": "Sprache auswählen", 
+        "select_language_title": "Sprache auswählen",
         "continue_phrase": "Weiter",
         "about_us": "Über uns",
-        "social_media": "Unsere Sozialen Medien" 
+        "social_media": "Unsere Sozialen Medien",
     },
     "it": {
         "result": " ✔ Risultato dell'analisi",
         "spanish_only_error": "Sono consentiti solo annunci in spagnolo. Riprova.",
         "data": "Inserisci testo, URL o carica un'immagine",
-        "data_add": "È possibile inserire solo un'opzione tra testo, URL e immagine", 
+        "data_add": "È possibile inserire solo un'opzione tra testo, URL e immagine",
         "mode": "Rileva lingua / Traduzione",
         "lang_phrase": "Lingua rilevata",
         "valid_phrase": "Testo idoneo all'analisi",
@@ -524,16 +531,16 @@ UI_TEXTS = {
         "close": "Capito",
         "detect": "Mostra rilevamento/traduzione",
         "config_title": "Configurazione",
-        "select_language_title": "Seleziona lingua", 
+        "select_language_title": "Seleziona lingua",
         "continue_phrase": "Continua",
         "about_us": "Chi siamo?",
-        "social_media": "I nostri Social Media" 
+        "social_media": "I nostri Social Media",
     },
     "pt": {
         "result": " ✔ Resultado da análise",
         "spanish_only_error": "Apenas anúncios em espanhol são permitidos. Tente novamente.",
         "data": "Introduza texto, URL ou carregue uma imagem",
-        "data_add": "Só pode introduzir uma opção: texto, URL ou imagem", 
+        "data_add": "Só pode introduzir uma opção: texto, URL ou imagem",
         "mode": "Detectar idioma / Tradução",
         "lang_phrase": "Idioma detectado",
         "valid_phrase": "Texto válido para análise",
@@ -549,16 +556,16 @@ UI_TEXTS = {
         "close": "Entendido",
         "detect": "Mostrar deteção/tradução",
         "config_title": "Configuração",
-        "select_language_title": "Selecionar idioma", 
+        "select_language_title": "Selecionar idioma",
         "continue_phrase": "Continuar",
         "about_us": "Quem somos?",
-        "social_media": "As nossas Redes Sociais" 
+        "social_media": "As nossas Redes Sociais",
     },
     "ru": {
         "result": " ✔ Результат анализа",
         "spanish_only_error": "Разрешены только объявления на испанском языке. Попробуйте снова.",
         "data": "Введите текст, URL или загрузите изображение",
-        "data_add": "Вы можете ввести только один вариант: текст, URL или изображение", 
+        "data_add": "Вы можете ввести только один вариант: текст, URL или изображение",
         "mode": "Определить язык / Перевод",
         "lang_phrase": "Определённый язык",
         "valid_phrase": "Текст пригоден для анализа",
@@ -574,16 +581,16 @@ UI_TEXTS = {
         "close": "Понятно",
         "detect": "Показать распознавание/перевод",
         "config_title": "Настройки",
-        "select_language_title": "Выберите язык", 
+        "select_language_title": "Выберите язык",
         "continue_phrase": "Продолжить",
         "about_us": "Кто мы?",
-        "social_media": "Наши социальные сети" 
+        "social_media": "Наши социальные сети",
     },
     "ar": {
         "result": " ✔ نتيجة التحليل",
         "spanish_only_error": "يُسمح فقط بالإعلانات باللغة الإسبانية. حاول مرة أخرى.",
         "data": "أدخل نصًا أو رابطًا أو قم بتحميل صورة",
-        "data_add": "يمكنك إدخال خيار واحد فقط من النص أو الرابط أو الصورة", 
+        "data_add": "يمكنك إدخال خيار واحد فقط من النص أو الرابط أو الصورة",
         "mode": "اكتشاف اللغة / الترجمة",
         "lang_phrase": "اللغة المكتشفة",
         "valid_phrase": "النص صالح للتحليل",
@@ -599,10 +606,10 @@ UI_TEXTS = {
         "close": "مفهوم",
         "detect": "إظهار الكشف/الترجمة",
         "config_title": "الإعدادات",
-        "select_language_title": "اختر اللغة", 
+        "select_language_title": "اختر اللغة",
         "continue_phrase": "متابعة",
         "about_us": "من نحن؟",
-        "social_media": "حساباتنا على مواقع التواصل الاجتماعي"
+        "social_media": "حساباتنا على مواقع التواصل الاجتماعي",
     },
     "ro": {
         "result": " ✔ Rezultatul analizei",
@@ -624,10 +631,10 @@ UI_TEXTS = {
         "close": "Am înțeles",
         "detect": "Afișează detectarea/traducerea",
         "config_title": "Configurare",
-        "select_language_title": "Selectați limba", 
+        "select_language_title": "Selectați limba",
         "continue_phrase": "Continuați",
         "about_us": "Cine suntem?",
-        "social_media": "Rețelele noastre sociale" 
+        "social_media": "Rețelele noastre sociale",
     },
     "nl": {
         "result": " ✔ Analyseresultaat",
@@ -649,10 +656,10 @@ UI_TEXTS = {
         "close": "Begrepen",
         "detect": "Detectie/vertaling weergeven",
         "config_title": "Instellingen",
-        "select_language_title": "Taal kiezen", 
+        "select_language_title": "Taal kiezen",
         "continue_phrase": "Doorgaan",
         "about_us": "Wie zijn wij?",
-        "social_media": "Onze Sociale Media"
+        "social_media": "Onze Sociale Media",
     },
     "ca": {
         "result": " ✔ Resultat de l'anàlisi",
@@ -666,7 +673,7 @@ UI_TEXTS = {
         "translated_phrase": "Text traduït",
         "message": "Missatge",
         "veredict": "Veredicte",
-        "indicator": "Indicadors detectats", 
+        "indicator": "Indicadors detectats",
         "trust": "Confiança",
         "green": "Risc baix",
         "yellow": "Risc mitjà",
@@ -674,10 +681,10 @@ UI_TEXTS = {
         "close": "Entengut",
         "detect": "Mostra la detecció/traducció",
         "config_title": "Configuració",
-        "select_language_title": "Selecciona l'idioma", 
+        "select_language_title": "Selecciona l'idioma",
         "continue_phrase": "Continuar",
         "about_us": "Qui som?",
-        "social_media": "Les nostres Xarxes Socials"
+        "social_media": "Les nostres Xarxes Socials",
     },
     "pl": {
         "result": " ✔ Wynik analizy",
@@ -699,10 +706,10 @@ UI_TEXTS = {
         "close": "Rozumiem",
         "detect": "Pokaż wykrycie/tłumaczenie",
         "config_title": "Ustawienia",
-        "select_language_title": "Wybierz język", 
+        "select_language_title": "Wybierz język",
         "continue_phrase": "Kontynuuj",
         "about_us": "Kim jesteśmy?",
-        "social_media": "Nasze Media Społecznościowe"
+        "social_media": "Nasze Media Społecznościowe",
     },
     "uk": {
         "result": " ✔ Результат аналізу",
@@ -724,153 +731,153 @@ UI_TEXTS = {
         "close": "Зрозуміло",
         "detect": "Показати розпізнавання/переклад",
         "config_title": "Налаштування",
-        "select_language_title": "Оберіть мову", 
+        "select_language_title": "Оберіть мову",
         "continue_phrase": "Продовжити",
         "about_us": "Хто ми?",
-        "social_media": "Наші соціальні мережі"
+        "social_media": "Наші соціальні мережі",
     },
 }
 
 # "Diccionario para traducir el mensaje desde el backend a cada uno de los idiomas posibles."
-translations = {  
+translations = {
     "es": {
         "valid": "El texto es en español ({idioma}) y es analizable.",
-        "invalid": "Idioma no soportado. El idioma detectado es ({idioma}). Solo se admite español (es)."
+        "invalid": "Idioma no soportado. El idioma detectado es ({idioma}). Solo se admite español (es).",
     },
     "en": {
         "valid": "The text is in Spanish ({idioma}) and can be analyzed.",
-        "invalid": "Unsupported language. The detected language is ({idioma}). Only Spanish (es) is allowed."
+        "invalid": "Unsupported language. The detected language is ({idioma}). Only Spanish (es) is allowed.",
     },
     "fr": {
         "valid": "Le texte est en espagnol ({idioma}) et peut être analysé.",
-        "invalid": "Langue non prise en charge. La langue détectée est ({idioma}). Seul l'espagnol (es) est autorisé."
+        "invalid": "Langue non prise en charge. La langue détectée est ({idioma}). Seul l'espagnol (es) est autorisé.",
     },
     "de": {
         "valid": "Der Text ist auf Spanisch ({idioma}) und kann analysiert werden.",
-        "invalid": "Nicht unterstützte Sprache. Die erkannte Sprache ist ({idioma}). Nur Spanisch (es) ist zulässig."
+        "invalid": "Nicht unterstützte Sprache. Die erkannte Sprache ist ({idioma}). Nur Spanisch (es) ist zulässig.",
     },
     "it": {
         "valid": "Il testo è in spagnolo ({idioma}) e può essere analizzato.",
-        "invalid": "Lingua non supportata. La lingua rilevata è ({idioma}). È consentito solo lo spagnolo (es)."
+        "invalid": "Lingua non supportata. La lingua rilevata è ({idioma}). È consentito solo lo spagnolo (es).",
     },
     "pt": {
         "valid": "O texto está em espanhol ({idioma}) e pode ser analisado.",
-        "invalid": "Idioma não suportado. O idioma detetado é ({idioma}). Apenas o espanhol (es) é permitido."
+        "invalid": "Idioma não suportado. O idioma detetado é ({idioma}). Apenas o espanhol (es) é permitido.",
     },
     "ru": {
         "valid": "Текст на испанском языке ({idioma}) и может быть проанализирован.",
-        "invalid": "Неподдерживаемый язык. Обнаруженный язык: ({idioma}). Разрешён только испанский (es)."
+        "invalid": "Неподдерживаемый язык. Обнаруженный язык: ({idioma}). Разрешён только испанский (es).",
     },
     "ar": {
         "valid": "النص باللغة الإسبانية ({idioma}) ويمكن تحليله.",
-        "invalid": "لغة غير مدعومة. اللغة المكتشفة هي ({idioma}). يُسمح فقط بالإسبانية (es)."
+        "invalid": "لغة غير مدعومة. اللغة المكتشفة هي ({idioma}). يُسمح فقط بالإسبانية (es).",
     },
     "ro": {
         "valid": "Textul este în spaniolă ({idioma}) și poate fi analizat.",
-        "invalid": "Limbă nesuportată. Limba detectată este ({idioma}). Este permisă doar spaniola (es)."
+        "invalid": "Limbă nesuportată. Limba detectată este ({idioma}). Este permisă doar spaniola (es).",
     },
     "nl": {
         "valid": "De tekst is in het Spaans ({idioma}) en kan worden geanalyseerd.",
-        "invalid": "Niet-ondersteunde taal. De gedetecteerde taal is ({idioma}). Alleen Spaans (es) is toegestaan."
+        "invalid": "Niet-ondersteunde taal. De gedetecteerde taal is ({idioma}). Alleen Spaans (es) is toegestaan.",
     },
     "ca": {
         "valid": "El text és en espanyol ({idioma}) i es pot analitzar.",
-        "invalid": "Idioma no compatible. L'idioma detectat és ({idioma}). Només s'admet l'espanyol (es)."
+        "invalid": "Idioma no compatible. L'idioma detectat és ({idioma}). Només s'admet l'espanyol (es).",
     },
     "pl": {
         "valid": "Tekst jest w języku hiszpańskim ({idioma}) i można go analizować.",
-        "invalid": "Nieobsługiwany język. Wykryty język to ({idioma}). Dozwolony jest tylko hiszpański (es)."
+        "invalid": "Nieobsługiwany język. Wykryty język to ({idioma}). Dozwolony jest tylko hiszpański (es).",
     },
     "uk": {
         "valid": "Текст іспанською мовою ({idioma}) і може бути проаналізований.",
-        "invalid": "Непідтримувана мова. Виявлена мова: ({idioma}). Дозволено лише іспанську (es)."
-    }
+        "invalid": "Непідтримувана мова. Виявлена мова: ({idioma}). Дозволено лише іспанську (es).",
+    },
 }
+
 
 # "Función que selecciona el mensaje correcto del diccionario de traducciones según el idioma de la UI
 # y si el texto es analizable o no, reemplazando el marcador {idioma} por el código real detectado"
 def traducir_mensaje(lang, idioma_detectado, es_analizable):
     key = "valid" if es_analizable else "invalid"
-    
+
     texto = translations.get(lang, translations["en"])[key]
     return texto.format(idioma=idioma_detectado)
 
+
 # "Diccionario para traducir el mensaje de validez del idioma desde el backend a cada uno de los idiomas posibles."
-translations_analisis = {  
+translations_analisis = {
     "es": {
         "valid": "La oferta de empleo requiere atención debido a posibles riesgos.",
-        "invalid": "Idioma no soportado. El idioma detectado es ({idioma}). Solo se admite español (es)."
+        "invalid": "Idioma no soportado. El idioma detectado es ({idioma}). Solo se admite español (es).",
     },
     "en": {
         "valid": "This advertisement requires your attention due to potential risks.",
-        "invalid": "Unsupported language. The detected language is ({idioma}). Only Spanish (es) is allowed."
+        "invalid": "Unsupported language. The detected language is ({idioma}). Only Spanish (es) is allowed.",
     },
     "fr": {
         "valid": "Cette annonce mérite votre attention en raison des risques potentiels qu'elle comporte.",
-        "invalid": "Langue non prise en charge. La langue détectée est ({idioma}). Seul l'espagnol (es) est autorisé."
+        "invalid": "Langue non prise en charge. La langue détectée est ({idioma}). Seul l'espagnol (es) est autorisé.",
     },
     "de": {
         "valid": "Diese Anzeige erfordert aufgrund möglicher Risiken besondere Aufmerksamkeit.",
-        "invalid": "Nicht unterstützte Sprache. Die erkannte Sprache ist ({idioma}). Nur Spanisch (es) ist zulässig."
+        "invalid": "Nicht unterstützte Sprache. Die erkannte Sprache ist ({idioma}). Nur Spanisch (es) ist zulässig.",
     },
     "it": {
         "valid": "Questo annuncio richiede attenzione a causa di potenziali rischi.",
-        "invalid": "Lingua non supportata. La lingua rilevata è ({idioma}). È consentito solo lo spagnolo (es)."
+        "invalid": "Lingua non supportata. La lingua rilevata è ({idioma}). È consentito solo lo spagnolo (es).",
     },
     "pt": {
         "valid": "Este anúncio requer atenção devido a potenciais riscos.",
-        "invalid": "Idioma não suportado. O idioma detetado é ({idioma}). Apenas o espanhol (es) é permitido."
+        "invalid": "Idioma não suportado. O idioma detetado é ({idioma}). Apenas o espanhol (es) é permitido.",
     },
     "ru": {
         "valid": "Это объявление требует внимания из-за возможных рисков.",
-        "invalid": "Неподдерживаемый язык. Обнаруженный язык: ({idioma}). Разрешён только испанский (es)."
+        "invalid": "Неподдерживаемый язык. Обнаруженный язык: ({idioma}). Разрешён только испанский (es).",
     },
     "ar": {
         "valid": "يتطلب هذا الإعلان الانتباه بسبب وجود مخاطر محتملة.",
-        "invalid": "لغة غير مدعومة. اللغة المكتشفة هي ({idioma}). يُسمح فقط بالإسبانية (es)."
+        "invalid": "لغة غير مدعومة. اللغة المكتشفة هي ({idioma}). يُسمح فقط بالإسبانية (es).",
     },
     "ro": {
         "valid": "Acest anunț necesită atenție din cauza riscurilor potențiale.",
-        "invalid": "Limbă nesuportată. Limba detectată este ({idioma}). Este permisă doar spaniola (es)."
+        "invalid": "Limbă nesuportată. Limba detectată este ({idioma}). Este permisă doar spaniola (es).",
     },
     "nl": {
         "valid": "Deze advertentie vereist aandacht vanwege mogelijke risico's.",
-        "invalid": "Niet-ondersteunde taal. De gedetecteerde taal is ({idioma}). Alleen Spaans (es) is toegestaan."
+        "invalid": "Niet-ondersteunde taal. De gedetecteerde taal is ({idioma}). Alleen Spaans (es) is toegestaan.",
     },
     "ca": {
         "valid": "Aquest anunci requereix atenció a causa de possibles riscos.",
-        "invalid": "Idioma no compatible. L'idioma detectat és ({idioma}). Només s'admet l'espanyol (es)."
+        "invalid": "Idioma no compatible. L'idioma detectat és ({idioma}). Només s'admet l'espanyol (es).",
     },
     "pl": {
         "valid": "To ogłoszenie wymaga uwagi ze względu na możliwe zagrożenia.",
-        "invalid": "Nieobsługiwany język. Wykryty język to ({idioma}). Dozwolony jest tylko hiszpański (es)."
+        "invalid": "Nieobsługiwany język. Wykryty język to ({idioma}). Dozwolony jest tylko hiszpański (es).",
     },
     "uk": {
         "valid": "Це оголошення потребує уваги через можливі ризики.",
-        "invalid": "Непідтримувана мова. Виявлена мова: ({idioma}). Дозволено лише іспанську (es)."
-    }
+        "invalid": "Непідтримувана мова. Виявлена мова: ({idioma}). Дозволено лише іспанську (es).",
+    },
 }
+
 
 # "Variante de traducir_mensaje para el resultado del análisis de seguridad.
 # Si el idioma detectado no es español directamente devuelve el mensaje de idioma no soportado"
-def traducir_mensaje_analisis(lang, idioma_detectado):  
+def traducir_mensaje_analisis(lang, idioma_detectado):
     key = "invalid" if idioma_detectado != "es" else "valid"
-    
+
     texto = translations_analisis.get(lang, translations_analisis["en"])[key]
     return texto.format(idioma=idioma_detectado)
+
 
 # "Función de animación visual del semáforo: recibe el color activo y un placeholder de Streamlit
 # donde renderiza los tres círculos (rojo, ámbar, verde) con el seleccionado encendido"
 def animacion(color, luz):
-    luces = {
-        "rojo":  "🔴 ⚫ ⚫",
-        "ambar": "⚫ 🟡 ⚫",
-        "verde": "⚫ ⚫ 🟢"
-    }
+    luces = {"rojo": "🔴 ⚫ ⚫", "ambar": "⚫ 🟡 ⚫", "verde": "⚫ ⚫ 🟢"}
     luz.markdown(
-        f"<div style='font-size:24px'>{luces[color]}</div>",
-        unsafe_allow_html=True
+        f"<div style='font-size:24px'>{luces[color]}</div>", unsafe_allow_html=True
     )
+
 
 # "Función que renderiza el modal de 'Quiénes Somos' con los textos del equipo y la política de privacidad.
 # Si el idioma de la UI no es español, traduce todo el bloque de golpe usando GoogleTranslator
@@ -892,31 +899,34 @@ def render_modal_quienes_somos(idioma_destino: str = "es"):
         "pl": "http://localhost:8000/privacidad/politica-privacidad_pl.html",
         "uk": "http://localhost:8000/privacidad/politica-privacidad_uk.html",
     }
-    
+
     # "Si el idioma seleccionado no está en el diccionario, redirige por defecto a la versión en español (o inglés)"
     url_privacidad = links_privacidad.get(idioma_destino, links_privacidad["es"])
 
-    textos = [   # MODIFICAR EL TEXTO SEGÚN COMUNICACIÓN
+    textos = [  # MODIFICAR EL TEXTO SEGÚN COMUNICACIÓN
         "¿Quiénes somos?",
         "Somos un equipo comprometido con la lucha contra el fraude laboral. Proyecto Verid.IA nace para ayudar a las personas a identificar ofertas de trabajo falsas mediante inteligencia artificial.",
         "¿Qué hacemos?",
         "Analizamos ofertas de empleo (texto, URL o imagen) y evaluamos el riesgo de que sean fraudulentos, protegiendo a los usuarios de posibles estafas.",
         "Política de privacidad",
-        "Si lo desea, clique el siguiente enlace para leer la política de privacidad."
+        "Si lo desea, clique el siguiente enlace para leer la política de privacidad.",
     ]
 
     if idioma_destino != "es":
         cache_key = f"modal_{idioma_destino}"
         if cache_key not in st.session_state:
             texto_completo = "\n---\n".join(textos)
-            traducido = GoogleTranslator(source="es", target=idioma_destino).translate(texto_completo)
+            traducido = GoogleTranslator(source="es", target=idioma_destino).translate(
+                texto_completo
+            )
             partes = traducido.split("\n---\n")
-            partes[-1] = partes[-1].capitalize()  
+            partes[-1] = partes[-1].capitalize()
             st.session_state[cache_key] = partes
         textos = st.session_state[cache_key]
 
-    t = textos   
-    st.markdown(f"""
+    t = textos
+    st.markdown(
+        f"""
         <div style="background-color:#f9fbf2; border:2px solid #ddb6fc; border-radius:16px 16px 0 0;
             padding:32px; max-width:700px; margin:20px auto 0 auto;
             box-shadow:0 5px 20px rgba(192,132,252,0.15);">
@@ -931,18 +941,24 @@ def render_modal_quienes_somos(idioma_destino: str = "es"):
                 <a href="{url_privacidad}" target="_blank" style="margin:0 12px; color:#9b5fcf; font-weight:bold; text-decoration:none;">{t[4]}</a>
             </div>
         </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
+
 
 # "Función que construye la página de inicio: muestra el título del proyecto, el selector de idioma,
 # el botón de 'Sobre Nosotros' con su modal desplegable y los enlaces a redes sociales.
 # Cuando el usuario elige idioma y pulsa 'Continuar' se redirige a la página del analizador"
 def pagina_inicio():
-    st.markdown("""
+    st.markdown(
+        """
     <div style="text-align:center; overflow:hidden; height:200px;">
         <img src="http://localhost:8000/static/logo.png" 
              style="width:650px; height:280px; object-fit:cover; object-position:center; margin-top:-10px;">
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
     st.divider()
 
     # "Idioma actual para traducir la UI"
@@ -950,7 +966,8 @@ def pagina_inicio():
 
     st.title(f"🗺️ {UI_TEXTS[idioma_actual]['select_language_title']}")
 
-    st.markdown("""
+    st.markdown(
+        """
     <style>
     div[data-baseweb="select"] > div {
         font-size: 26px !important;
@@ -981,7 +998,9 @@ def pagina_inicio():
         font-weight: bold !important;
     }
     </style>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
     # "Función que actualiza el idioma si se cambia en el selector, gracias a los session_state"
     def actualizar_idioma():
@@ -992,20 +1011,23 @@ def pagina_inicio():
     selected_name = st.selectbox(
         UI_TEXTS[idioma_actual]["select_language_title"],
         list(languages.keys()),
-        index=list(languages.keys()).index(idioma_guardado if idioma_guardado in languages else "🇪🇸 Español"),
+        index=list(languages.keys()).index(
+            idioma_guardado if idioma_guardado in languages else "🇪🇸 Español"
+        ),
         key="selector_idioma",
         on_change=actualizar_idioma,
-        label_visibility="collapsed"
+        label_visibility="collapsed",
     )
 
     if st.button(UI_TEXTS[idioma_actual]["continue_phrase"]):
         st.session_state.idioma = selected_name
         st.session_state.page = "analizador"
         st.rerun()
-    
+
     st.divider()
     # "CSS BOTÓN VIOLETA SUAVE"
-    st.markdown("""
+    st.markdown(
+        """
     <style>
     .st-key-btn_sobre_nosotros button,
     .st-key-btn_sobre_nosotros button p {
@@ -1038,16 +1060,23 @@ def pagina_inicio():
         width: 100% !important;
     }
     </style>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
     # "BOTÓN "SOBRE NOSOTROS""
     col_left, col_center, col_right = st.columns([2, 1, 2])
     with col_center:
-        if st.button(f"{UI_TEXTS[idioma_actual]['about_us']}", key="btn_sobre_nosotros", use_container_width=True):
+        if st.button(
+            f"{UI_TEXTS[idioma_actual]['about_us']}",
+            key="btn_sobre_nosotros",
+            use_container_width=True,
+        ):
             st.session_state["mostrar_sobre_nosotros"] = True
-    
+
     # CAMBIAR EL LINK DE LAS REDES SOCIALES
-    st.markdown(f"""
+    st.markdown(
+        f"""
     <div style="text-align:center; margin-top:10px;">
         <h3 style="color:#9b5fcf;">{UI_TEXTS[idioma_actual]['social_media']}</h3>
         <div style="font-size:18px;">
@@ -1055,13 +1084,16 @@ def pagina_inicio():
             <a href="https://www.linkedin.com/in/proyecto-verid-ia-9390653b8/" target="_blank" style="margin:0 12px; color:#0077b5; text-decoration:none;">💼 LinkedIn</a>   
         </div>
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
     # "MODAL SOBRE NOSOTROS"
     if st.session_state.get("mostrar_sobre_nosotros", False):
         render_modal_quienes_somos(idioma_destino=idioma_actual)
 
-        st.markdown("""
+        st.markdown(
+            """
         <style>
         div.st-key-cerrar_sobre_nosotros {
             margin-top: -20px !important;
@@ -1070,23 +1102,29 @@ def pagina_inicio():
             width: 160px !important;
         }
         </style>
-        """, unsafe_allow_html=True)
+        """,
+            unsafe_allow_html=True,
+        )
 
         col1, col2, col3 = st.columns([2, 1, 2])
         with col3:
-            if st.button(f"✕ {UI_TEXTS[idioma_actual]['close']}", key="cerrar_sobre_nosotros"):
+            if st.button(
+                f"✕ {UI_TEXTS[idioma_actual]['close']}", key="cerrar_sobre_nosotros"
+            ):
                 st.session_state["mostrar_sobre_nosotros"] = False
                 st.rerun()
 
+
 # "Función que muestra dentro del modal los resultados de detección de idioma y traducción del anuncio.
 # Presenta el idioma detectado, si el texto es analizable, el texto original y el texto traducido en columnas paralelas"
-def mostrar_resultado_traduccion(res_seg, res_det, lang_ui):  
-    
+def mostrar_resultado_traduccion(res_seg, res_det, lang_ui):
+
     # "Contenedor principal con borde"
     with st.container(border=True):
 
         # "Cabecera/Idioma detectado"
-        st.markdown(f"""
+        st.markdown(
+            f"""
             <div style="
                 background-color: #f9fbf2; 
                 padding: 20px; 
@@ -1101,20 +1139,21 @@ def mostrar_resultado_traduccion(res_seg, res_det, lang_ui):
                     {UI_TEXTS[lang_ui]['lang_phrase']}: {res_det.get('idioma_detectado', '').upper()}
                 </p>
             </div>
-        """, unsafe_allow_html=True)
+        """,
+            unsafe_allow_html=True,
+        )
 
         # "Mensaje dinámico"
         mensaje = traducir_mensaje(
-            lang_ui,
-            res_det["idioma_detectado"],
-            res_det["es_analizable"]
+            lang_ui, res_det["idioma_detectado"], res_det["es_analizable"]
         )
 
         # "Validación del resultado de la traducción"
         color_box = "#b6c35d"
         texto_validacion = f"✅ {UI_TEXTS[lang_ui]['valid_phrase']}"
 
-        st.markdown(f"""
+        st.markdown(
+            f"""
             <div style="
                 background-color: {color_box}; 
                 color: white; 
@@ -1129,13 +1168,16 @@ def mostrar_resultado_traduccion(res_seg, res_det, lang_ui):
             <p style="font-style: italic; color: #555;">
                 {mensaje}
             </p>
-        """, unsafe_allow_html=True)
+        """,
+            unsafe_allow_html=True,
+        )
 
         # "Comparador original/traducido"
         col_orig, col_trad = st.columns(2)
 
         with col_orig:
-            st.markdown(f"""
+            st.markdown(
+                f"""
                 <div style="background-color: #ffffff; padding: 15px; border-radius: 10px; border: 1px solid #ddd; height: 100%;">
                     <h4 style="color: #e89a40; margin-top: 0;">
                         {UI_TEXTS[lang_ui]['original_phrase']}
@@ -1144,10 +1186,13 @@ def mostrar_resultado_traduccion(res_seg, res_det, lang_ui):
                         {res_det.get("original", "")}
                     </p>
                 </div>
-            """, unsafe_allow_html=True)
+            """,
+                unsafe_allow_html=True,
+            )
 
         with col_trad:
-            st.markdown(f"""
+            st.markdown(
+                f"""
                 <div style="background-color: #f2f7e5; padding: 15px; border-radius: 10px; border: 1px solid #b6c35d; height: 100%;">
                     <h4 style="color: #6b8e23; margin-top: 0;">
                         {UI_TEXTS[lang_ui]['translated_phrase']}
@@ -1156,11 +1201,14 @@ def mostrar_resultado_traduccion(res_seg, res_det, lang_ui):
                         {res_det.get("traducido", "")}
                     </p>
                 </div>
-            """, unsafe_allow_html=True)
-            
-# Traduce el texto del mensaje y las señales al idioma seleccionado            
+            """,
+                unsafe_allow_html=True,
+            )
+
+
+# Traduce el texto del mensaje y las señales al idioma seleccionado
 # "Si el idioma destino es español no hace nada (ya viene en español del backend).
-# Para el resto de idiomas usa GoogleTranslator y devuelve el original si la traducción falla"           
+# Para el resto de idiomas usa GoogleTranslator y devuelve el original si la traducción falla"
 def traducir_texto(texto, lang_ui, source="es"):
     if not texto:
         return texto
@@ -1171,9 +1219,10 @@ def traducir_texto(texto, lang_ui, source="es"):
     except Exception:
         return texto
 
+
 # "Función principal de visualización del resultado del análisis de seguridad.
 # Muestra el semáforo visual (rojo/ámbar/verde), el porcentaje de confianza, el mensaje
-# explicativo del Backend y la lista de señales de fraude detectadas si las hay"     
+# explicativo del Backend y la lista de señales de fraude detectadas si las hay"
 def mostrar_resultados(res_seg, res_det, lang_ui):
     st.subheader(UI_TEXTS[lang_ui]["result"])
 
@@ -1182,19 +1231,44 @@ def mostrar_resultados(res_seg, res_det, lang_ui):
     confianza_pct = int(confianza * 100)
 
     nivel_config = {
-        "verde": {"color": "#16a34a", "bg": "#f0fdf4", "border": "#86efac", "icon": "✓", "label": UI_TEXTS[lang_ui]['green']},
-        "amarillo": {"color": "#ca8a04", "bg": "#fefce8", "border": "#fde047", "icon": "⚠", "label": UI_TEXTS[lang_ui]['yellow']},
-        "rojo": {"color": "#dc2626", "bg": "#fff1f2", "border": "#fca5a5", "icon": "✕", "label": UI_TEXTS[lang_ui]['red']},
+        "verde": {
+            "color": "#16a34a",
+            "bg": "#f0fdf4",
+            "border": "#86efac",
+            "icon": "✓",
+            "label": UI_TEXTS[lang_ui]["green"],
+        },
+        "amarillo": {
+            "color": "#ca8a04",
+            "bg": "#fefce8",
+            "border": "#fde047",
+            "icon": "⚠",
+            "label": UI_TEXTS[lang_ui]["yellow"],
+        },
+        "rojo": {
+            "color": "#dc2626",
+            "bg": "#fff1f2",
+            "border": "#fca5a5",
+            "icon": "✕",
+            "label": UI_TEXTS[lang_ui]["red"],
+        },
     }
     cfg = nivel_config.get(nivel, nivel_config["amarillo"])
-    c, bg, bd, icon, lbl = cfg['color'], cfg['bg'], cfg['border'], cfg['icon'], cfg['label']
+    c, bg, bd, icon, lbl = (
+        cfg["color"],
+        cfg["bg"],
+        cfg["border"],
+        cfg["icon"],
+        cfg["label"],
+    )
     semaforo_nivel = nivel if nivel in ("rojo", "verde") else "amarillo"
 
     col_semaforo, col_resultado = st.columns([1, 4])
 
     # "Donde se ve el semáforo"
     with col_semaforo:
-        st.markdown(f"""
+        st.markdown(
+            f"""
         <div style="display:flex;justify-content:flex-end;align-items:center;height:100%;padding-right:8px;">
             <div style="display:flex;flex-direction:column;align-items:center;
                 width:70px;padding:12px 8px;background:#111;
@@ -1210,12 +1284,15 @@ def mostrar_resultados(res_seg, res_det, lang_ui):
                     box-shadow:{'0 0 25px limegreen' if semaforo_nivel=='verde' else 'none'};"></div>
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        """,
+            unsafe_allow_html=True,
+        )
 
     # "Donde se ven los resultados internos del análisis"
     with col_resultado:
 
-        st.markdown(f"""
+        st.markdown(
+            f"""
         <div style="background:{bg};border:2px solid {bd};border-radius:14px;padding:22px 26px;margin-bottom:14px;">
             <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
                 <div style="width:54px;height:54px;border-radius:50%;background:white;
@@ -1239,21 +1316,28 @@ def mostrar_resultados(res_seg, res_det, lang_ui):
                 <div style="height:100%;width:{confianza_pct}%;background:{c};border-radius:99px;"></div>
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        """,
+            unsafe_allow_html=True,
+        )
 
     st.divider()
 
     # "Mensaje que devuelve el agente"
     mensaje = (res_seg.get("mensaje") or res_seg.get("justificacion") or "").strip()
     if not mensaje:
-        mensaje = traducir_mensaje_analisis(lang_ui, res_det.get("idioma_detectado", "es"))
+        mensaje = traducir_mensaje_analisis(
+            lang_ui, res_det.get("idioma_detectado", "es")
+        )
     else:
-        mensaje = traducir_texto(mensaje, lang_ui, source=res_det.get("idioma_detectado", "es"))
+        mensaje = traducir_texto(
+            mensaje, lang_ui, source=res_det.get("idioma_detectado", "es")
+        )
 
     aviso_color = "#fde68a" if nivel != "verde" else "#d1fae5"
     border_color = "#f59e0b" if nivel != "verde" else "#10b981"
 
-    st.markdown(f"""
+    st.markdown(
+        f"""
     <div style="border-left:4px solid {border_color};background:{aviso_color};padding:16px 20px;
                 border-radius:0 10px 10px 0;margin-bottom:14px;">
         <div style="font-size:13px;font-weight:600;letter-spacing:2px;
@@ -1262,12 +1346,17 @@ def mostrar_resultados(res_seg, res_det, lang_ui):
         </div>
         <div style="font-size:17px;color:#374151;line-height:1.7;">{mensaje}</div>
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
     # "Señales detectadas por la tool"
     senales = res_seg.get("senales") or []
     if senales:
-        senales_traducidas = [traducir_texto(s, lang_ui, source=res_det.get("idioma_detectado", "es")) for s in senales]
+        senales_traducidas = [
+            traducir_texto(s, lang_ui, source=res_det.get("idioma_detectado", "es"))
+            for s in senales
+        ]
 
         items_senales = "".join(
             f"<div style='padding:8px 0;border-bottom:1px solid #f3f4f6;"
@@ -1277,7 +1366,8 @@ def mostrar_resultados(res_seg, res_det, lang_ui):
             for s in senales_traducidas
         )
 
-        st.markdown(f"""
+        st.markdown(
+            f"""
         <div style="background:#fffbf2;border:1.5px solid #fde68a;
                     border-left:4px solid #e89a40;border-radius:12px;
                     padding:6px 20px 10px;margin-bottom:14px;">
@@ -1287,7 +1377,9 @@ def mostrar_resultados(res_seg, res_det, lang_ui):
             </div>
             {items_senales}
         </div>
-        """, unsafe_allow_html=True)
+        """,
+            unsafe_allow_html=True,
+        )
 
     # "Aviso de generación por IA"
     aviso_ia_es = "Los resultados de este análisis han sido generados por un agente de inteligencia artificial y pueden contener errores. No sustituyen el criterio de un profesional."
@@ -1295,21 +1387,25 @@ def mostrar_resultados(res_seg, res_det, lang_ui):
     if lang_ui != "es":
         cache_key = f"aviso_ia_{lang_ui}"
         if cache_key not in st.session_state:
-            st.session_state[cache_key] = GoogleTranslator(source="es", target=lang_ui).translate(aviso_ia_es)
+            st.session_state[cache_key] = GoogleTranslator(
+                source="es", target=lang_ui
+            ).translate(aviso_ia_es)
         aviso_ia = st.session_state[cache_key]
     else:
         aviso_ia = aviso_ia_es
 
-    st.markdown(f"""
+    st.markdown(
+        f"""
     <div style="margin-top:18px;padding:12px 18px;border-radius:10px;
                 background:#f1f5f9;border:1px solid #cbd5e1;
                 display:flex;align-items:flex-start;gap:10px;">
         <span style="font-size:17px;color:#111827;line-height:1.6;">{aviso_ia}</span>
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
-    
-        
+
 # "ESTADÍSTICAS"
 # "Función que consulta la API de estadísticas y pinta en pantalla un resumen global con métricas,
 # una barra de distribución por nivel de riesgo y dos columnas con idiomas detectados y señales más frecuentes.
@@ -1324,10 +1420,10 @@ def mostrar_estadisticas(lang_ui):
     stats = response.json()
 
     # "Leer estructura real de la API"
-    total      = stats.get("total_analizados", 0)
-    dist       = stats.get("distribucion_semaforo", {})
+    total = stats.get("total_analizados", 0)
+    dist = stats.get("distribucion_semaforo", {})
     legitimate = dist.get("verde", 0)
-    amarillo   = dist.get("amarillo", 0)
+    amarillo = dist.get("amarillo", 0)
     fraudulent = dist.get("rojo", 0)
     idiomas_dict = stats.get("idiomas_frecuentes", {})
     senales_dict = stats.get("indicadores_frecuentes", {})
@@ -1354,7 +1450,9 @@ def mostrar_estadisticas(lang_ui):
         cache_key = f"estadisticas_{lang_ui}"
         if cache_key not in st.session_state:
             texto_completo = "\n---\n".join(textos_es)
-            traducido = GoogleTranslator(source="es", target=lang_ui).translate(texto_completo)
+            traducido = GoogleTranslator(source="es", target=lang_ui).translate(
+                texto_completo
+            )
             partes = traducido.split("\n---\n")
             st.session_state[cache_key] = partes
         t = st.session_state[cache_key]
@@ -1365,10 +1463,20 @@ def mostrar_estadisticas(lang_ui):
         t.append(textos_es[len(t)])
 
     (
-        txt_titulo, txt_total, txt_legitimos, txt_alertas, txt_fraudulentos,
-        txt_distribucion, txt_leg_barra, txt_alert_barra, txt_fraud_barra,
-        txt_sin_datos, txt_idiomas, txt_sin_idiomas,
-        txt_senales, txt_sin_senales
+        txt_titulo,
+        txt_total,
+        txt_legitimos,
+        txt_alertas,
+        txt_fraudulentos,
+        txt_distribucion,
+        txt_leg_barra,
+        txt_alert_barra,
+        txt_fraud_barra,
+        txt_sin_datos,
+        txt_idiomas,
+        txt_sin_idiomas,
+        txt_senales,
+        txt_sin_senales,
     ) = t[:14]
 
     # "Título"
@@ -1391,9 +1499,9 @@ def mostrar_estadisticas(lang_ui):
     st.markdown(f"#### 🚦 {txt_distribucion}")
 
     if total > 0:
-        pct_verde    = legitimate / total * 100
-        pct_amarillo = amarillo   / total * 100
-        pct_rojo     = fraudulent / total * 100
+        pct_verde = legitimate / total * 100
+        pct_amarillo = amarillo / total * 100
+        pct_rojo = fraudulent / total * 100
 
         barra_html = f"""
         <div style="border-radius:10px;overflow:hidden;height:28px;display:flex;margin-bottom:8px;">
@@ -1461,6 +1569,7 @@ def mostrar_estadisticas(lang_ui):
         else:
             st.info(txt_sin_senales)
 
+
 # "SIDEBAR"
 # "Función que construye la página principal del analizador. Contiene el sidebar con la configuración,
 # el selector de modo (analizar / estadísticas), el formulario de entrada del anuncio y la lógica
@@ -1468,29 +1577,29 @@ def mostrar_estadisticas(lang_ui):
 def pagina_analizador():
 
     # "Aquí es donde se ven los elementos en el lateral izquierdo"
-    with st.sidebar:    
+    with st.sidebar:
 
-        st.header("⚙️ " + UI_TEXTS[languages[st.session_state.idioma]]["config_title"])       
+        st.header("⚙️ " + UI_TEXTS[languages[st.session_state.idioma]]["config_title"])
 
         selected_name = st.session_state.idioma
 
         # "Variable que guarda el idioma seleccionado de todos los posibles"
-        idioma_select = languages[selected_name]   
-        lang_ui = idioma_select  
+        idioma_select = languages[selected_name]
+        lang_ui = idioma_select
 
-        # "Variable que guarda según el idioma seleccionado los elementos visibles por pantalla"                   
-        idioma_input = languages_input[selected_name.split(" ")[1]]     
-        lang_ui_input = idioma_input        
-        
-        st.divider()      
+        # "Variable que guarda según el idioma seleccionado los elementos visibles por pantalla"
+        idioma_input = languages_input[selected_name.split(" ")[1]]
+        lang_ui_input = idioma_input
+
+        st.divider()
 
         if st.button(f"{lang_ui_input['idioma_label']}"):
             st.session_state.page = "home"
             st.rerun()
-        
+
         # "Markdown con color violeta"
-        st.markdown(        
-        f"""
+        st.markdown(
+            f"""
         <div style="
             background-color: #D9CCEE;     
             color: #000000;
@@ -1503,7 +1612,7 @@ def pagina_analizador():
             {lang_ui_input['func_label']}
         </div>
         """,
-        unsafe_allow_html=True
+            unsafe_allow_html=True,
         )
 
         # "Menú de navegación para saltar a cada sección del formulario.
@@ -1511,38 +1620,64 @@ def pagina_analizador():
         st.markdown("---")
         st.markdown(f"#### 🧭 {lang_ui_input['seccion_label']}")
         scroll_navbar(
-            anchor_ids=["seccion-texto", "seccion-url", "seccion-imagen", "seccion-analisis"],
-            anchor_labels=[f"📝 {lang_ui_input['text_label']}", f"🔗 {lang_ui_input['url_label']}", f"🖼️ {lang_ui_input['imagen_label']}", f"🔍 {lang_ui_input['anuncio_label']}"],
-            key="nav"
+            anchor_ids=[
+                "seccion-texto",
+                "seccion-url",
+                "seccion-imagen",
+                "seccion-analisis",
+            ],
+            anchor_labels=[
+                f"📝 {lang_ui_input['text_label']}",
+                f"🔗 {lang_ui_input['url_label']}",
+                f"🖼️ {lang_ui_input['imagen_label']}",
+                f"🔍 {lang_ui_input['anuncio_label']}",
+            ],
+            key="nav",
         )
 
     # "HEADER"
     with st.container():
-        #"Este markdown hace de st.title()"
-        st.markdown("""
+        # "Este markdown hace de st.title()"
+        st.markdown(
+            """
         <div style="text-align:center; overflow:hidden;">
             <img src="http://localhost:8000/static/logo.png" width="400"
                 style="margin-top:-60px; margin-bottom:-60px;">
         </div>
-        """, unsafe_allow_html=True)
+        """,
+            unsafe_allow_html=True,
+        )
         st.divider()
-        st.caption(lang_ui_input["info_label"])     
+        st.caption(lang_ui_input["info_label"])
 
     # "MODO"
     with st.container():
-        st.markdown(f"<h3 style='color:#6f4a8e;'>{lang_ui_input["mode_label"]}:</h3>", unsafe_allow_html=True)
-        modo = st.radio("Selecciona un modo", [f"{lang_ui_input["mode_label_one"]}", f"{lang_ui_input["mode_label_two"]}"], horizontal=True, label_visibility="hidden", key=f"modo_seleccionado_{lang_ui}")
+        st.markdown(
+            f"<h3 style='color:#6f4a8e;'>{lang_ui_input["mode_label"]}:</h3>",
+            unsafe_allow_html=True,
+        )
+        modo = st.radio(
+            "Selecciona un modo",
+            [
+                f"{lang_ui_input["mode_label_one"]}",
+                f"{lang_ui_input["mode_label_two"]}",
+            ],
+            horizontal=True,
+            label_visibility="hidden",
+            key=f"modo_seleccionado_{lang_ui}",
+        )
 
-    st.divider()    
+    st.divider()
     # "MODO ESTADÍSTICAS"
     if modo == lang_ui_input["mode_label_two"]:
         mostrar_estadisticas(lang_ui)
         # "No renderizar el resto del formulario de análisis"
-        return  
-    
+        return
+
     # "CSS para botón pequeño"
     # Código encargado del diseño del botón de borrar de la web, formato html
-    st.markdown("""
+    st.markdown(
+        """
     <style>
     .small-btn button {
         color: #c3a5c1      
@@ -1551,64 +1686,63 @@ def pagina_analizador():
         float: right;
     }
     </style>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
     # "LAYOUT"
 
-    st.subheader(f"{lang_ui_input["info_anuncio_label"]}")   
+    st.subheader(f"{lang_ui_input["info_anuncio_label"]}")
 
     # "Inicializar session_state si no existe"
     if "texto" not in st.session_state:
         st.session_state["texto"] = ""
     if "url" not in st.session_state:
         st.session_state["url"] = ""
-    if "res_seg" not in st.session_state:       
+    if "res_seg" not in st.session_state:
         st.session_state["res_seg"] = None
     if "res_det" not in st.session_state:
         st.session_state["res_det"] = None
     if "lang_ui_resultado" not in st.session_state:
         st.session_state["lang_ui_resultado"] = None
     if "expanded_ad_info" not in st.session_state:
-        st.session_state["expanded_ad_info"] = True  
+        st.session_state["expanded_ad_info"] = True
 
+    with st.expander(
+        f"📋 {lang_ui_input['copiar_label']}",
+        expanded=st.session_state["expanded_ad_info"],
+    ):
 
-    with st.expander(f"📋 {lang_ui_input['copiar_label']}", expanded=st.session_state["expanded_ad_info"]):
-        
         # "TEXTO DEL ANUNCIO"
         # "Ancla para navegación"
-        st.markdown('<div id="seccion-texto"></div>', unsafe_allow_html=True)  
+        st.markdown('<div id="seccion-texto"></div>', unsafe_allow_html=True)
         col_text_label, col_text_btn = st.columns([9, 1])
-        
+
         with col_text_label:
             st.markdown(f"*{lang_ui_input['text_label']}*")
         with col_text_btn:
-            if st.button("🧹", key="clear_text", help=lang_ui_input["borrar_texto_label"]):
+            if st.button(
+                "🧹", key="clear_text", help=lang_ui_input["borrar_texto_label"]
+            ):
                 st.session_state["texto"] = ""
-        
+
         # "Input"
-        text_input = st.text_area(
-            "Text",
-            key="texto",
-            height=150
-        )
-        
+        text_input = st.text_area("Text", key="texto", height=150)
+
         # "URL DEL ANUNCIO"
         # "Ancla para navegación"
-        st.markdown('<div id="seccion-url"></div>', unsafe_allow_html=True)  
+        st.markdown('<div id="seccion-url"></div>', unsafe_allow_html=True)
         col_url_label, col_url_btn = st.columns([9, 1])
-        
+
         with col_url_label:
             st.markdown(f"*{lang_ui_input['url_label']}*")
         with col_url_btn:
             if st.button("🧹", key="clear_url", help=lang_ui_input["borrar_url_label"]):
                 st.session_state["url"] = ""
-        
+
         # "Input"
-        url_input = st.text_input(
-            "URL",
-            key="url"
-        )
-        
+        url_input = st.text_input("URL", key="url")
+
         # "Inicializar el contador de key si no existe"
         if "imagen_uploader_key" not in st.session_state:
             st.session_state["imagen_uploader_key"] = 0
@@ -1621,16 +1755,18 @@ def pagina_analizador():
             st.markdown(f"*{lang_ui_input['imagen_label']}*")
 
         with col_img_btn:
-            if st.button("🧹", key="clear_image", help=lang_ui_input["borrar_imagen_label"]):
+            if st.button(
+                "🧹", key="clear_image", help=lang_ui_input["borrar_imagen_label"]
+            ):
                 st.session_state["imagen"] = None
-                st.session_state["imagen_uploader_key"] += 1  
+                st.session_state["imagen_uploader_key"] += 1
                 st.rerun()
 
-        # "Uploader de la imagen" 
+        # "Uploader de la imagen"
         uploaded_file = st.file_uploader(
             label=f"{lang_ui_input['info_imagen_label']}",
-            key=f"imagen_uploader_{st.session_state['imagen_uploader_key']}", 
-            type=["jpg", "jpeg", "png", "tiff"]
+            key=f"imagen_uploader_{st.session_state['imagen_uploader_key']}",
+            type=["jpg", "jpeg", "png", "tiff"],
         )
 
         # "Guardar en session_state"
@@ -1656,13 +1792,13 @@ def pagina_analizador():
                     {lang_ui_input['file_label']}
                 </div>
                 """,
-                unsafe_allow_html=True
+                unsafe_allow_html=True,
             )
 
     # "Botón de analizar"
     st.divider()
     st.markdown("<div id='seccion-analisis'></div>", unsafe_allow_html=True)
-    
+
     # "Texto informativo para contexto previo del análisis"
     info_texto_es = """
         INFORMACIÓN:
@@ -1675,8 +1811,7 @@ def pagina_analizador():
 
         if cache_key not in st.session_state:
             st.session_state[cache_key] = GoogleTranslator(
-                source="es",
-                target=lang_ui
+                source="es", target=lang_ui
             ).translate(info_texto_es)
 
         info_texto = st.session_state[cache_key]
@@ -1685,7 +1820,8 @@ def pagina_analizador():
         info_texto = info_texto_es
 
     # "Caja visual informativa"
-    st.markdown(f"""
+    st.markdown(
+        f"""
     <div style="
         background-color:#f9fbf2;
         padding:10px 12px;
@@ -1698,30 +1834,30 @@ def pagina_analizador():
     ">
         {info_texto.replace(chr(10), "<br>")}
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
     analyze = st.button(f"🔍 {lang_ui_input['anuncio_label']}")
 
     # "ANÁLISIS"
     if analyze:
         # "Validar que hay datos"
-        inputs_filled = sum([          
-            bool(text_input.strip()),
-            bool(url_input.strip()),
-            bool(uploaded_file)
-        ])
+        inputs_filled = sum(
+            [bool(text_input.strip()), bool(url_input.strip()), bool(uploaded_file)]
+        )
 
         # "Mensajes de error, solo se escoge una opción (Texto o URL o Imagen)"
-        if inputs_filled == 0:      
+        if inputs_filled == 0:
             st.warning(f"⚠️ {UI_TEXTS[lang_ui]['data']}")
             st.stop()
 
-        if inputs_filled > 1:       
+        if inputs_filled > 1:
             st.warning(f"⚠️ {UI_TEXTS[lang_ui]['data_add']}")
             st.stop()
-        
+
         # "Cerrar el expander"
         st.session_state["expanded_ad_info"] = False
-        
+
         # "Definir tipo de entrada"
         if uploaded_file:
             tipo = "IMAGEN"
@@ -1729,7 +1865,7 @@ def pagina_analizador():
             tipo = "ENLACE"
         else:
             tipo = "TEXTO"
-        
+
         # "Preparar datos"
         data = {"idioma_destino": idioma_select, "tipo": tipo}
 
@@ -1744,7 +1880,7 @@ def pagina_analizador():
             files = {"file": (uploaded_file.name, uploaded_file, uploaded_file.type)}
 
         # "Condición para el análisis del anuncio (Modo 1)"
-        if modo == f"{lang_ui_input['mode_label_one']}":  
+        if modo == f"{lang_ui_input['mode_label_one']}":
             # "Mostrar spinner mientras se analiza"
             with st.status(f"{idioma_input['spinner_label']}", expanded=True) as status:
                 luz = st.empty()
@@ -1759,28 +1895,34 @@ def pagina_analizador():
                 time.sleep(5)
 
                 status.update(label="🟢🟢🟢", state="complete", expanded=False)
-            
+
             # "Procesar respuesta"
             if response_idioma and response_idioma.status_code == 200:
                 res_det = response_idioma.json()
-                
+
                 # "Paso 1: Verificar si es analizable primero"
                 if res_det.get("es_analizable"):
                     # "Paso 2: Analizar seguridad (sin mostrar nada todavía)"
                     files = None
                     if uploaded_file:
                         uploaded_file.seek(0)
-                        files = {"file": (uploaded_file.name, uploaded_file, uploaded_file.type)}
+                        files = {
+                            "file": (
+                                uploaded_file.name,
+                                uploaded_file,
+                                uploaded_file.type,
+                            )
+                        }
 
                     response_seguridad = llamar_api(API_ANALIZAR, data, files)
-                    
+
                     if response_seguridad and response_seguridad.status_code == 200:
                         res_seg = response_seguridad.json()
-                        
+
                         # "Mostrar resultados del análisis"
                         st.divider()
                         mostrar_resultados(res_seg, res_det, lang_ui)
-                        
+
                         # "Mostrar información de la detección/traducción (si el usuario quiere)"
                         st.divider()
 
@@ -1791,17 +1933,22 @@ def pagina_analizador():
                         st.session_state["_ultimo_lang_ui"] = lang_ui
                         st.session_state["_ultimo_texto"] = text_input
                         st.session_state["_ultima_url"] = url_input
-                        st.session_state["_ultima_imagen"] = uploaded_file.name if uploaded_file else None  
-                        
+                        st.session_state["_ultima_imagen"] = (
+                            uploaded_file.name if uploaded_file else None
+                        )
+
                     else:
                         st.error("❌ Error al conectar con la API de Análisis")
                         if response_seguridad:
-                            st.write(f"Código de estado: {response_seguridad.status_code}")
-                
+                            st.write(
+                                f"Código de estado: {response_seguridad.status_code}"
+                            )
+
                 else:
                     # "Idioma no analizable - mostrar warning en popup"
-                    idioma_detectado = res_det.get('idioma_detectado', 'desconocido')
-                    st.markdown(f"""
+                    idioma_detectado = res_det.get("idioma_detectado", "desconocido")
+                    st.markdown(
+                        f"""
                     <div style="
                         background-color: rgba(235, 226, 211, 1);
                         padding: 40px;
@@ -1820,10 +1967,13 @@ def pagina_analizador():
                             🌍 {UI_TEXTS[lang_ui]['lang_phrase']}: <strong>{idioma_detectado.upper()}</strong>
                         </p>
                     </div>
-                    """, unsafe_allow_html=True)
-                    
+                    """,
+                        unsafe_allow_html=True,
+                    )
+
                     # "Botón de cierre"
-                    st.markdown("""     
+                    st.markdown(
+                        """     
                         <style>
 
                         /* Solo el botón del warning (posición concreta) */
@@ -1833,24 +1983,32 @@ def pagina_analizador():
                         }
 
                         </style>
-                        """, unsafe_allow_html=True)
-                    
+                        """,
+                        unsafe_allow_html=True,
+                    )
+
                     col1, col2, col3 = st.columns([1, 1, 1])
                     with col2:
-                        if st.button(f"✓ {UI_TEXTS[lang_ui]['close']}", key="close_warning", use_container_width=True, type="secondary"):
+                        if st.button(
+                            f"✓ {UI_TEXTS[lang_ui]['close']}",
+                            key="close_warning",
+                            use_container_width=True,
+                            type="secondary",
+                        ):
                             st.rerun()
-            
+
             else:
                 st.error("❌ Error al detectar el idioma")
                 if response_idioma:
                     st.write(f"Código de estado: {response_idioma.status_code}")
+
 
 # "Enrutamiento principal: según el valor de session_state.page se renderiza una función u otra"
 if st.session_state.page == "home":
     pagina_inicio()
 
 elif st.session_state.page == "analizador":
-    pagina_analizador() 
+    pagina_analizador()
 
 # "Bloque de detección de cambios: si el usuario cambia el idioma o modifica el input después de analizar,
 # se limpian los resultados guardados en session_state para evitar mostrar datos obsoletos"
@@ -1861,13 +2019,17 @@ _imagen_actual = st.session_state.get("_ultima_imagen")
 _lang_sesion = languages.get(st.session_state.get("idioma", "🇪🇸 Español"), "es")
 _texto_sesion = st.session_state.get("texto", "")
 _url_sesion = st.session_state.get("url", "")
-_imagen_sesion = st.session_state.get("imagen").name if st.session_state.get("imagen") else None
+_imagen_sesion = (
+    st.session_state.get("imagen").name if st.session_state.get("imagen") else None
+)
 
 if st.session_state.get("res_seg") is not None:
-    if (_lang_actual != _lang_sesion or
-        _texto_actual != _texto_sesion or
-        _url_actual != _url_sesion or
-        _imagen_actual != _imagen_sesion):
+    if (
+        _lang_actual != _lang_sesion
+        or _texto_actual != _texto_sesion
+        or _url_actual != _url_sesion
+        or _imagen_actual != _imagen_sesion
+    ):
         st.session_state["res_seg"] = None
         st.session_state["res_det"] = None
         st.session_state["open_modal"] = False
@@ -1879,18 +2041,15 @@ if st.session_state.get("res_seg") is not None:
 if st.session_state.get("res_seg") is not None:
     _lang = st.session_state.get("lang_ui_resultado", "es")
 
-    modal = Modal(
-        f"{UI_TEXTS[_lang]['result']}",
-        key="modal_resultado",
-        max_width=700
-    )
+    modal = Modal(f"{UI_TEXTS[_lang]['result']}", key="modal_resultado", max_width=700)
 
     # "Estado único de apertura (no del widget)"
     if "open_modal" not in st.session_state:
         st.session_state.open_modal = False
-    
+
     # "Botón de apertura del Modal"
-    st.markdown("""
+    st.markdown(
+        """
     <style>
     .st-key-abrir_modal_btn button {
         background-color: #FFA94D !important;
@@ -1901,15 +2060,14 @@ if st.session_state.get("res_seg") is not None:
         min-width: 200px !important;
     }
     </style>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
     col_btn1, col_btn2 = st.columns([1, 4])
 
     with col_btn1:
-        if st.button(
-            f"🔍 {UI_TEXTS[_lang]['detect']}",
-            key="abrir_modal_btn"
-        ):
+        if st.button(f"🔍 {UI_TEXTS[_lang]['detect']}", key="abrir_modal_btn"):
             st.session_state.open_modal = True
 
         # "Reset automático cuando cambia el texto/idioma"
@@ -1927,19 +2085,15 @@ if st.session_state.get("res_seg") is not None:
         with modal.container():
 
             mostrar_resultado_traduccion(
-                st.session_state["res_seg"],
-                st.session_state["res_det"],
-                _lang
+                st.session_state["res_seg"], st.session_state["res_det"], _lang
             )
 
             if st.button(
-                f"{UI_TEXTS[_lang]['close']}",
-                key="cerrar_modal",
-                type="primary"
+                f"{UI_TEXTS[_lang]['close']}", key="cerrar_modal", type="primary"
             ):
                 st.session_state.open_modal = False
                 st.session_state["res_seg"] = None
                 st.session_state["res_det"] = None
                 st.rerun()
 
-#Ejecución del streamlit: streamlit run frontend/app.py
+# Ejecución del streamlit: streamlit run frontend/app.py

@@ -1,6 +1,15 @@
-from pydantic_settings import BaseSettings
+"""
+Configuración de la aplicación y constantes.
+
+Contiene la clase `Settings` basada en Pydantic para centralizar
+valores de configuración y variables entorno usadas por la aplicación.
+"""
+
 import os
 from typing import ClassVar
+
+from pydantic_settings import BaseSettings
+
 
 class Settings(BaseSettings):
     # Ajustes de configuración para la aplicación definidos aquí parámetros para todo el proyecto
@@ -8,18 +17,18 @@ class Settings(BaseSettings):
     APP_VERSION: str = "0.1.0"
     DEBUG: bool = True
 
+    # Valores para el guardado de datos
 
-    #Valores para el guardado de datos
-        
     DATA_SERVICE_ROOT: ClassVar[str] = os.path.dirname(os.path.abspath(__file__))
-    DATASET_DIR : ClassVar[str] = os.path.normpath(os.path.join(DATA_SERVICE_ROOT, "..", "data"))
+    DATASET_DIR: ClassVar[str] = os.path.normpath(
+        os.path.join(DATA_SERVICE_ROOT, "..", "data")
+    )
     DATASET_FILE: ClassVar[str] = os.path.join(DATASET_DIR, "analisis_dataset.jsonl")
 
-    
     # Configuración de HuggingFace
     API_KEY: str = ""
     MODELO: str = "Qwen/Qwen2.5-72B-Instruct"
-    
+
     PROMPT: str = f"""
 ## ROL ##
 Eres un experto en la detección de anuncios laborales fraudulentos y riesgos de trata de personas. Tu tono es directo, neutral, profesional y cauteloso. Tu prioridad es proteger a personas en situación de vulnerabilidad explicando los riesgos de forma breve y sencilla.
@@ -80,8 +89,12 @@ Debes redactar una justificación de 2 a 3 frases basada estrictamente en la "Pr
 - Si el input no es una oferta de trabajo, responde: "Solo puedo analizar ofertas de trabajo. Por favor, pega un anuncio laboral para que lo analice."
 - No hagas suposiciones: cíñete a lo que dice el texto y el porcentaje técnico.
 """
+
     class Config:
         env_file = ".env"  # Archivo de entorno para cargar variables de configuración
         env_file_encoding = "utf-8"  # Codificación del archivo de entorno
 
-settings = Settings()  # Instancia de configuración que se puede importar en otras partes del proyecto
+
+settings = (
+    Settings()
+)  # Instancia de configuración que se puede importar en otras partes del proyecto
