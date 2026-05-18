@@ -1609,9 +1609,12 @@ def pagina_analizador():
             key="url"
         )
         
+        # "Inicializar el contador de key si no existe"
+        if "imagen_uploader_key" not in st.session_state:
+            st.session_state["imagen_uploader_key"] = 0
+
         # "IMAGEN DEL ANUNCIO"
-        # "Ancla para navegación"
-        st.markdown('<div id="seccion-imagen"></div>', unsafe_allow_html=True)  
+        st.markdown('<div id="seccion-imagen"></div>', unsafe_allow_html=True)
         col_img_label, col_img_btn = st.columns([9, 1])
 
         with col_img_label:
@@ -1620,12 +1623,13 @@ def pagina_analizador():
         with col_img_btn:
             if st.button("🧹", key="clear_image", help=lang_ui_input["borrar_imagen_label"]):
                 st.session_state["imagen"] = None
+                st.session_state["imagen_uploader_key"] += 1  
                 st.rerun()
 
-        # "Uploader de la imagen"
+        # "Uploader de la imagen" 
         uploaded_file = st.file_uploader(
             label=f"{lang_ui_input['info_imagen_label']}",
-            key="imagen_uploader",
+            key=f"imagen_uploader_{st.session_state['imagen_uploader_key']}", 
             type=["jpg", "jpeg", "png", "tiff"]
         )
 
