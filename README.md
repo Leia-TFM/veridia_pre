@@ -50,7 +50,18 @@ El sistema combina:
 3. Instalar Tesseract OCR en el sistema y añadirlo al PATH.
    - Windows: https://github.com/UB-Mannheim/tesseract/wiki
 
+4. Descargar la aplicación de escritorio de Ollama
+  (en despliegue el modelo estará en la nube):
+   -https://ollama.com/download
+
+5. Installar el modelo en local:
+    ```bash
+    ollama pull Qwen2.5-3B
+   ```
+
 ## Ejecución
+
+(Ollama debe estar ejecutándose para que se cargue bien el agente)
 
 ### Backend
 
