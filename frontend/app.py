@@ -424,7 +424,7 @@ UI_TEXTS = {
         "message": "Mensaje",
         "veredict": "Veredicto",
         "indicator": "Indicadores detectados",
-        "trust": "Confianza",
+        "trust": "Riesgo de fraude",
         "green": "Riesgo bajo",
         "yellow": "Riesgo medio",
         "red": "Riesgo alto",
@@ -1918,7 +1918,6 @@ def pagina_analizador():
 
                     if response_seguridad and response_seguridad.status_code == 200:
                         res_seg = response_seguridad.json()
-
                         # "Mostrar resultados del análisis"
                         st.divider()
                         mostrar_resultados(res_seg, res_det, lang_ui)

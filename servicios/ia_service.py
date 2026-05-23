@@ -312,7 +312,6 @@ class FraudDetectionTool(Tool):
 
             data = joblib.load(self._pipeline_path)
             model = data["model"]
-            model.set_params(device="cpu")
             self._pipeline = {
                 "model": model,
                 "threshold": data["threshold"],
@@ -341,7 +340,7 @@ class FraudDetectionTool(Tool):
                 return level
         return "low"
 
-    async def forward(self, job_posting_json: str) -> str:
+    def forward(self, job_posting_json: str) -> str:
         """
         Ejecuta la herramienta de detección de fraude sobre un anuncio JSON.
 
@@ -364,10 +363,18 @@ class FraudDetectionTool(Tool):
             return json.dumps(
                 {"error": "No se recibió resultado procesado."}, ensure_ascii=False
             )
-
+        def limpiar_para_modelo(texto: str) -> str:
+            """Limpieza idéntica a la usada durante el entrenamiento."""
+            import re
+            texto = texto.lower()
+            texto = re.sub(r'<.*?>', ' ', texto)
+            texto = re.sub(r'http\S+|www\S+', ' ', texto)
+            texto = re.sub(r'\n|\r|\t', ' ', texto)
+            texto = re.sub(r'\s+', ' ', texto).strip()
+            return texto
         # 3. Predicción ML
         try:
-            texto_para_modelo = resultado_proc.get("texto_normalizado", "")
+            texto_para_modelo = limpiar_para_modelo(resultado_proc.get("texto_original", ""))
             if not texto_para_modelo:
                 return json.dumps(
                     {"error": "Texto inválido para procesamiento"}, ensure_ascii=False
@@ -501,9 +508,13 @@ class OrquestadorAgente:
             settings.PROMPT
             + "\n\nIMPORTANT: Always call the fraud_detection tool before providing any answer. "
             "Never respond directly with a JSON result without first calling the tool."
+            "\n\nIMPORTANT: Always call the fraud_detection tool before providing any answer. "
+            "Never respond directly with a JSON result without first calling the tool."
+            "\n\nIMPORTANT: In your explanation, NEVER mention percentages or probability numbers. "
+            "Only describe the suspicious elements you detected qualitatively."
         )
 
-    async def ejecutar_tarea(self, query: str) -> str:
+    def ejecutar_tarea(self, query: str) -> str:
         """
         Orquestación de Ejecución Híbrida (ML + Agente).
 
@@ -535,7 +546,7 @@ class OrquestadorAgente:
             # 2. EJECUCIÓN TÉCNICA (Tool de confianza)
             # Obtenemos los datos duros que el frontend necesita para el semáforo y gráficas
             logger.info("Obteniendo datos técnicos de la Tool...")
-            tool_result_str = await self.tools[0].forward(
+            tool_result_str = self.tools[0].forward(
                 job_posting_json=job_posting_json
             )
             datos_finales = json.loads(tool_result_str)

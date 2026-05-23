@@ -30,7 +30,7 @@ router = APIRouter()
 _orquestador = None
 
 
-async def _get_orquestador():
+def _get_orquestador():
     """Obtiene o crea la instancia del orquestador de IA."""
     global _orquestador
     if _orquestador is None:
@@ -69,14 +69,14 @@ async def _procesar_y_analizar(
     # Validar estructura del anuncio
     try:
         data_validada = await validar_anuncio(
-            {"descripcion": resultado_procesado["texto_limpio"], "url_oferta": None}
+            {"descripcion": resultado_procesado["texto_original"], "url_oferta": None}
         )
     except Exception as e:
         logger.warning(f"Error en validación: {e}")
         data_validada = {"descripcion": resultado_procesado["texto_limpio"]}
 
     # Obtener orquestador
-    orquestador = await _get_orquestador()
+    orquestador = _get_orquestador()
 
     if orquestador:
         # Usar agente IA para análisis
@@ -86,12 +86,12 @@ async def _procesar_y_analizar(
                 {**data_validada, "resultado_procesado": resultado_procesado},
                 ensure_ascii=False,
             )
-            resultado_ia = await orquestador.ejecutar_tarea(job_posting_json)
+            resultado_ia = orquestador.ejecutar_tarea(job_posting_json)
 
             logger.info(f"Resultado raw del agente: {resultado_ia[:500]}")
-
             # Parsear resultado del agente
             return _parsear_resultado_ia(resultado_ia, tipo, idioma_detectado)
+        
         except Exception as e:
             logger.error(f"Error en análisis IA: {e}")
             # Fallback a análisis por reglas
@@ -179,11 +179,15 @@ def _parsear_resultado_ia(
         if not indicadores and senales:
             indicadores = senales
 
-        # Confianza basada en el nivel de certeza
+
         probabilidad = data.get("probability", data.get("probabilidad", 0.5))
-        confianza = (
-            float(probabilidad) if isinstance(probabilidad, (int, float)) else 0.5
-        )
+        proba = float(probabilidad) if isinstance(probabilidad, (int, float)) else 0.5
+
+        threshold = 0.5
+        if proba >= threshold:
+            confianza = min((proba - threshold) / (1 - threshold), 1.0)
+        else:
+            confianza = min((threshold - proba) / threshold, 1.0)
 
         # Nivel de confianza (high/medium/low)
         nivel_confianza = data.get("confidence_level", data.get("confianza", "medium"))
@@ -195,7 +199,7 @@ def _parsear_resultado_ia(
             tipo_entrada=tipo,
             nivel_seguridad=nivel,
             confianza_seguridad=confianza,
-            probabilidad=confianza,
+            probabilidad=proba,
             justificacion=justificacion,
             mensaje=mensaje,
             indicadores=(
