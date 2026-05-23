@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacybeleid — IAM-UAM Project 2025-2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cera+Pro:wght@400;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --black: #1a1a1a;
+      --gray-dark: #3a3a3a;
+      --gray-mid: #6b6b6b;
+      --gray-light: #e8e8e8;
+      --gray-bg: #f6f6f6;
+      --white: #ffffff;
+      --uam-blue: #003b71;
+      --uam-accent: #005aad;
+      --border: 1px solid #d0d0d0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-weight: 300;
+      color: var(--black);
+      background: var(--white);
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    /* ─── TOP BAR ─── */
+    .topbar {
+      background: var(--uam-blue);
+      color: white;
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      padding: 10px 48px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .topbar a { color: rgba(255,255,255,0.75); text-decoration: none; }
+    .topbar a:hover { color: white; }
+    .topbar .sep { color: rgba(255,255,255,0.4); }
+
+    /* ─── HEADER ─── */
+    header {
+      border-bottom: var(--border);
+      padding: 28px 48px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .logo-mark {
+      width: 48px; height: 48px;
+      background: var(--uam-blue);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      color: white;
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
+    }
+    .logo-text {
+      font-family: 'Cera Pro', Arial, sans-serif;
+    }
+    .logo-text .institution {
+      font-size: 13px;
+      color: var(--gray-mid);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .logo-text .project {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--uam-blue);
+    }
+
+    /* ─── LAYOUT ─── */
+    .page-wrapper {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 48px;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 0;
+    }
+
+    /* ─── SIDEBAR NAV ─── */
+    .sidebar {
+      border-right: var(--border);
+      padding: 40px 32px 40px 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    .sidebar-title {
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gray-mid);
+      margin-bottom: 20px;
+    }
+    .nav-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 0;
+      border-top: var(--border);
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--black);
+    }
+    .nav-item:first-of-type { border-top: none; }
+    .nav-item .arrow {
+      font-size: 10px;
+      margin-top: 4px;
+      color: var(--gray-mid);
+      flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+    .nav-item:hover .arrow { transform: translateX(3px); }
+    .nav-item .nav-label {
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      line-height: 1.4;
+    }
+    .nav-item:hover .nav-label { color: var(--uam-accent); }
+
+    /* ─── MAIN CONTENT ─── */
+    .content {
+      padding: 40px 0 80px 48px;
+    }
+
+    .content-header {
+      margin-bottom: 48px;
+      padding-bottom: 32px;
+      border-bottom: 2px solid var(--black);
+    }
+    .content-header h1 {
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--black);
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .content-header .meta {
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-size: 13px;
+      color: var(--gray-mid);
+    }
+
+    /* ─── SECTION ─── */
+    .policy-section {
+      margin-bottom: 56px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--black);
+      cursor: pointer;
+    }
+    .section-header .toggle-arrow {
+      font-size: 12px;
+      color: var(--black);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .section-header h2 {
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--black);
+    }
+
+    .subsection {
+      margin-bottom: 36px;
+    }
+    .subsection h3 {
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--black);
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+    .subsection p {
+      margin-bottom: 14px;
+      color: var(--gray-dark);
+    }
+    .subsection ul {
+      margin: 14px 0 14px 20px;
+    }
+    .subsection ul li {
+      margin-bottom: 10px;
+      color: var(--gray-dark);
+    }
+    .subsection ul li strong {
+      font-weight: 600;
+      color: var(--black);
+    }
+
+    /* ─── NOTICE BOX ─── */
+    .notice-box {
+      background: var(--gray-bg);
+      border-left: 4px solid var(--uam-blue);
+      padding: 20px 24px;
+      margin: 24px 0;
+      border-radius: 0 4px 4px 0;
+    }
+    .notice-box p {
+      font-size: 14px;
+      color: var(--gray-dark);
+      margin: 0;
+    }
+    .notice-box strong { color: var(--black); }
+
+    /* ─── TAG ─── */
+    .tag {
+      display: inline-block;
+      background: var(--uam-blue);
+      color: white;
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 3px;
+      margin-bottom: 12px;
+    }
+
+    /* ─── TABLE ─── */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+    .data-table th {
+      background: var(--black);
+      color: white;
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 10px 16px;
+      text-align: left;
+    }
+    .data-table td {
+      padding: 12px 16px;
+      border-bottom: var(--border);
+      color: var(--gray-dark);
+      vertical-align: top;
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:nth-child(even) td { background: var(--gray-bg); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--black);
+      color: rgba(255,255,255,0.6);
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-size: 12px;
+      padding: 32px 48px;
+      margin-top: 60px;
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+    footer a { color: rgba(255,255,255,0.6); text-decoration: underline; }
+    footer .footer-brand { color: white; font-weight: 700; font-size: 13px; }
+
+    @media (max-width: 860px) {
+      .page-wrapper { grid-template-columns: 1fr; padding: 0 24px; }
+      .sidebar { position: static; height: auto; border-right: none; border-bottom: var(--border); padding: 24px 0; }
+      .content { padding: 32px 0 60px; }
+      .topbar, header, footer { padding-left: 24px; padding-right: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="#">UAM</a>
+  <span class="sep">›</span>
+  <a href="#">Master in AI</a>
+  <span class="sep">›</span>
+  <span>Privacybeleid</span>
+</div>
+
+<header>
+  <div class="logo-mark">UAM</div>
+  <div class="logo-text">
+    <div class="institution">Autonome Universiteit van Madrid</div>
+    <div class="project">AI-Advertentieplatform — Master 2025–2026</div>
+  </div>
+</header>
+
+<div class="page-wrapper">
+
+  <nav class="sidebar">
+    <div class="sidebar-title">Inhoudsopgave</div>
+    <a href="#s1" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">Sectie 1: Wetgeving inzake gegevensbescherming en uw digitale rechten</span>
+    </a>
+    <a href="#s2" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">Sectie 2: Persoonsgegevens</span>
+    </a>
+    <a href="#s3" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">Sectie 3: Hoe wij uw gegevens gebruiken</span>
+    </a>
+    <a href="#s4" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">Sectie 4: Advertenties en gegevensbewaring</span>
+    </a>
+    <a href="#s5" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">Sectie 5: Beveiliging en verantwoordelijkheid</span>
+    </a>
+    <a href="#s6" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">Sectie 6: Uw rechten en contact</span>
+    </a>
+    <a href="#s7" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">Organische Wet Gegevensbescherming: Volledige Uitwerking</span>
+    </a>
+  </nav>
+
+  <main class="content">
+
+    <div class="content-header">
+      <h1>Privacybeleid</h1>
+      <div class="meta">Laatst gewijzigd: 21 april 2026</div>
+    </div>
+
+    <section class="policy-section" id="s1">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>Sectie 1: Wetgeving inzake gegevensbescherming en uw digitale rechten</h2>
+      </div>
+
+      <div class="subsection">
+        <h3>Waar gaat dit beleid over?</h3>
+        <p>Welkom bij ons Privacybeleid. Dit document legt uit hoe wij de informatie verwerken die wordt gegenereerd bij het gebruik van ons advertentieplatform, dat is ontwikkeld in het kader van de <strong>Master in Kunstmatige Intelligentie (academisch jaar 2025–2026)</strong> aan de Autonome Universiteit van Madrid.</p>
+        <p>Dit platform is uitsluitend bedoeld voor academische doeleinden en wetenschappelijk onderzoek. Het maakt het mogelijk om advertenties te publiceren en te bekijken die zijn geverifieerd via kunstmatige-intelligentietechnieken. Toegang tot het platform is mogelijk <strong>zonder voorafgaande registratie</strong>, waardoor wij niet direct direct identificeerbare persoonsgegevens verzamelen.</p>
+        <p>Dit beleid informeert u tevens over uw privacyrechten in overeenstemming met de Algemene Verordening Gegevensbeschering (AVG/GDPR) van de Europese Unie en de Spaanse Organische Wet 3/2018 betreffende de bescherming van persoonsgegevens en de waarborging van digitale rechten (LOPDGDD).</p>
+      </div>
+
+      <div class="subsection">
+        <h3>Wie is de verantwoordelijke?</h3>
+        <p>De formele verantwoordelijkheid voor dit platform ligt bij de <strong>Autonome Universiteit van Madrid (UAM)</strong>, gevestigd te:</p>
+        <div class="notice-box">
+          <p>
+            <strong>Universidad Autónoma de Madrid</strong><br>
+            Ciudad Universitaria de Cantoblanco<br>
+            28049 Madrid, Spanje<br>
+            <br>
+            Project ontwikkeld door studenten van de <strong>Master in Kunstmatige Intelligentie, lichting 2025–2026</strong>.
+          </p>
+        </div>
+        <p>UAM treedt op als toezichthoudende academische entiteit. Desalniettemin <strong>aanvaardt de Universiteit geen enkele verantwoordelijkheid voor de juistheid, veiligheid of nauwkeurigheid van de op het platform gepubliceerde advertenties</strong>. De verificatie van advertenties heeft een puur indicatief karakter en vormt geen institutionele goedkeuring.</p>
+      </div>
+
+      <div class="subsection">
+        <h3>Toepasselijk juridisch kader</h3>
+        <ul>
+          <li><strong>Verordening (EU) 2016/679 (AVG)</strong> — Algemene Verordening Gegevensbescherming.</li>
+          <li><strong>Organische Wet 3/2018 (LOPDGDD)</strong> — Bescherming van persoonsgegevens en waarborging van digitale rechten in Spanje.</li>
+          <li><strong>Wet 34/2002 (LSSI-CE)</strong> — Wet op de diensten van de informatiemaatschappij en elektronische handel.</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3>Uw privacyrechten</h3>
+        <p>In overeenstemming met de AVG heeft u de volgende rechten met betrekking zu eventuele gegevens die wij mogelijkerwijs verwerken:</p>
+        <ul>
+          <li><strong>Inzage:</strong> U kunt informatie opvragen over de gegevens die wij van u bezitten.</li>
+          <li><strong>Rectificatie:</strong> U kunt verzoeken om correctie van onjuiste of onvolledige gegevens.</li>
+          <li><strong>Wissen („recht om vergeten te worden”):</strong> U kunt verzoeken om verwijdering van uw gegevens wanneer deze niet langer noodzakelijk zijn.</li>
+          <li><strong>Beperking van de verwerking:</strong> U kunt verzoeken om het gebruik van uw gegevens in bepaalde omstandigheden te pauzeren.</li>
+          <li><strong>Bezwaar:</strong> U kunt bezwaar maken tegen verwerking op basis van een gerechtvaardigd belang.</li>
+          <li><strong>Overdraagbaarheid:</strong> U heeft het recht om uw gegevens te ontvangen in een gestructureerd en machineleesbaar formaat.</li>
+          <li><strong>Klacht indienen:</strong> U kunt een klacht indienen bij het <strong>Spaanse Agentschap voor Gegevensbescherming (AEPD)</strong>.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="policy-section" id="s2">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>Sectie 2: Persoonsgegevens</h2>
+      </div>
+
+      <div class="subsection">
+        <h3>Welke persoonsgegevens verzamelen wij?</h3>
+        <div class="tag">Toegang zonder registratie</div>
+        <p>Ons platform is ontworpen volgens het principe van <strong>privacy door standaardinstellingen (Privacy by Default)</strong>: gebruikers kunnen advertenties bekijken en ermee navigeren <strong>zonder dat ze een account hoeven aan te maken of persoonsgegevens hoeven te verstrekken</strong>.</p>
+        <p>Wij vragen of bewaren niet:</p>
+        <ul>
+          <li>Naam, achternamen of pseudoniemen.</li>
+          <li>E-mailadres.</li>
+          <li>Telefoonnummer.</li>
+          <li>Officiële identiteitsdocumenten.</li>
+          <li>Betalingsinformatie.</li>
+        </ul>
+        <p>Het authenticatiesysteem zal, wanneer dit beschikbaar is, werken via <strong>token-gebaseerde authenticatie of anonieme sessies</strong>, zonder de activiteit te koppelen aan een directe persoonlijke identiteit van de gebruiker.</p>
+      </div>
+
+      <div class="subsection">
+        <h3>Typen ingevoerde gegevens voor analyse</h3>
+        <p>Gebruikers sturen inhoud naar het platform voor verificatiedoeleinden. Er zijn twee invoermethoden, die beide volledig anoniem worden behandeld:</p>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Type invoer</th>
+              <th>Beschrijving</th>
+              <th>Doel</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Type 1 — Geschreven advertentie</strong></td>
+              <td>De gebruiker voert rechtstreeks de tekst in van de commerciële advertentie die hij/zij wil verifiëren.</td>
+              <td>Analyse en indicatieve verificatie via AI</td>
+            </tr>
+            <tr>
+              <td><strong>Type 2 — URL van de advertentie</strong></td>
+              <td>De gebruiker verstrekt een link (URL) naar de advertentie of pagina die geverifieerd moet worden. Het platform analyseert de openbare inhoud van die URL.</td>
+              <td>Analyse en indicatieve verificatie via AI</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+    <section class="policy-section" id="s3">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>Sectie 3: Hoe wij uw gegevens gebruiken</h2>
+      </div>
+
+      <div class="subsection">
+        <h3>Doeleinden van de verwerking</h3>
+        <p>De verzamelde technische gegevens worden uitsluitend gebruikt voor:</p>
+        <ul>
+          <li><strong>Werking van het platform:</strong> Wij garanderen de beschikbaarheid en de juiste technische werking van de dienst. Dit omvat de correcte verwerking door het platform van de door gebruikers verzonden verzoeken en het retourneren van een verificatieresultaat. <em>Deze garantie heeft betrekking op de technische werking van de dienst, niet op de juistheid van de inhoud van de geanalyseerde advertenties.</em></li>
+          <li><strong>Indicatieve verificatie van advertenties:</strong> Toepassing van AI-modellen om de inhoud van de advertentie (geschreven tekst of URL) te analyseren. Het resultaat is een waarschijnlijkheidsindicator, geen certificering van authenticiteit.</li>
+          <li><strong>Systeemverbetering:</strong> Geaggregeerde en anonieme analyses om de AI-modellen te optimaliseren binnen het academische project.</li>
+          <li><strong>Beveiliging:</strong> Het detecteren en voorkomen van frauduleus of kwaadwillig gebruik.</li>
+        </ul>
+        <div class="notice-box">
+          <p><strong>Belangrijk:</strong> Het platform garandeert de analysedienst, maar <strong>garandeert of certificeert niet de waarheid, nauwkeurigheid of wettigheid van de verzonden advertenties</strong>. De resultaten moeten worden geïnterpreteerd als een richtlijn en nooit als een definitief oordeel.</p>
+        </div>
+        <p><strong>Wij gebruiken de gegevens niet voor commerciële doeleinden en delen ze niet met derden voor advertentiedoeleinden.</strong></p>
+      </div>
+
+      <div class="subsection">
+        <h3>Internationale gegevensoverdracht</h3>
+        <p>Er vinden geen gegevensoverdrachten plaats buiten de Europese Economische Ruimte (EER). De gehele infrastructuur van het project draait binnen de academische omgevingen van de Autonome Universiteit van Madrid of op servers binnen de EU.</p>
+      </div>
+    </section>
+
+    <section class="policy-section" id="s4">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>Sectie 4: Advertenties en gegevensbewaring</h2>
+      </div>
+
+      <div class="subsection">
+        <h3>Aard van de geverifieerde advertenties</h3>
+        <p>Het platform past AI-technieken toe om gepubliceerde advertenties te analyseren en te classificeren. <strong>Deze verificatie heeft echter een puur indicatief karakter</strong>:</p>
+        <ul>
+          <li>Het garandeert niet de juistheid van de inhoud van de advertentie.</li>
+          <li>Het certificeert niet de identiteit van de adverteerder of auteur.</li>
+          <li>Het vormt geen institutionele ondersteuning vanuit de UAM.</li>
+          <li>AI-modellen kunnen fouten maken of vooroordelen (biases) bevatten die inherent zijn aan hun training.</li>
+        </ul>
+        <p>Gebruikers moeten hun eigen oordeel笑 gebruiken voordat ze handelen op basis van een op het platform gepubliceerde advertentie.</p>
+      </div>
+    </section>
+
+    <section class="policy-section" id="s5">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>Sectie 5: Beveiliging en verantwoordelijkheid</h2>
+      </div>
+
+      <div class="subsection">
+        <h3>Aansprakelijkheidsbeperking van de UAM</h3>
+        <div class="notice-box">
+          <p><strong>De Autonome Universiteit van Madrid aanvaardt geen aansprakelijkheid</strong> voor het beveiligingsniveau, de juistheid of de geschiktheid van de op het platform gepubliceerde advertenties, noch voor eventuele schade die voortvloeit uit de interactie met deze advertenties. Dit platform is een experimenteel academisch project en dient als zodanig te worden beschouwd.</p>
+        </div>
+        <p>De UAM houdt toezicht op het project vanuit een academisch en onderzoeksperspectief, maar kan de afwezigheid van fouten, dienstonderbrekingen of beveiligingskwetsbaarheden niet garanderen. In het geval van een beveiligingsincident dat van invloed is op persoonsgegevens, zullen wij de AEPD op de hoogte stellen binnen de door de AVG vastgestelde termijn (72 uur).</p>
+      </div>
+    </section>
+
+    <section class="policy-section" id="s6">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>Sectie 6: Uw rechten en contact</h2>
+      </div>
+    </section>
+
+    <section class="policy-section" id="s7">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>Organische Wet inzake de Bescherming van Persoonsgegevens en de Waarborging van Digitale Rechten</h2>
+      </div>
+
+      <div class="subsection">
+        <h3>1. Onderwerp en verwerkingsverantwoordelijke</h3>
+        <p>Dit Privacybeleid heeft tot doel de verwerking te regelen van gegevens die worden gegenereerd tijdens het gebruik van het academische platform voor de verificatie van advertenties via kunstmatige intelligentie, ontwikkeld in het kader van de Master in Kunstmatige Intelligentie (lichting 2025–2026) aan de Autonome Universiteit van Madrid (UAM).</p>
+      </div>
+
+      <div class="subsection">
+        <h3>2. Toepasselijk juridisch kader</h3>
+        <p>De gegevensverwerking die op dit platform wordt uitgevoerd, wordt beheerst door de volgende vigerende wetgeving:</p>
+        <ul>
+          <li>Verordening (EU) 2016/679 van het Europees Parlement en de Raad van 27 april 2016 betreffende de bescherming van natuurlijke personen in verband met de verwerking van persoonsgegevens (AVG).</li>
+          <li>De Spaanse Organische Wet 3/2018 van 5 december betreffende de bescherming van persoonsgegevens en waarborging van digitale rechten (LOPDGDD).</li>
+          <li>De Spaanse Wet 34/2002 van 11 juli betreffende diensten van de informatiemaatschappij en elektronische handel (LSSI-CE).</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3>3. Verzamelde persoonsgegevens</h3>
+        <p>Het platform is ontworpen in overeenstemming met het principe van privacy door ontwerp en door standaardinstellingen, zoals erkend in artikel 25 van de AVG. Toegang tot de dienst vereist geen voorafgaande registratie en er worden geen identificerende gegevens zoals naam, e-mail, telefoonnummer, identiteitsbewijzen of betalingsgegevens gevraagd of opgeslagen.</p>
+      </div>
+
+      <div class="subsection">
+        <h3>5. Doel van de gegevensverwerking</h3>
+        <p>De technische gegevens die tijdens het gebruik van het platform worden verzameld, zullen uitsluitend voor de volgende doeleinden worden gebruikt:</p>
+        <ul>
+          <li>Het garanderen van de beschikbaarheid en de juiste technische werking van de dienst.</li>
+          <li>Het toepassen van kunstmatige-intelligentiemodellen om een indicatieve verificatie te bieden over de inhoud van de geanalyseerde advertenties.</li>
+          <li>Het verbeteren van de verificatiemodellen door middel van geaggregeerde en anonieme analyses in de context van het academische onderzoeksproject.</li>
+          <li>Het detecteren en voorkomen van frauduleus gebruik of gebruik dat in strijd is met de servicevoorwaarden.</li>
+          <li>Het verzamelen van taalkundige informatie om gebruikers en ngo's te voorzien van statistische gegevens om representatieve patronen te evalueren, met als doel bij te dragen aan de eventuele uitroeiing van frauduleuze advertenties.</li>
+          <li>Op basis van de verkregen gegevens streven naar de schaalbaarheid van het programma om later eventuele wijzigingen op te nemen die helpen de code te verbeteren.</li>
+        </ul>
+        <p>De gegevens zullen niet voor commerciële doeleinden worden gebruikt en zullen niet worden overgedragen of meegedeeld aan derden voor advertentiedoeleinden. Evenmin zullen er internationale gegevensoverdrachten plaatsvinden buiten de Europese Economische Ruimte (EER).</p>
+        <p>Dit alles is beschermd onder de Spaanse wet op de intellectuele eigendom, in het bijzonder Artikel 32 met betrekking tot citaten, recensies en illustraties voor onderwijs- of wetenschappelijke onderzoeksdoeleinden, waarin is vastgesteld dat indien het project geen commerciële doeleinden heeft en uitsluitend voor onderzoeks-/onderwijsdoeleinden wordt gebruikt, de inhoud mag worden gebruikt.</p>
+      </div>
+
+      <div class="subsection">
+        <h3>6. Rechten van de gebruiker</h3>
+        <p>In overeenstemming met de bepalingen van Hoofdstuk III van Verordening (EU) 2016/679 kan de gebruiker op elk moment de volgende rechten uitoefenen met betrekking tot de verwerking van zijn/haar gegevens:</p>
+        <ul>
+          <li><strong>Recht van inzage:</strong> bevestiging verkrijgen of er al dan niet persoonsgegevens worden verwerkt en hier inzage in krijgen.</li>
+          <li><strong>Recht op rectificatie:</strong> verzoeken om correctie van onjuiste of onvolledige gegevens.</li>
+          <li><strong>Recht op wissen:</strong> verzoeken om verwijdering van gegevens wanneer deze onder meer niet langer noodzakelijk zijn voor de doeleinden waarvoor ze zijn verzameld.</li>
+          <li><strong>Recht op beperking van de verwerking:</strong> verzoeken om opschorting van de verwerking in de gevallen voorzien in artikel 18 van de AVG.</li>
+          <li><strong>Recht van bezwaar:</strong> bezwaar maken tegen de verwerking van gegevens op basis van het gerechtvaardigd belang van de verantwoordelijke.</li>
+          <li><strong>Recht op overdraagbaarheid van gegevens:</strong> de verstrekte gegevens ontvangen in een gestructureerd, gangbaar en machineleesbaar formaat.</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div>
+    <div class="footer-brand">UAM — Master AI 2025–2026</div>
+    <div>© 2026 Autonome Universiteit van Madrid. Academisch project.</div>
+  </div>
+  <div style="display:flex; gap: 24px; flex-wrap: wrap;">
+    <a href="#">Cookiebeleid</a>
+    <a href="#">Juridische kennisgeving</a>
+    <a href="#">Contact</a>
+    <a href="https://www.aepd.es" target="_blank">AEPD</a>
+  </div>
+</footer>
+
+<script>
+  // Smooth scroll for nav links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

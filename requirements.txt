@@ -1,33 +1,52 @@
-# --- NÚCLEO: API Y SERVIDOR (Backend) ---
-fastapi==0.109.0
-uvicorn==0.27.0
-pydantic==2.6.0
-requests==2.31.0
-python-multipart==0.0.9
+# ===================================================================
+# PROYECTO TRATA - Requirements.txt
+# ===================================================================
+# Ultima actualizacion: Mayo 2026
 
+# --- NUCLEO: API Y SERVIDOR (Backend) ---
+fastapi==0.115.0
+uvicorn[standard]==0.32.1
+pydantic==2.12.5
+pydantic-settings==2.7.1
+requests==2.32.3
+python-multipart==0.0.20
 # --- INTERFAZ DE USUARIO (Frontend) ---
-streamlit==1.31.0
-matplotlib==3.8.2
+streamlit==1.41.1
+streamlit-modal==0.1.2
+streamlit-scroll-navigation==1.2.1
 
-# --- CIENCIA DE DATOS Y MATEMÁTICAS ---
-pandas==2.2.0
+# --- CIENCIA DE DATOS Y MATEMATICAS ---
 numpy==1.26.4
-joblib==1.3.2
+joblib==1.4.2
 
 # --- INTELIGENCIA ARTIFICIAL Y NLP ---
-scikit-learn==1.4.0
-nltk==3.8.1
-spacy==3.7.2
+spacy==3.8.2
+trafilatura==2.0.0
+beautifulsoup4==4.12.3
 deep-translator==1.11.4
+sentence-transformers==5.4.1
+typing==3.7.4.3
 
-# --- VISIÓN POR COMPUTADOR (Imágenes) ---
-Pillow==10.2.0
+# --- VISION POR COMPUTADOR (Imagenes) ---
+Pillow==11.1.0
+opencv-python-headless==4.10.0.84
 pytesseract==0.3.10
-langdetect==1.0.9
+fasttext-wheel==0.9.2
+
+# --- AGENTES IA ---
+smolagents==1.21.1
+litellm==1.83.14
 
 # ===================================================================
-# NOTAS DE INSTALACIÓN
+# NOTAS DE INSTALACION
 # ===================================================================
-# 
-# 1. Instalar dependencias básicas:
+#
+# 1. Instalar dependencias basicas:
 #    pip install -r requirements.txt
+#
+# 2. Instalar modelo spaCy en español:
+#    python -m spacy download es_core_news_sm
+#
+# 3. Instalar Tesseract OCR (sistema):
+#    - Windows: https://github.com/UB-Mannheim/tesseract/wiki
+#    - Añadir al PATH del sistema

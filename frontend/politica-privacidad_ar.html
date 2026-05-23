@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>سياسة الخصوصية — مشروع IAM-UAM 2025-2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cera+Pro:wght@400;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --black: #1a1a1a;
+      --gray-dark: #3a3a3a;
+      --gray-mid: #6b6b6b;
+      --gray-light: #e8e8e8;
+      --gray-bg: #f6f6f6;
+      --white: #ffffff;
+      --uam-blue: #003b71;
+      --uam-accent: #005aad;
+      --border: 1px solid #d0d0d0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-weight: 300;
+      color: var(--black);
+      background: var(--white);
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    /* ─── TOP BAR ─── */
+    .topbar {
+      background: var(--uam-blue);
+      color: white;
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      padding: 10px 48px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .topbar a { color: rgba(255,255,255,0.75); text-decoration: none; }
+    .topbar a:hover { color: white; }
+    .topbar .sep { color: rgba(255,255,255,0.4); transform: scaleX(-1); }
+
+    /* ─── HEADER ─── */
+    header {
+      border-bottom: var(--border);
+      padding: 28px 48px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .logo-mark {
+      width: 48px; height: 48px;
+      background: var(--uam-blue);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      color: white;
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
+    }
+    .logo-text {
+      font-family: 'Cera Pro', Arial, sans-serif;
+    }
+    .logo-text .institution {
+      font-size: 13px;
+      color: var(--gray-mid);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .logo-text .project {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--uam-blue);
+    }
+
+    /* ─── LAYOUT ─── */
+    .page-wrapper {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 48px;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 0;
+    }
+
+    /* ─── SIDEBAR NAV ─── */
+    .sidebar {
+      border-left: var(--border); /* Cambiado de right a left para RTL */
+      padding: 40px 0 40px 32px; /* Adaptado para RTL */
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    .sidebar-title {
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gray-mid);
+      margin-bottom: 20px;
+    }
+    .nav-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 0;
+      border-top: var(--border);
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--black);
+    }
+    .nav-item:first-of-type { border-top: none; }
+    .nav-item .arrow {
+      font-size: 10px;
+      margin-top: 4px;
+      color: var(--gray-mid);
+      flex-shrink: 0;
+      transition: transform 0.2s;
+      transform: scaleX(-1); /* Invierte la flecha para RTL */
+    }
+    .nav-item:hover .arrow { transform: scaleX(-1) translateX(3px); }
+    .nav-item .nav-label {
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      line-height: 1.4;
+    }
+    .nav-item:hover .nav-label { color: var(--uam-accent); }
+
+    /* ─── MAIN CONTENT ─── */
+    .content {
+      padding: 40px 48px 80px 0; /* Adaptado de padding-left a padding-right para RTL */
+    }
+
+    .content-header {
+      margin-bottom: 48px;
+      padding-bottom: 32px;
+      border-bottom: 2px solid var(--black);
+    }
+    .content-header h1 {
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--black);
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .content-header .meta {
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-size: 13px;
+      color: var(--gray-mid);
+    }
+
+    /* ─── SECTION ─── */
+    .policy-section {
+      margin-bottom: 56px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--black);
+      cursor: pointer;
+    }
+    .section-header .toggle-arrow {
+      font-size: 12px;
+      color: var(--black);
+      font-weight: 700;
+      flex-shrink: 0;
+      transform: scaleX(-1);
+    }
+    .section-header h2 {
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--black);
+    }
+
+    .subsection {
+      margin-bottom: 36px;
+    }
+    .subsection h3 {
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--black);
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+    .subsection p {
+      margin-bottom: 14px;
+      color: var(--gray-dark);
+    }
+    .subsection ul {
+      margin: 14px 20px 14px 0; /* Adaptado para RTL */
+    }
+    .subsection ul li {
+      margin-bottom: 10px;
+      color: var(--gray-dark);
+    }
+    .subsection ul li strong {
+      font-weight: 600;
+      color: var(--black);
+    }
+
+    /* ─── NOTICE BOX ─── */
+    .notice-box {
+      background: var(--gray-bg);
+      border-right: 4px solid var(--uam-blue); /* Cambiado de left a right para RTL */
+      padding: 20px 24px;
+      margin: 24px 0;
+      border-radius: 4px 0 0 4px; /* Adaptado para RTL */
+    }
+    .notice-box p {
+      font-size: 14px;
+      color: var(--gray-dark);
+      margin: 0;
+    }
+    .notice-box strong { color: var(--black); }
+
+    /* ─── TAG ─── */
+    .tag {
+      display: inline-block;
+      background: var(--uam-blue);
+      color: white;
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 3px;
+      margin-bottom: 12px;
+    }
+
+    /* ─── TABLE ─── */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+    .data-table th {
+      background: var(--black);
+      color: white;
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 10px 16px;
+      text-align: right; /* Cambiado a right para RTL */
+    }
+    .data-table td {
+      padding: 12px 16px;
+      border-bottom: var(--border);
+      color: var(--gray-dark);
+      vertical-align: top;
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:nth-child(even) td { background: var(--gray-bg); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--black);
+      color: rgba(255,255,255,0.6);
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-size: 12px;
+      padding: 32px 48px;
+      margin-top: 60px;
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+    footer a { color: rgba(255,255,255,0.6); text-decoration: underline; }
+    footer .footer-brand { color: white; font-weight: 700; font-size: 13px; }
+
+    @media (max-width: 860px) {
+      .page-wrapper { grid-template-columns: 1fr; padding: 0 24px; }
+      .sidebar { position: static; height: auto; border-left: none; border-bottom: var(--border); padding: 24px 0; }
+      .content { padding: 32px 0 60px; }
+      .topbar, header, footer { padding-left: 24px; padding-right: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="#">UAM</a>
+  <span class="sep">‹</span>
+  <a href="#">ماجستير الذكاء الاصطناعي</a>
+  <span class="sep">›</span>
+  <span>سياسة الخصوصية</span>
+</div>
+
+<header>
+  <div class="logo-mark">UAM</div>
+  <div class="logo-text">
+    <div class="institution">جامعة مدريد المستقلة</div>
+    <div class="project">منصة الإعلانات المدعومة بالذكاء الاصطناعي — ماجستير 2025–2026</div>
+  </div>
+</header>
+
+<div class="page-wrapper">
+
+  <nav class="sidebar">
+    <div class="sidebar-title">الفهرس</div>
+    <a href="#s1" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">القسم 1: تشريعات خصوصية البيانات وحقوقك الرقمية</span>
+    </a>
+    <a href="#s2" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">القسم 2: البيانات الشخصية</span>
+    </a>
+    <a href="#s3" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">القسم 3: كيف نستخدم بياناتك</span>
+    </a>
+    <a href="#s4" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">القسم 4: الإعلانات والاحتفاظ بالبيانات</span>
+    </a>
+    <a href="#s5" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">القسم 5: الأمن والمسؤولية</span>
+    </a>
+    <a href="#s6" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">القسم 6: حقوقك ووسائل الاتصال</span>
+    </a>
+    <a href="#s7" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">القانون التنظيمي لحماية البيانات: تطوير شامل</span>
+    </a>
+  </nav>
+
+  <main class="content">
+
+    <div class="content-header">
+      <h1>سياسة الخصوصية</h1>
+      <div class="meta">آخر تحديث: 21 أبريل 2026</div>
+    </div>
+
+    <section class="policy-section" id="s1">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>القسم 1: تشريعات خصوصية البيانات وحقوقك الرقمية</h2>
+      </div>
+
+      <div class="subsection">
+        <h3>ما هو موضوع هذه السياسة؟</h3>
+        <p>مرحباً بك في سياسة الخصوصية الخاصة بنا. توضح لك هذه الوثيقة كيفية معالجتنا للمعلومات الناتجة عند استخدامك لمنصتنا الإعلانية، والتي تم تطويرها كجزء من <strong>برنامج ماجستير الذكاء الاصطناعي (العام الأكاديمي 2025–2026)</strong> في جامعة مدريد المستقلة.</p>
+        <p>هذه المنصة مخصصة للأغراض الأكاديمية والبحث العلمي فقط؛ حيث تتيح نشر وعرض الإعلانات التي تم التحقق منها باستخدام تقنيات الذكاء الاصطناعي. ويتم الوصول إلى المنصة <strong>دون الحاجة إلى تسجيل مسبق</strong>، وبالتالي فإننا لا نجمع أي بيانات تعريفية شخصية بشكل مباشر.</p>
+        <p>تُعلمك هذه السياسة أيضاً بحقوق الخصوصية الخاصة بك وفقاً للملحق العام لحماية البيانات (GDPR) الصادر عن الاتحاد الأوروبي، والقانون التنظيمي الإسباني 3/2018 بشأن حماية البيانات الشخصية وضمان الحقوق الرقمية (LOPDGDD).</p>
+      </div>
+
+      <div class="subsection">
+        <h3>من يتولى المسؤولية؟</h3>
+        <p>تقع المسؤولية الرسمية عن هذه المنصة على عاتق <strong>جامعة مدريد المستقلة (UAM)</strong>، ومقرها الرئيسي في:</p>
+        <div class="notice-box">
+          <p>
+            <strong>جامعة مدريد المستقلة</strong><br>
+            Ciudad Universitaria de Cantoblanco<br>
+            28049 مدريد، إسبانيا<br>
+            <br>
+            مشروع تم تطويره بواسطة طلاب <strong>ماجستير الذكاء الاصطناعي، دفعة 2025–2026</strong>.
+          </p>
+        </div>
+        <p>تعمل جامعة مدريد المستقلة بصفتها جهة أكاديمية مشرفة؛ ومع ذلك، <strong>لا تتحمل الجامعة أي مسؤولية عن صحة أو أمان أو دقة الإعلانات المنشورة على المنصة</strong>. إن عملية التحقق من الإعلانات لها طابع إرشادي وتوجيهي بحت، ولا تصنف كاعتماد رسمي أو تأييد مؤسسي.</p>
+      </div>
+
+      <div class="subsection">
+        <h3>الإطار القانوني المعمول به</h3>
+        <ul>
+          <li><strong>اللائحة (الاتحاد الأوروبي) 2016/679 (GDPR)</strong> — اللائحة العامة لحماية البيانات.</li>
+          <li><strong>القانون التنظيمي 3/2018 (LOPDGDD)</strong> — حماية البيانات الشخصية وضمان الحقوق الرقمية في إسبانيا.</li>
+          <li><strong>القانون 34/2002 (LSSI-CE)</strong> — قانون خدمات مجتمع المعلومات والتجارة الإلكترونية.</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3>حقوق الخصوصية الخاصة بك</h3>
+        <p>وفقاً للائحة العامة لحماية البيانات (GDPR)، تتمتع بالحقوق التالية فيما يتعلق بأي بيانات قد نقوم بمعالجتها محتملاً:</p>
+        <ul>
+          <li><strong>الوصول:</strong> يمكنك طلب معلومات حول البيانات التي نمتلكها.</li>
+          <li><strong>التصحيح:</strong> يمكنك طلب تصحيح البيانات غير الدقيقة أو غير الكاملة.</li>
+          <li><strong>المحو ("الحق في النسيان"):</strong> يمكنك طلب حذف بياناتك عندما لا تعود هناك حاجة إليها.</li>
+          <li><strong>تقييد المعالجة:</strong> يمكنك طلب تعليق استخدام بياناتك في ظروف معينة.</li>
+          <li><strong>الاعتراض:</strong> يمكنك الاعتراض على معالجة البيانات القائمة على المصلحة المشروعة.</li>
+          <li><strong>نقل البيانات:</strong> يحق لك استلام بياناتك بصيغة إلكترونية مقروءة آلياً.</li>
+          <li><strong>تقديم شكوى:</strong> يمكنك تقديم شكوى إلى <strong>الوكالة الإسبانية لحماية البيانات (AEPD)</strong>.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="policy-section" id="s2">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>القسم 2: البيانات الشخصية</h2>
+      </div>
+
+      <div class="subsection">
+        <h3>ما هي البيانات الشخصية التي نجمعها؟</h3>
+        <div class="tag">الوصول بدون تسجيل</div>
+        <p>تم تصميم منصتنا وفقاً لمبدأ <strong>الخصوصية الافتراضية (Privacy by Default)</strong>: حيث يمكن للمستخدمين تصفح الإعلانات والتفاعل معها <strong>دون الحاجة إلى إنشاء حساب أو تقديم أي بيانات شخصية</strong>.</p>
+        <p>نحن لا نطلب ولا نخزن المعلومات التالية:</p>
+        <ul>
+          <li>الاسم، أو الألقاب، أو الأسماء المستعارة.</li>
+          <li>البريد الإلكتروني.</li>
+          <li>رقم الهاتف.</li>
+          <li>وثائق الهوية الرسمية.</li>
+          <li>معلومات الدفع أو الحسابات البنكية.</li>
+        </ul>
+        <p>نظام التحقق من الهوية، في حال توفره، سيعمل عن طريق <strong>المصادقة المستندة إلى الرموز المميزة (Tokens) أو الجلسات المجهولة</strong>، دون ربط هذا النشاط بهوية شخصية مباشرة للمستخدم.</p>
+      </div>
+
+      <div class="subsection">
+        <h3>أنواع البيانات المرسلة للتحليل</h3>
+        <p>يقوم المستخدمون بإرسال محتوى إلى المنصة للتحقق منه. وهناك طريقتان لإدخال هذه البيانات، ويتم التعامل مع كلتيهما بشكل مجهول الهوية بالكامل:</p>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>نوع الإدخال</th>
+              <th>الوصف</th>
+              <th>الهدف والغاية</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>النوع 1 — إعلان مكتوب</strong></td>
+              <td>يقوم المستخدم بإدخال نص الإعلان التجاري الذي يرغب في التحقق منه مباشرة.</td>
+              <td>التحليل والتحقق الإرشادي عبر تقنيات الذكاء الاصطناعي</td>
+            </tr>
+            <tr>
+              <td><strong>النوع 2 — رابط الإعلان (URL)</strong></td>
+              <td>يقوم المستخدم بتزويد المنصة برابط إلكتروني (URL) يؤدي إلى الإعلان أو الصفحة المراد فحصها. وتصل المنصة إلى المحتوى العام المتاح في ذلك الرابط.</td>
+              <td>التحليل والتحقق الإرشادي عبر تقنيات الذكاء الاصطناعي</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+    <section class="policy-section" id="s3">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>القسم 3: كيف نستخدم بياناتك</h2>
+      </div>
+
+      <div class="subsection">
+        <h3>أغراض معالجة البيانات</h3>
+        <p>تُستخدم البيانات الفنية التي يتم جمعها حصرياً للأغراض التالية:</p>
+        <ul>
+          <li><strong>تشغيل المنصة:</strong> نحن نضمن التوفر والأداء الفني السليم للخدمة، ويشمل ذلك معالجة المنصة للطلبات المرسلة من المستخدمين بشكل صحيح وإعادة نتائج الفحص. <em>هذا الضمان يتعلق بالجانب التقني والتشغيلي للخدمة فقط، ولا يشمل صحة أو موثوقية المحتوى الفعلي للإعلانات التي جرى تحليلها.</em></li>
+          <li><strong>التحقق التوجيهي من الإعلانات:</strong> تطبيق نماذج الذكاء الاصطناعي لتحليل محتوى الإعلانات (النصوص المكتوبة أو الروابط الإلكترونية)، وتكون النتيجة مؤشراً احتمالية تقريبياً، وليست شهادة موثقة بالصحة أو الأصالة.</li>
+          <li><strong>تحسين النظام:</strong> إجراء تحليلات مجمعة ومجهولة الهوية لتطوير نماذج الذكاء الاصطناعي وتحسينها في سياق المشروع الأكاديمي.</li>
+          <li><strong>الأمان والنزاهة:</strong> رصد ومنع الاستخدامات الاحتيالية، أو الضارة، أو المسيئة للمنصة.</li>
+        </ul>
+        <div class="notice-box">
+          <p><strong>ملاحظة هامة:</strong> تضمن المنصة تقديم خدمة التحليل الفني، ولكنها <strong>لا تضمن ولا تصادق على صدق، أو دقة، أو قانونية الإعلانات المرسلة</strong>. ويجب تفسير النتائج الصادرة كإرشادات توجيهية وليست كحكم قانوني أو علمي قاطع.</p>
+        </div>
+        <p><strong>نحن لا نستخدم البيانات لأغراض تجارية، ولا نشاركها مع أي طرف ثالث لأهداف تسويقية أو دعائية.</strong></p>
+      </div>
+
+      <div class="subsection">
+        <h3>نقل البيانات دولياً</h3>
+        <p>لا يتم إجراء أي عمليات نقل للبيانات خارج المنطقة الاقتصادية الأوروبية (EEA)؛ حيث تعمل جميع البنى التحتية الخاصة بالمشروع داخل البيئات الأكاديمية التابعة لجامعة مدريد المستقلة أو على خوادم آمنة تقع داخل الاتحاد الأوروبي.</p>
+      </div>
+    </section>
+
+    <section class="policy-section" id="s4">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>القسم 4: الإعلانات والاحتفاظ بالبيانات</h2>
+      </div>
+
+      <div class="subsection">
+        <h3>طبيعة الإعلانات التي يتم التحقق منها</h3>
+        <p>تطبق المنصة تقنيات متطورة في الذكاء الاصطناعي لتحليل الإعلانات وتصنيفها؛ ورغم ذلك، فإن <strong>هذا التحقق له طابع توجيهي واستشاري بحت</strong>:</p>
+        <ul>
+          <li>لا يضمن صحة وموثوقية مضمون الإعلان.</li>
+          <li>لا يصادق على الهوية الحقيقية للمعلن.</li>
+          <li>لا يمثل دعماً أو تبنياً مؤسسياً من جانب جامعة مدريد المستقلة.</li>
+          <li>قد تخطئ نماذج الذكاء الاصطناعي أو تظهر بعض الانحيازات (Bias) الناتجة عن طبيعة البيانات التي تدربت عليها.</li>
+        </ul>
+        <p>يتعين على المستخدمين إعمال وتطبيق حكمهم الشخصي المستقل وقبل اتخاذ أي إجراء أو قرار بناءً على أي إعلان معروض على المنصة.</p>
+      </div>
+    </section>
+
+    <section class="policy-section" id="s5">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>القسم 5: الأمن والمسؤولية</h2>
+      </div>
+
+      <div class="subsection">
+        <h3>حدود مسؤولية جامعة مدريد المستقلة (UAM)</h3>
+        <div class="notice-box">
+          <p><strong>لا تتحمل جامعة مدريد المستقلة أي مسؤولية قانونية أو مدنية</strong> عن مستوى الأمان، أو الصدق، أو الملاءمة الخاصة بالإعلانات المنشورة، كما لا تتحمل المسؤولية عن أي أضرار قد تنجم عن التفاعل مع تلك الإعلانات. هذه المنصة مشروع أكاديمي تجريبي ويجب التعامل معها وفهمها على هذا الأساس الفردي فقط.</p>
+        </div>
+        <p>تشرف الجامعة على المشروع من وجهة نظر أكاديمية وبحثية بحتة، ولكنها لا تضمن خلو الخدمة من الأخطاء العارضة، أو الانقطاعات الفنية، أو الثغرات الأمنية. وفي حالة وقوع أي حادث أمني يؤثر على بيانات شخصية، سنقوم بإبلاغ الوكالة الإسبانية لحماية البيانات (AEPD) خلال المدة القانونية المقررة في الـ GDPR (72 ساعة).</p>
+      </div>
+    </section>
+
+    <section class="policy-section" id="s6">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>القسم 6: حقوقك ووسائل الاتصال</h2>
+      </div>
+    </section>
+
+    <section class="policy-section" id="s7">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>القانون التنظيمي لحماية البيانات الشخصية وضمان الحقوق الرقمية</h2>
+      </div>
+
+      <div class="subsection">
+        <h3>1. الموضوع والمسؤول عن المعالجة</h3>
+        <p>تهدف سياسة الخصوصية الحالية إلى تنظيم معالجة البيانات الفنية الناتجة أثناء استخدام المنصة الأكاديمية للتحقق من الإعلانات عبر الذكاء الاصطناعي، والتي تم تطويرها في إطار ماجستير الذكاء الاصطناعي (دفعة 2025–2026) في جامعة مدريد المستقلة (UAM).</p>
+      </div>
+
+      <div class="subsection">
+        <h3>2. الإطار القانوني المعمول به</h3>
+        <p>تخضع عمليات معالجة البيانات التي تتم عبر هذه المنصة للتشريعات السارية التالية:</p>
+        <ul>
+          <li>اللائحة (الاتحاد الأوروبي) 2016/679 الصادرة عن البرلمان الأوروبي والمجلس بتاريخ 27 أبريل 2016، والمعنية بحماية الأشخاص الطبيعيين فيما يتعلق بمعالجة البيانات الشخصية (GDPR).</li>
+          <li>القانون التنظيمي الإسباني 3/2018 بتاريخ 5 ديسمبر بشأن حماية البيانات الشخصية وضمان الحقوق الرقمية (LOPDGDD).</li>
+          <li>القانون الإسباني 34/2002 بتاريخ 11 يوليو بشأن خدمات مجتمع المعلومات والتجارة الإلكترونية (LSSI-CE).</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3>3. البيانات الشخصية التي يتم جمعها</h3>
+        <p>تم تصميم المنصة بما يتماشى مع مبدأ الخصوصية الافتراضية المقررة في المادة 25 من اللائحة العامة لحماية البيانات (GDPR). ولا يتطلب الوصول إلى الخدمة تسجيلاً مسبقاً، ولا يتم طلب أو حفظ أي بيانات تعريفية مثل الاسم، أو اللقب، أو البريد الإلكتروني، أو رقم الهاتف، أو الوثائق الرسمية، أو معلومات الدفع.</p>
+      </div>
+
+      <div class="subsection">
+        <h3>5. الغرض من معالجة البيانات</h3>
+        <p>تُستخدم البيانات الفنية المجمعة أثناء استخدام المنصة حصرياً للأغراض التالية:</p>
+        <ul>
+          <li>ضمان استمرارية التشغيل والأداء الفني السليم للخدمة.</li>
+          <li>تطبيق نماذج الذكاء الاصطناعي لتوفير تقييم توجيهي تقريبي لمحتوى الإعلانات الخاضعة للتحليل.</li>
+          <li>تحسين وتطوير نماذج التحقق من خلال تحليلات إحصائية مجمعة ومجهولة الهوية في إطار مشروع البحث الأكاديمي.</li>
+          <li>كشف ومنع الأنشطة الاحتيالية أو الاستخدامات التي تخالف شروط الخدمة.</li>
+          <li>جمع المعلومات اللغوية التي ستوفر للمتحققين والمنظمات غير الحكومية بيانات إحصائية لتقييم الأنماط المتكررة، بهدف المساهمة في استئصال الإعلانات الاحتيالية محتملاً.</li>
+          <li>الاعتماد على البيانات المستخلصة بهدف توسيع نطاق البرنامج وإتاحة الفرصة لإدراج تعديلات مستقبلية تساعد في تطوير وتحسين الكود البرمجي.</li>
+        </ul>
+        <p>لا تُستخدم هذه البيانات مطلقاً لأغراض تجارية، ولا يتم التنازل عنها أو مشاركتها مع أطراف ثالثة لأغراض دعائية، كمالا تُنقل البيانات دولياً خارج المنطقة الاقتصادية الأوروبية (EEA).</p>
+        <p>تندرج جميع هذه الأنشطة وتتم حمايتها بموجب قانون الملكية الفكرية الإسباني، وتحديداً المادة 32 المتعلقة بالاقتباسات والمراجعات والرسوم التوضيحية للأغراض التعليمية أو البحث العلمي؛ حيث تنص على أنه إذا كان المشروع معفياً من الأهداف التجارية ويُستخدم لمجرد غرض البحث أو الأهداف التعليمية، فإن استخدام المحتويات يعد مشروعاً ومصرحاً به.</p>
+      </div>
+
+      <div class="subsection">
+        <h3>6. حقوق المستخدم</h3>
+        <p>وفقاً لأحكام الفصل الثالث من اللائحة (الاتحاد الأوروبي) 2016/679، يحق للمستخدم ممارسة الحقوق التالية في أي وقت وبشكل مجاني تماماً:</p>
+        <ul>
+          <li><strong>حق الوصول:</strong> الحصول على تأكيد بشأن ما إذا كانت بياناته الفنية يجري معالجتها أم لا، والاطلاع عليها.</li>
+          <li><strong>حق التصحيح:</strong> طلب تعديل أو تصحيح البيانات غير الدقيقة أو الناقصة.</li>
+          <li><strong>حق الحذف:</strong> طلب محو البيانات عندما لا تعد ضرورية للأغراض التي جُمعت من أجلها.</li>
+          <li><strong>حق تقييد المعالجة:</strong> طلب تعليق معالجة البيانات في الحالات المنصوص عليها في المادة 18 من الـ GDPR.</li>
+          <li><strong>حق الاعتراض:</strong> الاعتراض على معالجة البيانات المستندة إلى المصلحة المشروعة للجهة المسؤولة.</li>
+          <li><strong>حق نقل البيانات:</strong> استلام البيانات التي قدمها بصيغة مهيكلة، شائعة الاستخدام وقابلة للقراءة آلياً.</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div>
+    <div class="footer-brand">UAM — ماجستير الذكاء الاصطناعي 2025–2026</div>
+    <div>© 2026 جامعة مدريد المستقلة. مشروع أكاديمي وبحثي.</div>
+  </div>
+  <div style="display:flex; gap: 24px; flex-wrap: wrap;">
+    <a href="#">سياسة ملفات تعريف الارتباط (Cookies)</a>
+    <a href="#">الإشعار القانوني</a>
+    <a href="#">اتصل بنا</a>
+    <a href="https://www.aepd.es" target="_blank">AEPD</a>
+  </div>
+</footer>
+
+<script>
+  // Smooth scroll for nav links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

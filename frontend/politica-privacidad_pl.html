@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Polityka Prywatności — Projekt IAM-UAM 2025-2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cera+Pro:wght@400;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --black: #1a1a1a;
+      --gray-dark: #3a3a3a;
+      --gray-mid: #6b6b6b;
+      --gray-light: #e8e8e8;
+      --gray-bg: #f6f6f6;
+      --white: #ffffff;
+      --uam-blue: #003b71;
+      --uam-accent: #005aad;
+      --border: 1px solid #d0d0d0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-weight: 300;
+      color: var(--black);
+      background: var(--white);
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    /* ─── TOP BAR ─── */
+    .topbar {
+      background: var(--uam-blue);
+      color: white;
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      padding: 10px 48px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .topbar a { color: rgba(255,255,255,0.75); text-decoration: none; }
+    .topbar a:hover { color: white; }
+    .topbar .sep { color: rgba(255,255,255,0.4); }
+
+    /* ─── HEADER ─── */
+    header {
+      border-bottom: var(--border);
+      padding: 28px 48px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .logo-mark {
+      width: 48px; height: 48px;
+      background: var(--uam-blue);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      color: white;
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
+    }
+    .logo-text {
+      font-family: 'Cera Pro', Arial, sans-serif;
+    }
+    .logo-text .institution {
+      font-size: 13px;
+      color: var(--gray-mid);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .logo-text .project {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--uam-blue);
+    }
+
+    /* ─── LAYOUT ─── */
+    .page-wrapper {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 48px;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 0;
+    }
+
+    /* ─── SIDEBAR NAV ─── */
+    .sidebar {
+      border-right: var(--border);
+      padding: 40px 32px 40px 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    .sidebar-title {
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gray-mid);
+      margin-bottom: 20px;
+    }
+    .nav-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 0;
+      border-top: var(--border);
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--black);
+    }
+    .nav-item:first-of-type { border-top: none; }
+    .nav-item .arrow {
+      font-size: 10px;
+      margin-top: 4px;
+      color: var(--gray-mid);
+      flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+    .nav-item:hover .arrow { transform: translateX(3px); }
+    .nav-item .nav-label {
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      line-height: 1.4;
+    }
+    .nav-item:hover .nav-label { color: var(--uam-accent); }
+
+    /* ─── MAIN CONTENT ─── */
+    .content {
+      padding: 40px 0 80px 48px;
+    }
+
+    .content-header {
+      margin-bottom: 48px;
+      padding-bottom: 32px;
+      border-bottom: 2px solid var(--black);
+    }
+    .content-header h1 {
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--black);
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .content-header .meta {
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-size: 13px;
+      color: var(--gray-mid);
+    }
+
+    /* ─── SECTION ─── */
+    .policy-section {
+      margin-bottom: 56px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--black);
+      cursor: pointer;
+    }
+    .section-header .toggle-arrow {
+      font-size: 12px;
+      color: var(--black);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .section-header h2 {
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--black);
+    }
+
+    .subsection {
+      margin-bottom: 36px;
+    }
+    .subsection h3 {
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--black);
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+    .subsection p {
+      margin-bottom: 14px;
+      color: var(--gray-dark);
+    }
+    .subsection ul {
+      margin: 14px 0 14px 20px;
+    }
+    .subsection ul li {
+      margin-bottom: 10px;
+      color: var(--gray-dark);
+    }
+    .subsection ul li strong {
+      font-weight: 600;
+      color: var(--black);
+    }
+
+    /* ─── NOTICE BOX ─── */
+    .notice-box {
+      background: var(--gray-bg);
+      border-left: 4px solid var(--uam-blue);
+      padding: 20px 24px;
+      margin: 24px 0;
+      border-radius: 0 4px 4px 0;
+    }
+    .notice-box p {
+      font-size: 14px;
+      color: var(--gray-dark);
+      margin: 0;
+    }
+    .notice-box strong { color: var(--black); }
+
+    /* ─── TAG ─── */
+    .tag {
+      display: inline-block;
+      background: var(--uam-blue);
+      color: white;
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 3px;
+      margin-bottom: 12px;
+    }
+
+    /* ─── TABLE ─── */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+    .data-table th {
+      background: var(--black);
+      color: white;
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 10px 16px;
+      text-align: left;
+    }
+    .data-table td {
+      padding: 12px 16px;
+      border-bottom: var(--border);
+      color: var(--gray-dark);
+      vertical-align: top;
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:nth-child(even) td { background: var(--gray-bg); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--black);
+      color: rgba(255,255,255,0.6);
+      font-family: 'Cera Pro', Arial, sans-serif;
+      font-size: 12px;
+      padding: 32px 48px;
+      margin-top: 60px;
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+    footer a { color: rgba(255,255,255,0.6); text-decoration: underline; }
+    footer .footer-brand { color: white; font-weight: 700; font-size: 13px; }
+
+    @media (max-width: 860px) {
+      .page-wrapper { grid-template-columns: 1fr; padding: 0 24px; }
+      .sidebar { position: static; height: auto; border-right: none; border-bottom: var(--border); padding: 24px 0; }
+      .content { padding: 32px 0 60px; }
+      .topbar, header, footer { padding-left: 24px; padding-right: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="#">UAM</a>
+  <span class="sep">›</span>
+  <a href="#">Studia magisterskie z AI</a>
+  <span class="sep">›</span>
+  <span>Polityka Prywatności</span>
+</div>
+
+<header>
+  <div class="logo-mark">UAM</div>
+  <div class="logo-text">
+    <div class="institution">Autonomiczny Uniwersytet w Madrycie</div>
+    <div class="project">Platforma Ogłoszeniowa AI — Studia Magisterskie 2025–2026</div>
+  </div>
+</header>
+
+<div class="page-wrapper">
+
+  <nav class="sidebar">
+    <div class="sidebar-title">Spis treści</div>
+    <a href="#s1" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">Sekcja 1: Przepisy o ochronie danych i Twoje prawa cyfrowe</span>
+    </a>
+    <a href="#s2" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">Sekcja 2: Dane osobowe</span>
+    </a>
+    <a href="#s3" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">Sekcja 3: Jak wykorzystujemy Twoje dane</span>
+    </a>
+    <a href="#s4" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">Sekcja 4: Ogłoszenia reklamowe i przechowywanie danych</span>
+    </a>
+    <a href="#s5" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">Sekcja 5: Bezpieczeństwo i odpowiedzialność</span>
+    </a>
+    <a href="#s6" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">Sekcja 6: Twoje prawa i kontakt</span>
+    </a>
+    <a href="#s7" class="nav-item">
+      <span class="arrow">▶</span>
+      <span class="nav-label">Ustawa Organiczna o Ochronie Danych: Pełne Opracowanie</span>
+    </a>
+  </nav>
+
+  <main class="content">
+
+    <div class="content-header">
+      <h1>Polityka Prywatności</h1>
+      <div class="meta">Ostatnia aktualizacja: 21 kwietnia 2026 r.</div>
+    </div>
+
+    <section class="policy-section" id="s1">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>Sekcja 1: Przepisy o ochronie danych i Twoje prawa cyfrowe</h2>
+      </div>
+
+      <div class="subsection">
+        <h3>Czego dotyczy ta polityka?</h3>
+        <p>Witamy w naszej Polityce Prywatności. Ten dokument wyjaśnia, w jaki sposób przetwarzamy informacje generowane podczas korzystania z naszej platformy reklamowej, opracowanej w ramach <strong>studiów magisterskich na kierunku Sztuczna Inteligencja (rok akademicki 2025–2026)</strong> na Autonomicznym Uniwersytecie w Madrycie.</p>
+        <p>Ta platforma służy wyłącznie celom akademickim i badaniom naukowym. Umożliwia ona publikowanie oraz przeglądanie ogłoszeń reklamowych weryfikowanych za pomocą technik sztucznej inteligencji. Dostęp do platformy odbywa się <strong>bez konieczności wcześniejszej rejestracji</strong>, w związku z czym nie zbieramy bezpośrednio żadnych danych osobowych umożliwiających identyfikację.</p>
+        <p>Niniejsza polityka informuje również o przysługujących użytkownikowi prawach do prywatności zgodnie z Ogólnym Rozporządzeniem o Ochronie Danych (RODO/GDPR) Unii Europejskiej oraz hiszpańską Ustawą Organiczną 3/2018 o ochronie danych osobowych i gwarancji praw cyfrowych (LOPDGDD).</p>
+      </div>
+
+      <div class="subsection">
+        <h3>Kto ponosi odpowiedzialność?</h3>
+        <p>Formalną odpowiedzialność za tę platformę ponosi <strong>Autonomiczny Uniwersytet w Madrycie (UAM)</strong>, z główną siedzibą pod adresem:</p>
+        <div class="notice-box">
+          <p>
+            <strong>Universidad Autónoma de Madrid</strong><br>
+            Ciudad Universitaria de Cantoblanco<br>
+            28049 Madryt, Hiszpania<br>
+            <br>
+            Projekt opracowany przez studentów <strong>studiów magisterskich z zakresu Sztucznej Inteligencji, rocznik 2025–2026</strong>.
+          </p>
+        </div>
+        <p>UAM działa jako akademicki podmiot nadzorujący. Niemniej jednak <strong>Uniwersytet nie ponosi żadnej odpowiedzialności za prawdziwość, bezpieczeństwo ani dokładność ogłoszeń publikowanych na platformie</strong>. Weryfikacja ogłoszeń ma charakter wyłącznie orientacyjny i nie stanowi oficjalnej aprobaty instytucjonalnej.</p>
+      </div>
+
+      <div class="subsection">
+        <h3>Obowiązujące ramy prawne</h3>
+        <ul>
+          <li><strong>Rozporządzenie (UE) 2016/679 (RODO)</strong> — Ogólne Rozporządzenie o Ochronie Danych.</li>
+          <li><strong>Ustawa Organiczna 3/2018 (LOPDGDD)</strong> — Ochrona danych osobowych i gwarancja praw cyfrowych w Hiszpanii.</li>
+          <li><strong>Ustawa 34/2002 (LSSI-CE)</strong> — Ustawa o usługach społeczeństwa informacyjnego i handlu elektronicznym.</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3>Twoje prawa do prywatności</h3>
+        <p>Zgodnie z RODO, użytkownikowi przysługują następujące prawa w odniesieniu do wszelkich danych, które możemy ewentualnie przetwarzać:</p>
+        <ul>
+          <li><strong>Dostęp:</strong> Możesz zażądać informacji o posiadanych przez nas danych na Twój temat.</li>
+          <li><strong>Sprostowanie:</strong> Możesz zażądać poprawienia nieprawidłowych lub niekompletnych danych.</li>
+          <li><strong>Usunięcie („prawo do bycia zapomnianym”):</strong> Możesz zażądać usunięcia swoich danych, gdy nie są już one potrzebne.</li>
+          <li><strong>Ograniczenie przetwarzania:</strong> Możesz zażądać wstrzymania wykorzystywania Twoich danych w określonych sytuacjach.</li>
+          <li><strong>Sprzeciw:</strong> Możesz wyrazić sprzeciw wobec przetwarzania danych opartego na prawnie uzasadnionym interesie.</li>
+          <li><strong>Przenoszenie danych:</strong> Masz prawo otrzymać swoje dane w ustrukturyzowanym formacie nadającym się do odczytu maszynowego.</li>
+          <li><strong>Skarga:</strong> Możesz złożyć skargę do <strong>Hiszpańskiej Agencji Ochrony Danych (AEPD)</strong>.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="policy-section" id="s2">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>Sekcja 2: Dane osobowe</h2>
+      </div>
+
+      <div class="subsection">
+        <h3>Jakie dane osobowe zbieramy?</h3>
+        <div class="tag">Dostęp bez rejestracji</div>
+        <p>Nasza platforma została zaprojektowana zgodnie z zasadą <strong>domyślnej ochrony prywatności (Privacy by Default)</strong>: użytkownicy mogą przeglądać ogłoszenia i wchodzić z nimi w interakcję <strong>bez konieczności zakładania konta ani podawania jakichkolwiek danych osobowych</strong>.</p>
+        <p>Nie wymagamy ani nie przechowujemy:</p>
+        <ul>
+          <li>Imion, nazwisk ani pseudonimów.</li>
+          <li>Adresów e-mail.</li>
+          <li>Numerów telefonów.</li>
+          <li>Oficjalnych dokumentów tożsamości.</li>
+          <li>Informacji o płatnościach.</li>
+        </ul>
+        <p>System uwierzytelniania, kiedy zostanie wdrożony, będzie działał w oparciu o <strong>tokeny lub anonimowe sesje</strong>, bez powiązania aktywności z bezpośrednią tożsamością konkretnego użytkownika.</p>
+      </div>
+
+      <div class="subsection">
+        <h3>Rodzaje danych przesyłanych do analizy</h3>
+        <p>Użytkownicy przesyłają treści na platformę w celu ich weryfikacji. Istnieją dwie metody wprowadzania danych, a obie są traktowane w sposób całkowicie anonimowy:</p>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Typ wprowadzanych danych</th>
+              <th>Opis</th>
+              <th>Cel</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Typ 1 — Ogłoszenie tekstowe</strong></td>
+              <td>Użytkownik wpisuje bezpośrednio treść ogłoszenia komercyjnego, które chce zweryfikować.</td>
+              <td>Analiza i orientacyjna weryfikacja za pomocą AI</td>
+            </tr>
+            <tr>
+              <td><strong>Typ 2 — URL ogłoszenia</strong></td>
+              <td>Użytkownik podaje link (URL) do ogłoszenia lub strony, którą chce zweryfikować. Platforma pobiera publiczną zawartość wskazanego adresu URL.</td>
+              <td>Analiza i orientacyjna weryfikacja za pomocą AI</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+    <section class="policy-section" id="s3">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>Sekcja 3: Jak wykorzystujemy Twoje dane</h2>
+      </div>
+
+      <div class="subsection">
+        <h3>Cele przetwarzania</h3>
+        <p>Gromadzone dane techniczne są wykorzystywane wyłącznie do:</p>
+        <ul>
+          <li><strong>Działania platformy:</strong> Gwarantujemy dostępność i prawidłowe działanie techniczne usługi. Obejmuje to właściwe przetwarzanie przez platformę zapytań przesyłanych przez użytkowników i zwracanie wyniku weryfikacji. <em>Gwarancja ta dotyczy technicznego aspektu działania usługi, a nie prawdziwości treści analizowanych ogłoszeń.</em></li>
+          <li><strong>Orientacyjnej weryfikacji ogłoszeń:</strong> Zastosowanie modeli AI do analizy treści ogłoszenia (tekstu lub adresu URL). Wynik stanowi wskaźnik prawdopodobieństwa, a nie certyfikat autentyczności.</li>
+          <li><strong>Ulepszania systemu:</strong> Zbiorcze i anonimowe analizy mające na celu optymalizację modeli sztucznej inteligencji w ramach projektu akademickiego.</li>
+          <li><strong>Bezpieczeństwa:</strong> Wykrywanie i zapobieganie działaniom oszukańczym lub złośliwym.</li>
+        </ul>
+        <div class="notice-box">
+          <p><strong>Ważne:</strong> Platforma gwarantuje świadczenie usługi analitycznej, lecz <strong>nie gwarantuje ani nie poświadcza prawdziwości, dokładności ani legalności przesyłanych ogłoszeń</strong>. Wyniki należy interpretować wyłącznie jako wskazówkę, a nigdy jako ostateczny werdykt.</p>
+        </div>
+        <p><strong>Nie wykorzystujemy danych w celach komercyjnych ani nie udostępniamy ich podmiotom trzecim w celach reklamowych.</strong></p>
+      </div>
+
+      <div class="subsection">
+        <h3>Międzynarodowy transfer danych</h3>
+        <p>Dane nie są przekazywane poza Europejski Obszar Gospodarczy (EOG). Cała infrastruktura projektu funkcjonuje w środowisku akademickim Autonomicznego Uniwersytetu w Madrycie lub na bezpiecznych serwerach zlokalizowanych na terenie UE.</p>
+      </div>
+    </section>
+
+    <section class="policy-section" id="s4">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>Sekcja 4: Ogłoszenia reklamowe i przechowywanie danych</h2>
+      </div>
+
+      <div class="subsection">
+        <h3>Charakter weryfikowanych ogłoszeń</h3>
+        <p>Platforma wykorzystuje techniki sztucznej inteligencji do analizy i klasyfikacji publikowanych ogłoszeń. Niemniej jednak <strong>taka weryfikacja ma charakter wyłącznie orientacyjny</strong>:</p>
+        <ul>
+          <li>Nie gwarantuje prawdziwości treści zawartych w ogłoszeniu.</li>
+          <li>Nie potwierdza tożsamości reklamodawcy ani autora ogłoszenia.</li>
+          <li>Nie stanowi oficjalnego poparcia ze strony UAM.</li>
+          <li>Modele AI mogą popełniać błędy lub wykazywać stronniczość (biases) wynikającą ze specyfiki ich trenowania.</li>
+        </ul>
+        <p>Użytkownicy powinni kierować się własnym osądem przed podjęciem jakichkolwiek działań na podstawie ogłoszeń zamieszczonych na platformie.</p>
+      </div>
+    </section>
+
+    <section class="policy-section" id="s5">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>Sekcja 5: Bezpieczeństwo i odpowiedzialność</h2>
+      </div>
+
+      <div class="subsection">
+        <h3>Ograniczenie odpowiedzialności UAM</h3>
+        <div class="notice-box">
+          <p><strong>Autonomiczny Uniwersytet w Madrycie nie ponosi odpowiedzialności</strong> za poziom bezpieczeństwa, prawdziwość lub rzetelność ogłoszeń zamieszczanych na platformie, ani za ewentualne szkody wynikające z interakcji z tymi ogłoszeniami. Platforma ta stanowi eksperymentalny projekt akademicki i w taki sposób należy ją traktować.</p>
+        </div>
+        <p>UAM nadzoruje projekt od strony naukowej i badawczej, ale nie może zagwarantować braku błędów, przerw w działaniu usługi ani podatności systemu na zagrożenia. W przypadku wystąpienia incydentu bezpieczeństwa mającego wpływ na dane osobowe, zgłosimy ten fakt do AEPD w terminie określonym przez RODO (72 godziny).</p>
+      </div>
+    </section>
+
+    <section class="policy-section" id="s6">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>Sekcja 6: Twoje prawa i kontakt</h2>
+      </div>
+    </section>
+
+    <section class="policy-section" id="s7">
+      <div class="section-header">
+        <span class="toggle-arrow">▶</span>
+        <h2>Ustawa Organiczna o Ochronie Danych Osobowych i gwarancji praw cyfrowych</h2>
+      </div>
+
+      <div class="subsection">
+        <h3>1. Przedmiot i administrator danych</h3>
+        <p>Niniejsza Polityka Prywatności ma na celu uregulowanie kwestii przetwarzania danych generowanych podczas korzystania z akademickiej platformy służącej do weryfikacji ogłoszeń reklamowych przy użyciu sztucznej inteligencji, realizowanej w ramach studiów magisterskich na kierunku Sztuczna Inteligencja (rocznik 2025–2026) na Autonomicznym Uniwersytecie w Madrycie (UAM).</p>
+      </div>
+
+      <div class="subsection">
+        <h3>2. Obowiązujące ramy prawne</h3>
+        <p>Przetwarzanie danych realizowane na tej platformie podlega następującym przepisom prawa:</p>
+        <ul>
+          <li>Rozporządzenie Parlamentu Europejskiego i Rady (UE) 2016/679 z dnia 27 kwietnia 2016 r. w sprawie ochrony osób fizycznych w związku z przetwarzaniem danych osobowych (RODO).</li>
+          <li>Hiszpańska Ustawa Organiczna 3/2018 z dnia 5 grudnia o ochronie danych osobowych i gwarancji praw cyfrowych (LOPDGDD).</li>
+          <li>Hiszpańska Ustawa 34/2002 z dnia 11 lipca o usługach społeczeństwa informacyjnego i handlu elektronicznym (LSSI-CE).</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3>3. Gromadzone dane osobowe</h3>
+        <p>Platforma została zaprojektowana zgodnie z zasadą ochrony danych w fazie projektowania oraz domyślnej ochrony danych, o których mowa w art. 25 RODO. Korzystanie z usługi nie wymaga wcześniejszej rejestracji, a dane identyfikacyjne, takie jak imię, nazwisko, e-mail, numer telefonu, dokumenty tożsamości czy szczegóły płatności, nie są żądane ani zapisywane.</p>
+      </div>
+
+      <div class="subsection">
+        <h3>5. Cel przetwarzania danych</h3>
+        <p>Dane techniczne zbierane podczas korzystania z platformy będą przetwarzane wyłącznie w następujących celach:</p>
+        <ul>
+          <li>Zapewnienie dostępności i prawidłowego działania technicznego usługi.</li>
+          <li>Wykorzystanie modeli sztucznej inteligencji w celu oferowania orientacyjnej weryfikacji treści analizowanych ogłoszeń.</li>
+          <li>Ulepszanie modeli weryfikacyjnych poprzez zagregowane i anonimowe analizy w kontekście akademickiego projektu badawczego.</li>
+          <li>Wykrywanie i zapobieganie nadużyciom lub działaniom naruszającym warunki korzystania z usługi.</li>
+          <li>Zbieranie informacji lingwistycznych, które dostarczą użytkownikom i organizacjom pozarządowym (NGO) danych statystycznych do oceny reprezentatywnych wzorców, w celu wsparcia ewentualnego zwalczania nieuczciwych reklam.</li>
+          <li>Wykorzystanie zebranych danych do planowania skalowalności programu i wdrażania przyszłych modyfikacji służących ulepszaniu kodu źródłowego.</li>
+        </ul>
+        <p>Dane nie będą wykorzystywane w celach komercyjnych ani przekazywane podmiotom trzecim w celach marketingowych. Nie będą również dokonywane międzynarodowe transfery danych poza Europejski Obszar Gospodarczy (EOG).</p>
+        <p>Działalność ta jest chroniona przez hiszpańskie prawo autorskie, w szczególności przez artykuł 32 dotyczący cytatów, omówień i ilustracji do celów edukacyjnych lub badań naukowych. Przepis ten pozwala na korzystanie z treści, o ile projekt nie ma celu komercyjnego i służy wyłącznie celom badawczym/edukacyjnym.</p>
+      </div>
+
+      <div class="subsection">
+        <h3>6. Prawa użytkownika</h3>
+        <p>Zgodnie z zapisami Rozdziału III Rozporządzenia (UE) 2016/679, użytkownik może w dowolnym momencie i bezpłatnie skorzystać z następujących praw w zakresie przetwarzania jego danych:</p>
+        <ul>
+          <li><strong>Prawo dostępu:</strong> uzyskanie od administratora potwierdzenia, czy przetwarzane są dane osobowe go dotyczące, a jeśli tak, uzyskanie dostępu do nich.</li>
+          <li><strong>Prawo do sprostowania:</strong> żądanie poprawienia nieprawidłowych lub uzupełnienia niekompletnych danych osobowych.</li>
+          <li><strong>Prawo do usunięcia danych:</strong> żądanie usunięcia danych, m.in. w sytuacji, gdy nie są już one niezbędne do celów, w których zostały zebrane.</li>
+          <li><strong>Prawo do ograniczenia przetwarzania:</strong> żądanie wstrzymania przetwarzania danych w przypadkach określonych w art. 18 RODO.</li>
+          <li><strong>Prawo do sprzeciwu:</strong> wniesienie sprzeciwu wobec przetwarzania danych opartego na prawnie uzasadnionym interesie administratora.</li>
+          <li><strong>Prawo do przenoszenia danych:</strong> otrzymanie dostarczonych danych osobowych w ustrukturyzowanym, powszechnie używanym formacie nadającym się do odczytu maszynowego.</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div>
+    <div class="footer-brand">UAM — Studia Magisterskie AI 2025–2026</div>
+    <div>© 2026 Autonomiczny Uniwersytet w Madrycie. Projekt akademicki.</div>
+  </div>
+  <div style="display:flex; gap: 24px; flex-wrap: wrap;">
+    <a href="#">Polityka Cookies</a>
+    <a href="#">Nota Prawna</a>
+    <a href="#">Kontakt</a>
+    <a href="https://www.aepd.es" target="_blank">AEPD (Hiszpański Urząd Ochrony Danych)</a>
+  </div>
+</footer>
+
+<script>
+  // Płynne przewijanie do sekcji
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

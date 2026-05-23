@@ -1,51 +1,80 @@
+"""
+Servicio de procesamiento de texto, extracción y validación.
+
+Contiene utilidades para limpieza de texto, extracción de contenido desde URL,
+procesamiento de texto directo e imágenes, y generación de características
+estructuradas para análisis de fraude.
+"""
+
 import json
 import re
-import requests
-import spacy
 from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse
+
+import requests
+import spacy
 from bs4 import BeautifulSoup
-from fastapi import APIRouter, File, Form, HTTPException, UploadFile
+from fastapi import HTTPException, UploadFile
 from pydantic import BaseModel, Field, HttpUrl
 from trafilatura import extract, fetch_url
+from trafilatura.settings import use_config
 
+from servicios.ocr_service import extraer_texto
 
-
-nlp = spacy.load("es_core_news_sm")
 NLP_MODEL_NAME = "es_core_news_sm"
+_nlp = None
+
+
+def _get_nlp():
+    """Carga el modelo de lenguaje español bajo demanda."""
+    global _nlp
+    if _nlp is None:
+        _nlp = spacy.load(NLP_MODEL_NAME)
+    return _nlp
+
 
 stopwords_basicas = {
-    "el", "la", "los", "las", "un", "una", "unos", "unas",
-    "o", "u", "pero", "sino", "aunque", "como"
+    "el",
+    "la",
+    "los",
+    "las",
+    "un",
+    "una",
+    "unos",
+    "unas",
+    "o",
+    "u",
+    "pero",
+    "sino",
+    "aunque",
+    "como",
 }
 
 
-def clean_text(text: str) -> dict:
+def clean_text(text: str) -> dict[str, Any]:
     """
-    Limpia y normaliza el texto.
+    Limpia y normaliza el texto para análisis posterior.
+
+    Devuelve tokens filtrados, un texto limpio y una versión normalizada.
     """
     if not text or not isinstance(text, str):
-        return {
-            "tokens": [],
-            "texto_limpio": "",
-            "texto_normalizado": ""
-        }
+        return {"tokens": [], "texto_limpio": "", "texto_normalizado": ""}
 
-    texto = re.sub(r'\bref\s*:?\s*\d+\b', '', text, flags=re.IGNORECASE)
-    texto = re.sub(r'([a-zA-Záéíóúñ])(\d)', r'\1 \2', texto)
-    texto = re.sub(r'(\d)([a-zA-Záéíóúñ])', r'\1 \2', texto)
-    texto = re.sub(r'[^\w\s@\.\:\/\+\-\€\$%\!,\(\)#\n]', ' ', texto)
+    texto = re.sub(r"\bref\s*:?\s*\d+\b", "", text, flags=re.IGNORECASE)
+    texto = re.sub(r"([a-zA-Záéíóúñ])(\d)", r"\1 \2", texto)
+    texto = re.sub(r"(\d)([a-zA-Záéíóúñ])", r"\1 \2", texto)
+    texto = re.sub(r"[^\w\s@\.\:\/\+\-\€\$%\!,\(\)#\n]", " ", texto)
     texto = texto.lower()
-    texto = re.sub(r'\s+', ' ', texto).strip()
+    texto = re.sub(r"\s+", " ", texto).strip()
 
-    doc = nlp(texto)
+    doc = _get_nlp()(texto)
 
     tokens = []
     for token in doc:
         if token.is_space:
             continue
 
-        if token.is_punct and token.text not in ['!', '?', ',', '.', ';', ':']:
+        if token.is_punct and token.text not in ["!", "?", ",", ".", ";", ":"]:
             continue
 
         texto_token = token.text.strip()
@@ -68,13 +97,12 @@ def clean_text(text: str) -> dict:
     }
 
 
-import re as _re_signals
-
 REGEX_CORREO = r"[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}"
-REGEX_URL = r"https?://[^\s<>\"']+"
+REGEX_URL = r"(https?://|www\.)[^\s<>\"']+"
 
 # Regex de teléfonos para países hispanohablantes.
-REGEX_TELEFONO = _re_signals.compile(r"""
+REGEX_TELEFONO = re.compile(
+    r"""
     (\+34\s?\d{3}[\s.-]?\d{3}[\s.-]?\d{3})|
     (\+52\s?\d{10})|
     (\+54\s?\d{10})|
@@ -95,7 +123,9 @@ REGEX_TELEFONO = _re_signals.compile(r"""
     (\+1-(787|939)[\s.-]?\d{3}[\s.-]?\d{4})|
     (\+598\s?\d{8})|
     (\+507\s?\d{8})
-""", _re_signals.VERBOSE)
+""",
+    re.VERBOSE,
+)
 
 PALABRAS_URGENCIA = [
     "urgente",
@@ -141,19 +171,33 @@ PALABRAS_SOSPECHOSAS = [
     "bizum previo",
 ]
 
-FUENTES_NO_FIABLES = ["facebook", "whatsapp", "telegram", "instagram", "tiktok", "snapchat"]
-FUENTES_FIABLES = ["linkedin", "infojobs", "indeed", "glassdoor", "tecnoempleo", "computrabajo"]
+FUENTES_NO_FIABLES = [
+    "facebook",
+    "whatsapp",
+    "telegram",
+    "instagram",
+    "tiktok",
+    "snapchat",
+]
+FUENTES_FIABLES = [
+    "linkedin",
+    "infojobs",
+    "indeed",
+    "glassdoor",
+    "tecnoempleo",
+    "computrabajo",
+]
 
 
 # "Senales" es la información detectada en el texto.
 # "Caracteristicas" son valores más estructurados para análisis posterior.
 def _normalizar_senales(texto: str) -> str:
     texto = texto.lower()
-    return _re_signals.sub(r"(?<=[a-záéíóúüñ])[.\-_](?=[a-záéíóúüñ])", "", texto)
+    return re.sub(r"(?<=[a-záéíóúüñ])[.\-_](?=[a-záéíóúüñ])", "", texto)
 
 
 def tiene_email(texto: str) -> int:
-    return int(bool(_re_signals.search(REGEX_CORREO, texto, _re_signals.IGNORECASE)))
+    return int(bool(re.search(REGEX_CORREO, texto, re.IGNORECASE)))
 
 
 def tiene_telefono(texto: str) -> int:
@@ -161,7 +205,7 @@ def tiene_telefono(texto: str) -> int:
 
 
 def tiene_url(texto: str) -> int:
-    return int(bool(_re_signals.search(REGEX_URL, texto, _re_signals.IGNORECASE)))
+    return int(bool(re.search(REGEX_URL, texto, re.IGNORECASE)))
 
 
 def puntuacion_urgencia(texto: str) -> int:
@@ -196,12 +240,12 @@ def num_palabras(texto: str) -> int:
 
 
 def num_oraciones(texto: str) -> int:
-    coincidencias = _re_signals.findall(r"[.!?]+", texto)
+    coincidencias = re.findall(r"[.!?]+", texto)
     return len(coincidencias) if coincidencias else int(bool(texto.strip()))
 
 
 def longitud_media_palabra(texto: str) -> float:
-    palabras = _re_signals.findall(r"\b\w+\b", texto, _re_signals.UNICODE)
+    palabras = re.findall(r"\b\w+\b", texto, re.UNICODE)
     if not palabras:
         return 0.0
     return round(sum(len(palabra) for palabra in palabras) / len(palabras), 2)
@@ -212,7 +256,7 @@ def num_urls(texto: str) -> int:
 
 
 def tiene_dinero(texto: str) -> int:
-    return int(bool(_re_signals.search(r"(\d+\s?[€$])|([€$]\s?\d+)", texto)))
+    return int(bool(re.search(r"(\d+\s?[€$])|([€$]\s?\d+)", texto)))
 
 
 def proporcion_mayusculas(texto: str) -> float:
@@ -224,7 +268,7 @@ def proporcion_mayusculas(texto: str) -> float:
 
 
 def extraer_correos(texto: str) -> list[str]:
-    return _re_signals.findall(REGEX_CORREO, texto, _re_signals.IGNORECASE)
+    return re.findall(REGEX_CORREO, texto, re.IGNORECASE)
 
 
 def extraer_telefonos(texto: str) -> list[str]:
@@ -238,15 +282,25 @@ def extraer_telefonos(texto: str) -> list[str]:
 
 
 def extraer_urls(texto: str) -> list[str]:
-    return _re_signals.findall(REGEX_URL, texto, _re_signals.IGNORECASE)
+    return re.findall(REGEX_URL, texto, re.IGNORECASE)
 
 
 def extraer_empresas(texto: str) -> list[str]:
-    return _re_signals.findall(r"\b[A-Z][a-zA-Z0-9]+\b", texto)
+    doc = _get_nlp()(texto)
+    return list(
+        {ent.text for ent in doc.ents if ent.label_ == "ORG" and len(ent.text) > 3}
+    )
 
 
 def extraer_lugares(texto: str) -> list[str]:
-    return _re_signals.findall(r"\b[A-Z][a-zA-Z0-9\s]+\b", texto)
+    doc = _get_nlp()(texto)
+    return list(
+        {
+            ent.text
+            for ent in doc.ents
+            if ent.label_ in ("LOC", "GPE") and len(ent.text) > 3
+        }
+    )
 
 
 def extraer_urgencia(texto: str) -> list[str]:
@@ -258,9 +312,7 @@ def advertencias_telefonos(texto: str) -> list[str]:
     advertencias = []
     for telefono in extraer_telefonos(texto):
         if not telefono.startswith("+34"):
-            advertencias.append(
-                f"Cuidado: el número {telefono} no pertenece a España."
-            )
+            advertencias.append(f"Cuidado: el número {telefono} no pertenece a España.")
     return advertencias
 
 
@@ -275,7 +327,7 @@ def evaluar_fuente_trabajo(texto: str) -> str:
     return "No se pudo determinar la fiabilidad de la fuente."
 
 
-def extraer_caracteristicas(texto: str) -> dict:
+def extraer_caracteristicas(texto: str) -> dict[str, Any]:
     return {
         "tiene_email": tiene_email(texto),
         "tiene_telefono": tiene_telefono(texto),
@@ -294,7 +346,7 @@ def extraer_caracteristicas(texto: str) -> dict:
     }
 
 
-def extraer_senales(texto: str) -> dict:
+def extraer_senales(texto: str) -> dict[str, Any]:
     return {
         "correos": extraer_correos(texto),
         "telefonos": extraer_telefonos(texto),
@@ -340,9 +392,16 @@ def _build_result(url: str, domain: str, title: str, text: str) -> dict[str, Any
     }
 
 
+config = use_config()
+config.set("DEFAULT", "ROBOTS_TXT", "true")  # Respetar robots.txt"
+
+
 def extract_from_url(url: str) -> dict[str, Any]:
     """
     Extrae el contenido textual principal desde una URL.
+
+    Usa `trafilatura` como primera opción y recurre a `BeautifulSoup` si no
+    se obtiene texto legible. Rechaza dominios bloqueados.
     """
     url_limpia, dominio = _normalize_url(url)
 
@@ -352,7 +411,7 @@ def extract_from_url(url: str) -> dict[str, Any]:
         raise HTTPException(status_code=403, detail="Dominio no permitido.")
 
     # Intento principal con trafilatura
-    html = fetch_url(url_limpia)
+    html = fetch_url(url_limpia, config=config)
 
     if html:
         # Pedimos la salida en JSON para acceder al texto y al título de forma estructurada
@@ -378,30 +437,69 @@ def extract_from_url(url: str) -> dict[str, Any]:
         texto = soup.get_text(separator=" ")
         texto = " ".join(texto.split())  # Colapsamos espacios y saltos de línea
         if not texto:
-            raise HTTPException(status_code=422, detail="La URL no contiene texto legible.")
+            raise HTTPException(
+                status_code=422, detail="La URL no contiene texto legible."
+            )
 
         return _build_result(url_limpia, dominio, "", texto)
     except Exception:
-        raise HTTPException(status_code=400, detail="No se pudo acceder o procesar la URL.")
+        raise HTTPException(
+            status_code=400, detail="No se pudo acceder o procesar la URL."
+        )
 
 
-def ingest_text(text: str) -> dict:
+def ingest_text(text: str) -> dict[str, Any]:
     """
-    Recibe texto manual y devuelve estructura base.
+    Valida texto manual y devuelve una estructura estándar para el pipeline.
+
+    Retorna `success=False` si el texto no es válido o está vacío.
     """
     if not text or not isinstance(text, str) or not text.strip():
         return {
             "success": False,
             "source": "text",
             "text": "",
-            "message": "No se recibió texto válido."
+            "message": "No se recibió texto válido.",
         }
 
     return {
         "success": True,
         "source": "text",
         "text": text.strip(),
-        "message": "Texto recibido correctamente."
+        "message": "Texto recibido correctamente.",
+    }
+
+
+def ingest_image(file_bytes: bytes) -> dict[str, Any]:
+    """
+    Extrae texto de una imagen mediante OCR y devuelve una estructura base.
+
+    Devuelve `success=False` si la OCR falla o no se extrae texto legible.
+    """
+    resultado = extraer_texto(file_bytes)
+
+    if resultado["status"] == "error":
+        return {
+            "success": False,
+            "source": "imagen",
+            "text": "",
+            "message": resultado.get("message", "Error al procesar la imagen."),
+        }
+
+    texto = resultado.get("text", "").strip()
+    if not texto:
+        return {
+            "success": False,
+            "source": "imagen",
+            "text": "",
+            "message": "La imagen no contiene texto legible.",
+        }
+
+    return {
+        "success": True,
+        "source": "imagen",
+        "text": texto,
+        "message": "Texto extraído correctamente.",
     }
 
 
@@ -410,7 +508,13 @@ async def validar_entrada_traduccion(
     file: UploadFile | None = None,
     text: str | None = None,
     url: str | None = None,
-) -> dict:
+) -> dict[str, Any]:
+    """
+    Valida la entrada para un proceso de detección o traducción.
+
+    Acepta una única entrada entre `file`, `text` o `url` y devuelve la
+    representación normalizada de la entrada válida.
+    """
     if not file and not text and not url:
         raise HTTPException(
             status_code=400,
@@ -434,7 +538,14 @@ async def validar_entrada_traduccion(
         entrada_detectada = "url"
     elif file:
         entrada_detectada = "imagen"
-        texto_para_traducir = file.filename or ""
+        file_bytes = await file.read()  # ← lee los bytes reales
+        ingesta = ingest_image(file_bytes)  # ← extrae el texto con OCR
+        if not ingesta["success"]:
+            raise HTTPException(
+                status_code=422,
+                detail=ingesta.get("message", "No se pudo extraer texto de la imagen."),
+            )
+        texto_para_traducir = ingesta["text"]  # ← texto OCR, no el filename
 
     if not texto_para_traducir.strip():
         raise HTTPException(
@@ -462,7 +573,10 @@ MINIMO_PALABRAS_ANALISIS = 30
 
 # Este archivo coordina el flujo completo: conecta módulos ya hechos
 # y evita mezclar aquí la lógica concreta de limpieza, regex o extracción.
-def construir_estadisticas(tokens: list[str], texto_limpio: str) -> dict:
+def construir_estadisticas(tokens: list[str], texto_limpio: str) -> dict[str, int]:
+    """
+    Construye estadísticas simples a partir del texto procesado.
+    """
     return {
         "tokens_totales": len(tokens),
         "palabras_unicas": len(set(tokens)),
@@ -478,11 +592,14 @@ def construir_resultado(
     texto_limpio: str,
     texto_normalizado: str,
     tokens: list[str],
-    senales: dict,
-    caracteristicas: dict,
-    estadisticas: dict,
-    metadatos: dict,
-) -> dict:
+    senales: dict[str, Any],
+    caracteristicas: dict[str, Any],
+    estadisticas: dict[str, Any],
+    metadatos: dict[str, Any],
+) -> dict[str, Any]:
+    """
+    Construye el resultado final común para las funciones de procesamiento.
+    """
     return {
         "exito": exito,
         "fuente": fuente,
@@ -504,9 +621,12 @@ def _resultado_texto_insuficiente(
     texto_limpio: str,
     texto_normalizado: str,
     tokens: list[str],
-    estadisticas: dict,
-    metadatos_extra: dict | None = None,
-) -> dict:
+    estadisticas: dict[str, Any],
+    metadatos_extra: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """
+    Devuelve un resultado de procesamiento válido pero no listo para análisis.
+    """
     metadatos = {
         "mensaje": (
             f"Texto insuficiente para análisis. "
@@ -531,7 +651,7 @@ def _resultado_texto_insuficiente(
     )
 
 
-def process_text_input(text: str) -> dict:
+def process_text_input(text: str) -> dict[str, Any]:
     """
     Ejecuta el pipeline completo para texto manual.
     """
@@ -590,7 +710,7 @@ def process_text_input(text: str) -> dict:
     )
 
 
-def process_url_input(url: str) -> dict:
+def process_url_input(url: str) -> dict[str, Any]:
     """
     Ejecuta el pipeline completo para entrada mediante URL.
     """
@@ -633,12 +753,73 @@ def process_url_input(url: str) -> dict:
     )
 
 
+def process_image_input(file_bytes: bytes) -> dict[str, Any]:
+    """
+    Ejecuta el pipeline completo para entrada mediante imagen (OCR).
+    """
+    ingesta = ingest_image(file_bytes)
+
+    if not ingesta["success"]:
+        return construir_resultado(
+            exito=False,
+            fuente="imagen",
+            texto_original="",
+            texto_limpio="",
+            texto_normalizado="",
+            tokens=[],
+            senales={},
+            caracteristicas={},
+            estadisticas={
+                "tokens_totales": 0,
+                "palabras_unicas": 0,
+                "longitud_texto_limpio": 0,
+            },
+            metadatos={
+                "mensaje": ingesta.get("message", "Entrada no válida"),
+                "listo_para_analisis": False,
+            },
+        )
+
+    limpieza = clean_text(ingesta["text"])
+    estadisticas = construir_estadisticas(limpieza["tokens"], limpieza["texto_limpio"])
+
+    if estadisticas["longitud_texto_limpio"] <= MINIMO_PALABRAS_ANALISIS:
+        return _resultado_texto_insuficiente(
+            fuente="imagen",
+            texto_original=ingesta["text"],
+            texto_limpio=limpieza["texto_limpio"],
+            texto_normalizado=limpieza["texto_normalizado"],
+            tokens=limpieza["tokens"],
+            estadisticas=estadisticas,
+            metadatos_extra={"modelo_limpieza": limpieza.get("model", "")},
+        )
+
+    return construir_resultado(
+        exito=True,
+        fuente="imagen",
+        texto_original=ingesta["text"],
+        texto_limpio=limpieza["texto_limpio"],
+        texto_normalizado=limpieza["texto_normalizado"],
+        tokens=limpieza["tokens"],
+        senales=extraer_senales(ingesta["text"]),
+        caracteristicas=extraer_caracteristicas(ingesta["text"]),
+        estadisticas=estadisticas,
+        metadatos={
+            "mensaje": "Procesamiento completado",
+            "listo_para_analisis": True,
+            "modelo_limpieza": limpieza.get("model", ""),
+        },
+    )
+
+
 class EntradaTexto(BaseModel):
     text: str = Field(..., min_length=1, description="Texto manual para procesar.")
 
 
 class EntradaURL(BaseModel):
-    url: HttpUrl = Field(..., description="URL pública desde la que se extraerá el texto.")
+    url: HttpUrl = Field(
+        ..., description="URL pública desde la que se extraerá el texto."
+    )
 
 
 class ResultadoProcesamiento(BaseModel):
@@ -660,33 +841,3 @@ class ResultadoValidacionTraduccion(BaseModel):
     entrada_detectada: str
     texto_para_traducir: str
     mensaje: str
-
-
-router = APIRouter(prefix="/text", tags=["text-processing"])
-
-
-# Estas rutas existen sobre todo para probar el módulo de forma manual.
-# La idea es que este bloque se pueda reutilizar dentro de una app FastAPI mayor.
-@router.post("/process-text", response_model=ResultadoProcesamiento)
-def process_text(payload: EntradaTexto):
-    return process_text_input(payload.text)
-
-
-@router.post("/process-url", response_model=ResultadoProcesamiento)
-def process_url(payload: EntradaURL):
-    return process_url_input(str(payload.url))
-
-
-@router.post("/validar-traduccion", response_model=ResultadoValidacionTraduccion)
-async def validar_traduccion(
-    target_lang: str = Form(...),
-    file: UploadFile | None = File(None),
-    text: str | None = Form(None),
-    url: str | None = Form(None),
-):
-    return await validar_entrada_traduccion(
-        target_lang=target_lang,
-        file=file,
-        text=text,
-        url=url,
-    )

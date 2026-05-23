@@ -1,44 +1,49 @@
-from fastapi import APIRouter, Depends, UploadFile, File
+"""Rutas para detección de idioma y traducción de contenido."""
+
 import os
 import sys
-# --- Ajuste de path para poder ejecutar tanto script como uvicorn (inamovible de esta posición) ---
+
+from fastapi import APIRouter, Depends, File, UploadFile
+
+# "Ajuste de path para poder ejecutar tanto script como uvicorn (inamovible de esta posición)"
 root_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 if root_path not in sys.path:
     sys.path.append(root_path)
 
-from api.models.schemas import TextoDetectar, ResultadoDeteccion        #Entrega final:  from api.models.schemas import TextoDetectar, ResultadoDeteccion
-from servicios.traduccion_service import traducir_contenido       #from servicios.traduccion_service import traducir_contenido 
+from api.models.schemas import ResultadoDeteccion, TextoDetectar
+from servicios.traduccion_service import traducir_contenido
 
 router = APIRouter()
 
-@router.post("/detectar_idioma", response_model=ResultadoDeteccion)
-async def detectar_idioma(texto: TextoDetectar = Depends(TextoDetectar.as_form), file: UploadFile = File(None)):
-    
-    # Aquí se implementaría la lógica de detección de idioma
-    original, translated, idioma_detectado = await traducir_contenido(target_lang=texto.idioma_destino,file=file,text=texto.texto,url=texto.url)
 
-     # comprobador de idioma en el router
+@router.post("/detectar_idioma", response_model=ResultadoDeteccion)
+async def detectar_idioma(
+    texto: TextoDetectar = Depends(TextoDetectar.as_form), file: UploadFile = File(None)
+):
+
+    # "Extrae contenido y detecta idioma usando la función de traduccion_service.py"
+    """Detecta el idioma de la entrada y devuelve la traducción si procede."""
+
+    original, translated, idioma_detectado = await traducir_contenido(
+        target_lang=texto.idioma_destino, file=file, text=texto.texto, url=texto.url
+    )
+
+    # Verificar que el idioma detectado es español para devolver el resultado de la detección/traducción
     if idioma_detectado != "es":
         return ResultadoDeteccion(
             idioma_detectado=idioma_detectado,
             es_analizable=False,
             mensaje="",
             original=original,
-            traducido=""
+            traducido="",
         )
-        
+
     resultado = ResultadoDeteccion(
         idioma_detectado=idioma_detectado,
         es_analizable=True,
         mensaje="",
         original=original,
-        traducido=translated
+        traducido=translated,
     )
 
     return resultado
-
-#PASO 1: COMANDO CON EL REQUIREMENTS
-#requirements:  pip install -r requirements.txt
-
-# Ejecución: uvicorn api.routes.traduccion:app --reload + en otra terminal el streamlit de app.py
-# Ejecución (local): uvicorn traduccion:app --reload + en otra terminal el streamlit de app.py
