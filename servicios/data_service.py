@@ -77,9 +77,15 @@ def cargar_registros() -> list[dict]:
 # estadísticas individuales
 def estadisticas_anuncios(registros: list[dict] | None = None) -> dict:
     """
-    Calcula un resumen simple de veredictos a partir de los registros.
+    Calcula el resumen de veredictos agrupando por nivel_seguridad.
 
-    Soporta claves legacy (`veredicto`, `verdicto`) y la nueva `verdict`.
+    Se usa nivel_seguridad ("verde"/"amarillo"/"rojo") en lugar de verdict
+    ("LEGITIMATE"/"FRAUDULENT") porque:
+      - nivel_seguridad es lo que asigna analizar.py por bandas de probabilidad
+        y lo que el usuario ve en el semáforo de la interfaz.
+      - verdict solo tiene dos valores y nunca refleja el amarillo, por lo que
+        contar por verdict haría que el amarillo siempre fuera 0.
+    Para registros legacy sin nivel_seguridad se hace fallback a verdict.
     """
     if registros is None:
         registros = cargar_registros()
@@ -87,28 +93,40 @@ def estadisticas_anuncios(registros: list[dict] | None = None) -> dict:
     conteo = Counter()
     for r in registros:
         resultado = r.get("resultado") or {}
-        # Soportar claves legacy y la nueva 'verdict'
-        veredicto = (
-            resultado.get("verdict")
-            or resultado.get("veredicto")
-            or resultado.get("verdicto")
-            or ""
-        )
-        if veredicto == "FRAUDULENT":
-            conteo["fraudulent"] += 1
-        elif veredicto == "LEGITIMATE":
-            conteo["legitimate"] += 1
-        elif veredicto:
+
+        # Fuente de verdad: nivel_seguridad guardado por analizar.py
+        nivel = (resultado.get("nivel_seguridad") or "").lower()
+
+        if nivel in ("verde", "green"):
+            conteo["verde"] += 1
+        elif nivel in ("amarillo", "yellow", "amber"):
             conteo["amarillo"] += 1
+        elif nivel in ("rojo", "red"):
+            conteo["rojo"] += 1
         else:
-            conteo["sin_veredicto"] += 1
+            # Fallback para registros legacy sin nivel_seguridad: usar verdict
+            veredicto = (
+                resultado.get("verdict")
+                or resultado.get("veredicto")
+                or resultado.get("verdicto")
+                or ""
+            ).upper()
+            if veredicto == "FRAUDULENT":
+                conteo["rojo"] += 1
+            elif veredicto == "LEGITIMATE":
+                conteo["verde"] += 1
+            else:
+                conteo["sin_veredicto"] += 1
 
     return {
         "total": len(registros),
-        "fraudulent": conteo["fraudulent"],
-        "legitimate": conteo["legitimate"],
+        "verde": conteo["verde"],
         "amarillo": conteo["amarillo"],
+        "rojo": conteo["rojo"],
         "sin_veredicto": conteo["sin_veredicto"],
+        # Claves legacy mantenidas por compatibilidad con estadisticas.py anterior
+        "legitimate": conteo["verde"],
+        "fraudulent": conteo["rojo"],
     }
 
 

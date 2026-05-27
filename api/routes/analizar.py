@@ -150,14 +150,9 @@ def _parsear_resultado_ia(
         )
 
     try:
-        # Mapear veredicto a nivel de seguridad
+        # Extraer verdict para logging y para el campo verdict del resultado final.
+        # El nivel de semáforo se determina por bandas de probabilidad (ver más abajo), no por verdict.
         verdict = data.get("verdict", data.get("veredicto", "")).upper()
-        if verdict == "FRAUDULENT":
-            nivel = NivelSeguridad.ROJO
-        elif verdict == "LEGITIMATE":
-            nivel = NivelSeguridad.VERDE
-        else:
-            nivel = NivelSeguridad.AMARILLO
 
         senales_raw = data.get("senales") or []
         if isinstance(senales_raw, dict):
@@ -183,11 +178,23 @@ def _parsear_resultado_ia(
         probabilidad = data.get("probability", data.get("probabilidad", 0.5))
         proba = float(probabilidad) if isinstance(probabilidad, (int, float)) else 0.5
 
-        threshold = 0.5
-        if proba >= threshold:
-            confianza = min((proba - threshold) / (1 - threshold), 1.0)
+        # Mínimo 1% de riesgo: ningún anuncio puede mostrar 0% de fraude.
+        proba = max(proba, 0.01)
+
+        # El nivel de semáforo se decide por bandas de probabilidad (no por verdict del modelo).
+        #   - ROJO     si proba >= 0.65  (alta probabilidad de fraude)
+        #   - AMARILLO si 0.35 <= proba < 0.65  (zona de incertidumbre)
+        #   - VERDE    si proba < 0.35  (baja probabilidad de fraude)
+        if proba >= 0.65:
+            nivel = NivelSeguridad.ROJO
+        elif proba >= 0.35:
+            nivel = NivelSeguridad.AMARILLO
         else:
-            confianza = min((threshold - proba) / threshold, 1.0)
+            nivel = NivelSeguridad.VERDE
+
+        # confianza_seguridad = probabilidad directa del modelo (valor unificado).
+        # Así el log, el JSON del backend y la barra de la interfaz muestran siempre el mismo número.
+        confianza = proba
 
         # Nivel de confianza (high/medium/low)
         nivel_confianza = data.get("confidence_level", data.get("confianza", "medium"))
@@ -244,16 +251,18 @@ def _analisis_por_reglas(
     if not tiene_email(texto) and not tiene_telefono(texto):
         indicadores.append("Sin datos de contacto verificables")
 
-    # Determinar nivel según score
+    # Determinar nivel según score y asignar probabilidad representativa dentro de cada banda.
+    # Los valores elegidos son puntos medios de cada banda (verde <0.35, amarillo 0.35-0.65, rojo >=0.65),
+    # con mínimo 1% para que ningún anuncio muestre riesgo cero.
     if score_sospechosas >= 3 or score_urgencia >= 3:
         nivel = NivelSeguridad.ROJO
-        confianza = 0.85
+        confianza = 0.85          # punto medio-alto de banda roja
     elif score_sospechosas >= 1 or score_urgencia >= 1:
         nivel = NivelSeguridad.AMARILLO
-        confianza = 0.65
+        confianza = 0.50          # centro exacto de la zona de incertidumbre
     else:
         nivel = NivelSeguridad.VERDE
-        confianza = 0.75
+        confianza = max(0.10, 0.01)   # mínimo 1%; usamos 10% como valor representativo verde bajo
 
     # Mensaje según nivel
     mensajes = {

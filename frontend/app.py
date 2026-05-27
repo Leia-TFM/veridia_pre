@@ -1227,8 +1227,12 @@ def mostrar_resultados(res_seg, res_det, lang_ui):
     st.subheader(UI_TEXTS[lang_ui]["result"])
 
     nivel = res_seg.get("nivel_seguridad")
-    confianza = res_seg.get("confianza_seguridad", 0)
-    confianza_pct = int(confianza * 100)
+
+    # Bug 3 FIX: usar probabilidad (valor real del modelo, 0-100%) para la barra de confianza.
+    # confianza_seguridad es un valor derivado para uso interno; probabilidad es lo que el modelo
+    # realmente calculó y lo que se ve en uvicorn, por lo que ahora ambos coinciden.
+    probabilidad = res_seg.get("probabilidad", res_seg.get("confianza_seguridad", 0))
+    confianza_pct = int(probabilidad * 100)
 
     nivel_config = {
         "verde": {
