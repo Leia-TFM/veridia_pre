@@ -182,12 +182,12 @@ def _parsear_resultado_ia(
         proba = max(proba, 0.01)
 
         # El nivel de semáforo se decide por bandas de probabilidad (no por verdict del modelo).
-        #   - ROJO     si proba >= 0.65  (alta probabilidad de fraude)
-        #   - AMARILLO si 0.35 <= proba < 0.65  (zona de incertidumbre)
-        #   - VERDE    si proba < 0.35  (baja probabilidad de fraude)
-        if proba >= 0.65:
+        #   - ROJO     si proba >= 0.60  (alta probabilidad de fraude)
+        #   - AMARILLO si 0.30 <= proba < 0.60  (zona de incertidumbre)
+        #   - VERDE    si proba < 0.30  (baja probabilidad de fraude)
+        if proba >= 0.60:
             nivel = NivelSeguridad.ROJO
-        elif proba >= 0.35:
+        elif proba >= 0.30:
             nivel = NivelSeguridad.AMARILLO
         else:
             nivel = NivelSeguridad.VERDE

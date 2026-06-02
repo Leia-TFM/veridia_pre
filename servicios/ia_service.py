@@ -239,16 +239,19 @@ async def validar_anuncio(data: dict) -> dict:
 # Se establece un orden determinista de campos basado en su peso estadístico
 # para la detección de fraude.
 def _generar_justificacion(label: int, proba: float, senales: list) -> str:
-    pct = round(proba * 100)
-    if label == 1:
-        base = f"El modelo detecta un riesgo de fraude del {pct}%."
-        if senales:
-            senales_formateadas = [str(s) for s in senales[:4]]
-            base += (
-                f" Señales de alerta identificadas: {', '.join(senales_formateadas)}."
-            )
-    else:
-        base = f"El modelo no detecta señales significativas de fraude (probabilidad estimada: {pct}%)."
+    """
+    Genera un resumen técnico interno para el agente.
+    No es el mensaje final al usuario; ese lo genera el agente en ejecutar_tarea().
+    """
+    nivel = "alto" if proba >= 0.60 else "medio" if proba >= 0.30 else "bajo"
+    veredicto = "FRAUDULENT" if label == 1 else "LEGITIMATE"
+
+    base = f"Veredicto del modelo: {veredicto}. Nivel de riesgo: {nivel}."
+
+    if senales:
+        senales_formateadas = [str(s) for s in senales[:4]]
+        base += f" Señales detectadas: {', '.join(senales_formateadas)}."
+
     return base
 
 
@@ -290,8 +293,8 @@ class FraudDetectionTool(Tool):
     output_type = "string"
 
     _CONFIDENCE_MAP = [
-        (0.75, "high"),
-        (0.55, "medium"),
+        (0.60, "high"),
+        (0.30, "medium"),
         (0.0, "low"),
     ]
 
@@ -560,10 +563,13 @@ class OrquestadorAgente:
                 f"Analiza este anuncio siguiendo tus instrucciones de experto.\n"
                 f"DATOS TÉCNICOS: {tool_result_str}\n"
                 f"CONTENIDO DEL ANUNCIO: {job_posting_json}\n"
-                "TAREA: Escribe una explicación breve (2-3 frases) para el usuario. "
-                "Usa un tono directo y neutral. No devuelvas JSON, solo el texto."
+                "TAREA: Escribe una explicación breve (2-5 frases) para el usuario. "
+                "Usa un tono directo y neutral. "
+                "El nivel de riesgo es: alto si confidence_level es 'high', "
+                "medio si es 'medium', bajo si es 'low'. "
+                "No menciones porcentajes ni probabilidades. "
+                "No devuelvas JSON, solo el texto."
             )
-
             logger.info("Iniciando razonamiento narrativo del agente...")
             # Aquí capturamos la respuesta del agente como un string simple
             import litellm
