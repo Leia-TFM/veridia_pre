@@ -908,7 +908,7 @@ def render_modal_quienes_somos(idioma_destino: str = "es"):
     "Somos un equipo comprometido con la lucha contra el fraude laboral. Proyecto Verid.IA nace para ayudar a las personas a identificar ofertas de trabajo falsas mediante inteligencia artificial.",
     "¿Qué hacemos?",
     "Analizamos ofertas de empleo (texto, URL o imagen) y evaluamos el riesgo de que sean fraudulentos, protegiendo a los usuarios de posibles estafas.",
-    "Dirección de correo electrónico de contacto",
+    "Contacto",
     "Si quiere ponerse en contacto con nosotros para cualquier consulta, queja, sugerencia o colaboración, no dude en escribirnos al siguiente correo electrónico:",
     "Política de privacidad",
     "Si lo desea, clique el siguiente enlace para leer la política de privacidad.",
