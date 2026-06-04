@@ -909,7 +909,7 @@ def render_modal_quienes_somos(idioma_destino: str = "es"):
     "¿Qué hacemos?",
     "Analizamos ofertas de empleo (texto, URL o imagen) y evaluamos el riesgo de que sean fraudulentos, protegiendo a los usuarios de posibles estafas.",
     "Dirección de correo electrónico de contacto",
-    "Si quieres ponerte en contacto con nosotros para cualquier consulta, queja, sugerencia o colaboración, no dudes en escribirnos a nuestro correo electrónico:",
+    "Si quiere ponerse en contacto con nosotros para cualquier consulta, queja, sugerencia o colaboración, no dude en escribirnos al siguiente correo electrónico:",
     "Política de privacidad",
     "Si lo desea, clique el siguiente enlace para leer la política de privacidad.",
 ]
