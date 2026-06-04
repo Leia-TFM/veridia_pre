@@ -903,14 +903,16 @@ def render_modal_quienes_somos(idioma_destino: str = "es"):
     # "Si el idioma seleccionado no está en el diccionario, redirige por defecto a la versión en español (o inglés)"
     url_privacidad = links_privacidad.get(idioma_destino, links_privacidad["es"])
 
-    textos = [  # MODIFICAR EL TEXTO SEGÚN COMUNICACIÓN
-        "¿Quiénes somos?",
-        "Somos un equipo comprometido con la lucha contra el fraude laboral. Proyecto Verid.IA nace para ayudar a las personas a identificar ofertas de trabajo falsas mediante inteligencia artificial.",
-        "¿Qué hacemos?",
-        "Analizamos ofertas de empleo (texto, URL o imagen) y evaluamos el riesgo de que sean fraudulentos, protegiendo a los usuarios de posibles estafas.",
-        "Política de privacidad",
-        "Si lo desea, clique el siguiente enlace para leer la política de privacidad.",
-    ]
+    textos = [  
+    "¿Quiénes somos?",
+    "Somos un equipo comprometido con la lucha contra el fraude laboral. Proyecto Verid.IA nace para ayudar a las personas a identificar ofertas de trabajo falsas mediante inteligencia artificial.",
+    "¿Qué hacemos?",
+    "Analizamos ofertas de empleo (texto, URL o imagen) y evaluamos el riesgo de que sean fraudulentos, protegiendo a los usuarios de posibles estafas.",
+    "Dirección de correo electrónico de contacto",
+    "Si quieres ponerte en contacto con nosotros para cualquier consulta, queja, sugerencia o colaboración, no dudes en escribirnos a nuestro correo electrónico:",
+    "Política de privacidad",
+    "Si lo desea, clique el siguiente enlace para leer la política de privacidad.",
+]
 
     if idioma_destino != "es":
         cache_key = f"modal_{idioma_destino}"
@@ -933,18 +935,20 @@ def render_modal_quienes_somos(idioma_destino: str = "es"):
             <h2 style="color:#9b5fcf; text-align:center;">{t[0]}</h2>
             <p style="font-size:17px; color:#333; text-align:center;">{t[1]}</p>
             <h3 style="color:#9b5fcf; text-align:center;">{t[2]}</h3>
-            <p style="font-size:16px; color:#555; text-align:center;">{t[3]}</p>
+            <p style="font-size:16px; color:#333; text-align:center;">{t[3]}</p>
             <hr style="border-color:#ddb6fc; margin:20px 0;">
             <h3 style="color:#9b5fcf; text-align:center;">{t[4]}</h3>
-            <p style="font-size:16px; color:#555; text-align:center;">{t[5]}</p>
+            <p style="font-size:16px; color:#333; text-align:center;">{t[5]}<br><a href="mailto:proyectoverid.ia@gmail.com" style="font-size:20px; color:#9b5fcf; font-weight:bold; text-decoration:none;">📩 proyectoverid.ia@gmail.com</a></p>
+            <hr style="border-color:#ddb6fc; margin:20px 0;">
+            <h3 style="color:#9b5fcf; text-align:center;">{t[6]}</h3>
+            <p style="font-size:16px; color:#333; text-align:center;">{t[7]}</p>
             <div style="text-align:center; font-size:18px;">
-                <a href="{url_privacidad}" target="_blank" style="margin:0 12px; color:#9b5fcf; font-weight:bold; text-decoration:none;">{t[4]}</a>
+                <a href="{url_privacidad}" target="_blank" style="margin:0 12px; color:#9b5fcf; font-weight:bold; text-decoration:none;">🔗 {t[6]}</a>
             </div>
         </div>
     """,
         unsafe_allow_html=True,
-    )
-
+)
 
 # "Función que construye la página de inicio: muestra el título del proyecto, el selector de idioma,
 # el botón de 'Sobre Nosotros' con su modal desplegable y los enlaces a redes sociales.
