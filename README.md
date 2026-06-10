@@ -48,7 +48,8 @@ El sistema combina:
    python -m spacy download es_core_news_sm
    ```
 3. Instalar Tesseract OCR en el sistema y añadirlo al PATH.
-   - Windows: https://github.com/UB-Mannheim/tesseract/wiki
+  - Windows: https://github.com/UB-Mannheim/tesseract/wiki
+  - Importante: instalar el diccionario/lenguaje en español en la carpeta `tessdata` de la instalación de Tesseract (archivo `spa.traineddata`) además del inglés (`eng.traineddata`) para que el OCR funcione correctamente con textos en español.
 
 4. Descargar la aplicación de escritorio de Ollama
   (en despliegue el modelo estará en la nube):
@@ -67,7 +68,7 @@ El sistema combina:
 
 Inicia el servidor FastAPI con:
 ```bash
-uvicorn main:app --reload
+uvicorn main:app
 ```
 
 ### Frontend
